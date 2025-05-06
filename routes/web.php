@@ -3,11 +3,15 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/', \App\Http\Livewire\Home\Home::class)->name('home');
     Route::get('/header', \App\Http\Livewire\Components\Header\Header::class)->name('header');
-    Route::get('/funcionarios', \App\Http\Livewire\Funcionarios\ModuloFuncionarios::class)->name('funcionarios');
+    Route::get('/clientes', \App\Http\Livewire\Clientes\Clientes::class)->name('clientes');
 
+});
+
+Route::middleware(['admin'])->group(function () {
+    Route::get('/funcionarios', \App\Http\Livewire\Funcionarios\ModuloFuncionarios::class)->name('funcionarios');
 });
 
 // Login
