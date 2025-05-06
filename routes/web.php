@@ -10,8 +10,12 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+// Login
+Route::post('/logout', function () {Auth::logout();request()->session()->invalidate();request()->session()->regenerateToken(); return redirect('/login');})->name('logout');
 Route::get('/login', \App\Http\Livewire\Login\Login::class)->middleware('guest')->name('login');
 
+
+// Erro
 Route::get('/{any}', \App\Http\Livewire\Errors\Error404::class)->where('any', '.*');
 
 

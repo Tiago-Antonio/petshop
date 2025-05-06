@@ -10,7 +10,13 @@
             <nav class="hidden md:flex space-x-6">
                 <a href="{{ route('home') }}" class="text-gray-600 hover:text-blue-600 transition">Home</a>
                 <a href="{{ route('funcionarios') }}" class="text-gray-600 hover:text-blue-600 transition">Funcionários</a>
-                <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-600 transition">Login</a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="flex items-center text-gray-600 hover:text-red-600">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sair
+                    </button>
+                </form> 
+
             </nav>
         </div>
     </div>
