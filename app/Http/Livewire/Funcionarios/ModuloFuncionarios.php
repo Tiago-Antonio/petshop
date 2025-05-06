@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\Funcionarios;
 
 use Livewire\Component;
-use App\Models\Funcionario;
+use App\Models\User;
 use Livewire\WithPagination;
 
 class ModuloFuncionarios extends Component
@@ -20,10 +20,11 @@ class ModuloFuncionarios extends Component
     public $path_foto;
     public $password;
     public $funcionarioId = null; 
-
+    public $confirmando = false;
 
     public $show = false;
     public $showOpcoes = false;
+
 
     public function abrirModal()
     {
@@ -34,57 +35,53 @@ class ModuloFuncionarios extends Component
 
     public function editarFuncionario($id)
     {
-        $funcionario = Funcionario::findOrFail($id);
+      
+        $funcionario = User::findOrFail($id);
 
         $this->funcionarioId = $id;
-        $this->nome = $funcionario->nome;
+        $this->nome = $funcionario->name;
         $this->email = $funcionario->email;
-        $this->telefone = $funcionario->telefone;
-        $this->cargo = $funcionario->cargo;
-        $this->data_nascimento = $funcionario->data_nascimento;
-        $this->path_foto = $funcionario->path_foto;
-        $this->password = ''; 
-
-        $this->show = true;
+        $this->telefone = $funcionario->phone;
+        $this->cargo = $funcionario->role;
+        $this->data_nascimento = $funcionario->birth_date;
+        $this->path_foto = $funcionario->photo_path;
+        $this->password = '';
+    
     }
 
-    public function fecharModal()
-    {
-        $this->show = false;
-    }
+    
 
     public function CadastrarFuncionario()
     {
         try {
             if ($this->funcionarioId) {
-                $funcionario = Funcionario::findOrFail($this->funcionarioId);
+                $funcionario = User::findOrFail($this->funcionarioId);
 
                 $funcionario->update([
-                    'nome' => $this->nome,
+                    'name' => $this->nome,
                     'email' => $this->email,
-                    'telefone' => $this->telefone,
-                    'cargo' => $this->cargo,
-                    'data_nascimento' => $this->data_nascimento,
-                    'path_foto' => $this->path_foto,
+                    'phone' => $this->telefone,
+                    'role' => $this->cargo,
+                    'birth_date' => $this->data_nascimento,
+                    'photo_path' => $this->path_foto,
                     'password' => $this->password ? bcrypt($this->password) : $funcionario->password,
                 ]);
 
                 session()->flash('success', 'Funcionário atualizado com sucesso!');
             } else {
-                Funcionario::create([
-                    'nome' => $this->nome,
+                User::create([
+                    'name' => $this->nome,
                     'email' => $this->email,
-                    'telefone' => $this->telefone,
-                    'cargo' => $this->cargo,
-                    'data_nascimento' => $this->data_nascimento,
-                    'path_foto' => $this->path_foto,
+                    'phone' => $this->telefone,
+                    'role' => $this->cargo,
+                    'birth_date' => $this->data_nascimento,
+                    'photo_path' => $this->path_foto,
                     'password' => bcrypt($this->password),
                 ]);
 
                 session()->flash('success', 'Funcionário cadastrado com sucesso!');
             }
 
-            $this->fecharModal();
             $this->resetarCampos();
 
         } catch (\Exception $e) {
@@ -93,25 +90,21 @@ class ModuloFuncionarios extends Component
         }
     }
 
-    public function closeModal()
-    {
-        $this->showModal = false; 
-        session()->forget('success'); 
-        session()->forget('error'); 
-    }
 
     public function excluirFuncionario($id)
     {
-        $funcionario = Funcionario::find($id);
-    
+        $funcionario = User::find($id);
+        
         if ($funcionario) {
             $funcionario->delete();
-            session()->flash('message', 'Funcionário excluído com sucesso.');
+            session()->flash('message', 'Funcionário excluído com sucesso.'); 
         } else {
-            session()->flash('error', 'Funcionário não encontrado.');
+            session()->flash('error', 'Funcionário não encontrado.');  
         }
+    
         $this->confirmando = false;
     }
+    
     
     public function buscar()
     {
@@ -120,14 +113,14 @@ class ModuloFuncionarios extends Component
     
     public function resetarCampos()
     {
-        $this->reset(['nome', 'email', 'telefone', 'cargo', 'data_nascimento', 'path_foto', 'funcionarioId']);
+        $this->reset(['nome', 'email', 'telefone', 'cargo', 'data_nascimento', 'path_foto', 'password']);
     }
 
   
 
     public function render()
     {
-        $funcionarios = Funcionario::where('nome', 'like', '%' . $this->nome_funcionario . '%')->paginate($this->perPage); 
+        $funcionarios = User::where('name', 'like', '%' . $this->nome_funcionario . '%')->paginate($this->perPage); 
         
         return view('livewire.funcionarios.modulofuncionarios', ['funcionarios' => $funcionarios,]);
     }

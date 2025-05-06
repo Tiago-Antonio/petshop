@@ -12,7 +12,6 @@ class Header extends Component
 
     public function render()
     {
-        $this->lista = ['uva','maçã','pera', 'choco'];
         return view('livewire.components.header.header');
     }
 }
