@@ -11,6 +11,7 @@ class Client extends Model
         'email',
         'phone',
         'address',
-        'active',               
+        'active', 
+        'photo_path',              
     ];
 }
