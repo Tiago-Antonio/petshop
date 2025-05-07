@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Livewire\Errors\Error404;
 
 
 Route::middleware('auth')->group(function () {
@@ -20,7 +21,7 @@ Route::get('/login', \App\Http\Livewire\Login\Login::class)->middleware('guest')
 
 
 // Erro
-Route::get('/{any}', \App\Http\Livewire\Errors\Error404::class)->where('any', '.*');
+Route::fallback(Error404::class);
 
 
 
