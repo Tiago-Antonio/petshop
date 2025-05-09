@@ -72,6 +72,9 @@ class Clientes extends Component
         $this->telefone = $cliente->phone;
         $this->foto = $cliente->photo_path;
         $this->endereco = $cliente->address;
+        $this->show = true;
+
+
     
     }
 
@@ -107,6 +110,14 @@ class Clientes extends Component
         $this->confirmando = false;
     }
     
+    public function abrirModelAdicionar(){
+        $this->show = true;
+    }
+    public function fecharModelAdicionar(){
+        $this->resetarCampos();
+
+    }
+
 
     public function render()
     {
@@ -116,7 +127,7 @@ class Clientes extends Component
             $query->where('name', 'like', '%' . $this->nome_cliente . '%');
         }
 
-        $clientesPaginados = $query->paginate($this->perPage);
+        $clientesPaginados = $query->paginate(5);
 
         return view('livewire.clientes.clientes', [
             'clientes' => $clientesPaginados
