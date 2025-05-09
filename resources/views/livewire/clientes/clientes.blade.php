@@ -5,10 +5,10 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Clientes</h1>
         <div class="col-span-4 grid grid-cols-4 gap-4">
             <div  class="relative w-full col-span-1 ">
-                <input type="text" wire:model.debounce.100="nome_funcionario" placeholder="Pesquisar" class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
-                <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <input type="text" wire:model.live.debounce.500ms="nomeCliente" placeholder="Pesquisar" class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
+                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
-                </button>
+                </div>
             </div>
             {{-- Antiga paginação --}}
             {{-- <div class=" col-span-2 flex justify-center ">
@@ -107,7 +107,7 @@
                     @foreach ($clientes as $item)
                         <tr class="hover:bg-blue-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap flex items-center gap-3">
-                                <img src="{{ $item['photo_path'] }}" alt="Clientes" class="w-12 h-12 rounded-full object-cover object-top">
+                                <img src="{{ asset('storage/' . $item->photo_path) }}" alt="Clientes" class="w-12 h-12 rounded-full object-cover object-top">
                                 <span>{{ $item['name'] }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $item['email'] }}</td>

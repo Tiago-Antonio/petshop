@@ -19,7 +19,7 @@ class ClientsSeeder extends Seeder
             'email' => 'CamilaS@example.com',
             'phone' => '9873124321',
             'address' => 'Avenue A, 111',
-            'photo_path' => 'img/clientes/perfil.webp'
+            'photo_path' => 'clientes/perfil.webp'
         ]); 
 
         Client::create([
@@ -27,7 +27,7 @@ class ClientsSeeder extends Seeder
             'email' => 'jane@example.com',
             'phone' => '987654321',
             'address' => 'Avenue B, 456',
-            'photo_path' => 'img/clientes/perfil.webp'
+            'photo_path' => 'clientes/perfil.webp'
         ]); 
     }
 }

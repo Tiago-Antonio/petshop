@@ -6,49 +6,79 @@ use Livewire\Component;
 use App\Models\Client;
 use App\Models\User;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class Clientes extends Component
 {
     use WithPagination;
+    use WithFileUploads;
+
+
     public $cliente;
     public $nome;
     public $email;
     public $telefone;
     public $endereco;
-    public $foto;
+    public $photo_path;
     public $query = [];
     public $confirmando = false;
     public $clienteId = null; 
     public $clientesPaginados;
-    public $nome_cliente = '';
     public $show = false;
     public $perPage = 6; 
+
+    public $nomeCliente;
+    // Buscar
 
 
     public function CadastrarCliente()
     {
+        $this->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email',
+            'telefone' => 'required|string',
+            'endereco' => 'required|string',
+            'photo_path' => 'nullable|image|max:2048', 
+        ]);
+
         try {
             if ($this->clienteId) {
                 $cliente = Client::findOrFail($this->clienteId);
 
-                $cliente->update([
+                // Atualiza os dados
+                $dados = [
                     'name' => $this->nome,
                     'email' => $this->email,
                     'phone' => $this->telefone,
                     'address' => $this->endereco,
-                    'photo_path' => $this->foto,
-                ]);
+                ];
+
+               
+                if ($this->photo_path) {
+                    
+                    if ($cliente->photo_path) {
+                        Storage::disk('public')->delete($cliente->photo_path);
+                    }
+                    $dados['photo_path'] = $this->photo_path->store('clientes', 'public');
+                }
+                $cliente->update($dados);
 
                 session()->flash('success', 'Cliente atualizado com sucesso!');
             } else {
-                Client::create([
+                // Novo Cadastro
+                $dados = [
                     'name' => $this->nome,
                     'email' => $this->email,
                     'phone' => $this->telefone,
                     'address' => $this->endereco,
-                    'photo_path' => $this->foto,
-                   
-                ]);
+                ];
+
+                if ($this->photo_path) {
+                    $dados['photo_path'] = $this->photo_path->store('clientes', 'public');
+                }
+
+                Client::create($dados);
 
                 session()->flash('success', 'Cliente cadastrado com sucesso!');
             }
@@ -56,8 +86,9 @@ class Clientes extends Component
             $this->resetarCampos();
 
         } catch (\Exception $e) {
+
             session()->flash('error', 'Erro ao salvar cliente.');
-            dd($e->getMessage());
+            dd($e->getMessage()); 
         }
     }
 
@@ -70,12 +101,11 @@ class Clientes extends Component
         $this->nome = $cliente->name;
         $this->email = $cliente->email;
         $this->telefone = $cliente->phone;
-        $this->foto = $cliente->photo_path;
+        $this->imagemAtual = $cliente->photo_path;
+        $this->photo_path = null;
+        
         $this->endereco = $cliente->address;
         $this->show = true;
-
-
-    
     }
 
     public function updatingPage()
@@ -91,7 +121,7 @@ class Clientes extends Component
         $this->email = '';
         $this->telefone = '';
         $this->endereco = '';
-        $this->foto = '';
+        $this->photo_path = '';
         $this->show = false;
         $this->resetErrorBag();
     }
@@ -118,13 +148,18 @@ class Clientes extends Component
 
     }
 
+    public function updatednomeCliente(){
+        $this->resetPage();
+    }
+
 
     public function render()
     {
+        
         $query = Client::query();
 
-        if (!empty($this->nome_cliente)) {
-            $query->where('name', 'like', '%' . $this->nome_cliente . '%');
+        if (!empty($this->nomeCliente)) {
+            $query->where('name', 'like', '%' . $this->nomeCliente . '%');
         }
 
         $clientesPaginados = $query->paginate(5);
