@@ -107,7 +107,7 @@
                     @foreach ($clientes as $item)
                         <tr class="hover:bg-blue-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap flex items-center gap-3">
-                                <img src="{{ Storage::url($item->photo_path) }}" alt="Clientes" class="w-12 h-12 rounded-full object-cover object-top">
+                                <img src="{{ asset('storage/' . $item->photo_path) }}" alt="Clientes" class="w-12 h-12 rounded-full object-cover object-top">
                                 <span>{{ $item['name'] }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $item['email'] }}</td>
