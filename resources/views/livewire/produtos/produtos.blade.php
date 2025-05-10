@@ -193,13 +193,13 @@
                     
 
                     {{-- Imagem --}}
-                    <div class="p-4 flex flex-col items-center">
+                    <div class="p-4 flex flex-col items-center relative h-full">
                         <img src="{{ asset ($item['photo_path']) }}" alt="Produto"
                             class="w-32 h-32 rounded-full object-cover border border-gray-200 mb-4">
                         <h3 class="text-lg font-semibold text-gray-800 text-center mb-1">{{ $item['name'] }}</h3>
-                        <p class="text-sm text-gray-500 text-center mb-2">{{ $item['description'] ?? 'Descrição indisponível' }}</p>
+                        <p class="text-sm text-gray-500 text-center mb-2 max-h-10 min-h-10 overflow-auto">{{ $item['description'] ?? 'Descrição indisponível' }}</p>
                         <span class="text-xl font-bold text-blue-600 mb-4">R$ {{ number_format($item['sale_price'], 2, ',', '.') }}</span>
-                        <button wire:click='adicionarCarrinho({{ $item->id }})' class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full transition text-sm shadow-sm">
+                        <button wire:click='adicionarCarrinho({{ $item->id }})' class=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full transition text-sm shadow-sm">
                             Comprar
                         </button>
                     </div>
