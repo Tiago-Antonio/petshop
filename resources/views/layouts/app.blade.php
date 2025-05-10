@@ -24,7 +24,7 @@
         
         @livewireStyles
     </head>
-    <body class=" ">
+    <body class=" font-poppins">
         
         
         {{ $slot }}

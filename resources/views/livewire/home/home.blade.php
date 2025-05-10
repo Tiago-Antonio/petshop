@@ -69,20 +69,26 @@
                 <div class="relative h-full">
                     <canvas id="myChart" style="width: 100%; height: 100%;"></canvas>
                 </div>
-                <script>
-                    const ctx = document.getElementById('myChart');
-            
+
+               <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+
+                    const labels = @json($query_produtos->pluck('name'));
+                    const data = @json($query_produtos->pluck('current_stock'));
                     new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['Funcionários', 'Clientes', 'Fornecedores', 'Produtos'],
+                            labels: labels,
                             datasets: [{
-                                label: 'Qtd atual',
-                                data: [{{$this->usuarios_count}}, {{$this->clientes_count}}, {{$this->suppliers_count}}, {{$this->produtos_count}}],
+                                label: 'Estoque Atual',
+                                data: data,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1
                             }]
                         },
                         options: {
+                            responsive: true,
                             scales: {
                                 y: {
                                     beginAtZero: true

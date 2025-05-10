@@ -20,6 +20,7 @@ class Home extends Component
     public $usuario_name;
     public $clientes_adicionados_hoje;
     public $ultimos_clientes;
+    public $query_produtos;
 
     public function render()
     {
@@ -32,6 +33,12 @@ class Home extends Component
         $this->produtos_count = Product::count();
         $this->clientes_count = Client::count();
         $this->suppliers_count = Supplier::count();
+
+
+        $this->query_produtos = Product::selectRaw('LEFT(name, 8) as name, current_stock')
+            ->orderBy('id', 'asc')
+            ->get();
+
         
         return view('livewire.home.home');
     }
