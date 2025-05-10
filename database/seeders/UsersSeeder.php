@@ -43,6 +43,7 @@ class UsersSeeder extends Seeder
             'photo_path'=> '/img/funcionarios/perfil.webp',
             'birth_date'=> '1999-10-12',
             'password' => Hash::make('123'),
+            'admin'=>true,
         ]);
         
         User::create([
