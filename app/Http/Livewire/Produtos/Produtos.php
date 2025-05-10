@@ -4,9 +4,12 @@ namespace App\Http\Livewire\Produtos;
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\StockEntry;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -24,6 +27,65 @@ class Produtos extends Component
     public $quantity;
     public $unit_price;
     public $entry_date;
+
+    //Carrinho
+    public $carrinho = [];
+
+
+    public function adicionarCarrinho($product_id){
+        $produto = Product::find($product_id);
+       
+        if ($produto) {    
+            $this->carrinho[] = [
+                'id' => $produto->id,
+                'nome' => $produto->name,
+                'preco' => $produto->sale_price,
+                'imagem' => $produto->photo_path,
+                'quantidade' => $produto->quantity,
+            ];   
+        }
+    }
+
+    public function removerCarrinho($product_id){
+    
+       $this->carrinho = array_filter($this->carrinho, function ($item) use ($product_id) {
+            return $item['id'] != $product_id;
+        });
+    }
+
+    public function finalizarPedido()
+    {
+        if (count($this->carrinho) === 0) {
+            session()->flash('erroPedido', 'Seu carrinho está vazio!');
+            return;
+        } else{
+            try{
+
+                DB::beginTransaction();
+
+                $pedido = Order::create([
+                    'client_id' => 1, //criar um dropdown para selecionar o cliente
+                    'status' => 'pendente',
+                    'data' => now(),
+                ]);
+        
+                foreach ($this->carrinho as $produto) {
+                    OrderItem::create([
+                        'order_id' => $pedido->id,
+                        'product_id' => $produto['id'],
+                    ]);
+                }
+                 DB::commit();
+                $this->carrinho = [];
+                session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
+            } catch(\Exception $e){
+                DB::rollBack();
+                session()->flash('erroPedido', 'Falha no pedido!');
+            }
+        }
+
+    }
+
     
     
 
