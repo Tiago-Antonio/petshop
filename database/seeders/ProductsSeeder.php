@@ -13,9 +13,12 @@ class ProductsSeeder extends Seeder
      */
     public function run(): void
     {
+        \App\Models\Product::factory()->count(10)->create();
+
         Product::create([
+            'name' => 'Pote de Ração Educativa',
             'description' => 'Ração whiskas',
-            'photo_path' => 'images/products/racao_whiskas_gato.webp',
+            'photo_path' => 'img/products/racao_whiskas_gato.webp',
             'purchase_price' => 80.00,
             'sale_price' => 120.00,
             'current_stock' => 50,
@@ -23,8 +26,9 @@ class ProductsSeeder extends Seeder
         ]);
         
         Product::create([
+            'name' => 'Ração whiskas',
             'description' => 'Pote de Ração Educativa',
-            'photo_path' => 'images/products/pote_racao_educativo.webp',
+            'photo_path' => 'img/products/pote_racao_educativo.webp',
             'purchase_price' => 15.50,
             'sale_price' => 29.90,
             'current_stock' => 30,
@@ -32,12 +36,14 @@ class ProductsSeeder extends Seeder
         ]);
         
         Product::create([
+            'name' => 'Ração Golden',
             'description' => 'Ração Golden',
-            'photo_path' => 'images/products/racao_golden_special_adulto.webp',
+            'photo_path' => 'img/products/racao_golden_special_adulto.webp',
             'purchase_price' => 12.75,
             'sale_price' => 22.50,
             'current_stock' => 20,
             'min_stock' => 3,
         ]);
+        
     }
 }
