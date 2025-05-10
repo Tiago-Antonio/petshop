@@ -6,12 +6,13 @@ use Livewire\Component;
 use App\Models\Product;
 use App\Models\StockEntry;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 
 
 
 class Produtos extends Component
 {
-
+    use WithFileUploads;
     use WithPagination;
     public $nomeProduto;
     public $query;
