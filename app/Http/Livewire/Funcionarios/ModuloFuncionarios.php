@@ -5,12 +5,14 @@ namespace App\Http\Livewire\Funcionarios;
 use Livewire\Component;
 use App\Models\User;
 use Livewire\WithPagination;
+use Illuminate\Pagination\Paginator;
+
 
 class ModuloFuncionarios extends Component
 {
     use WithPagination;
 
-    public $nome_funcionario = '';
+    public $nomeFuncionario = '';
     public $perPage = 8; 
     public $nome;
     public $data_nascimento;
@@ -23,21 +25,16 @@ class ModuloFuncionarios extends Component
     public $confirmando = false;
 
     public $show = false;
-    public $showOpcoes = false;
+    public $abrirOpcoes = false;
+    public $modalAbertoParaId = null;
 
 
-    public function abrirModal()
-    {
-        $this->resetarCampos();
-        $this->funcionarioId = null;
-        $this->show = !$this->show;
-    }
+   
 
     public function editarFuncionario($id)
     {
-      
+        
         $funcionario = User::findOrFail($id);
-
         $this->funcionarioId = $id;
         $this->nome = $funcionario->name;
         $this->email = $funcionario->email;
@@ -46,7 +43,10 @@ class ModuloFuncionarios extends Component
         $this->data_nascimento = $funcionario->birth_date;
         $this->path_foto = $funcionario->photo_path;
         $this->password = '';
-    
+        
+        $this->show = true;
+        $this->modalAbertoParaId = false;
+
     }
 
     
@@ -108,7 +108,7 @@ class ModuloFuncionarios extends Component
     
     public function buscar()
     {
-        $this->nome_funcionario = $this->nome_funcionario;
+        $this->nomeFuncionario = $this->nomeFuncionario;
     }
     
     public function resetarCampos()
@@ -116,11 +116,40 @@ class ModuloFuncionarios extends Component
         $this->reset(['nome', 'email', 'telefone', 'cargo', 'data_nascimento', 'path_foto', 'password']);
     }
 
+     public function updatednomeFuncionario()
+    {
+       $this->resetPage();
+    }
+
+    public function abrirModalOpcoes($id){
+
+        if ($this->modalAbertoParaId === $id) {
+        $this->modalAbertoParaId = null;
+        } else {
+            $this->modalAbertoParaId = $id;
+        }
+
+        
+    }
+     public function abrirModal()
+    {
+        $this->show = true;
+    }
+
+      public function fecharModal()
+    {
+        $this->resetErrorBag();
+        $this->resetarCampos();
+        $this->funcionarioId = null;
+        $this->show = false; 
+           
+    }
   
 
     public function render()
     {
-        $funcionarios = User::where('name', 'like', '%' . $this->nome_funcionario . '%')->paginate($this->perPage); 
+        Paginator::defaultView('pagination::tailwind');
+        $funcionarios = User::where('name', 'like', '%' . $this->nomeFuncionario . '%')->paginate(8); 
         
         return view('livewire.funcionarios.modulofuncionarios', ['funcionarios' => $funcionarios,]);
     }
