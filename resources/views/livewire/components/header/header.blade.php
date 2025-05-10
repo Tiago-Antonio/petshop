@@ -9,15 +9,19 @@
             </div>
             <nav class="hidden md:flex space-x-6">
                 <a href="{{ route('home') }}" class="text-gray-600 hover:text-blue-600 transition">Home</a>
-                <a href="{{ route('funcionarios') }}" class="text-gray-600 hover:text-blue-600 transition">Funcionários</a>
+
+                {{-- Só é exibido para os Admin --}}
+                @if(auth()->user()->admin == 1)
+                    <a href="{{ route('funcionarios') }}" class="text-gray-600 hover:text-blue-600 transition">Funcionários</a>
+                @endif
                 <a href="{{ route('clientes') }}" class="text-gray-600 hover:text-blue-600 transition">Clientes</a>
+                <a href="{{ route('produtos') }}" class="text-gray-600 hover:text-blue-600 transition">Produtos</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="flex items-center text-gray-600 hover:text-red-600">
                         <i class="fas fa-sign-out-alt mr-1"></i> Sair
                     </button>
                 </form> 
-
             </nav>
         </div>
     </div>

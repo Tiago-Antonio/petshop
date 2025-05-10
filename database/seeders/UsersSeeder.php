@@ -26,23 +26,23 @@ class UsersSeeder extends Seeder
             'admin'=>true,
         ]);
         User::create([
-            'name'     => 'João Silva',
-            'email'    => 'joao.silva@example.com',
+            'name'     => 'João usuario',
+            'email'    => 'usuario@usuario',
             'phone'    => '123456789',
             'role'     => 'Desenvolvedor',
             'photo_path'=> '/img/funcionarios/perfil.webp',
             'birth_date'=> '1999-10-12',
-            'password' => Hash::make('123pet'),
+            'password' => Hash::make('123'),
         ]);
         
         User::create([
-            'name'     => 'Silva',
-            'email'    => 'silva@example.com',
+            'name'     => 'Admin Silva',
+            'email'    => 'admin@admin',
             'phone'    => '837467653',
             'role'     => 'Auxiliar',
             'photo_path'=> '/img/funcionarios/perfil.webp',
             'birth_date'=> '1999-10-12',
-            'password' => Hash::make('petshop'),
+            'password' => Hash::make('123'),
         ]);
         
         User::create([

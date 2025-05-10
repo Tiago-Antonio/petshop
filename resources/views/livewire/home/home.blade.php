@@ -1,47 +1,58 @@
 
-<section class="h-screen w-screen bg-blue-100">
+<section class="h-screen min-h-full w-screen bg-blue-100">
     <livewire:components.header.header />
-    <div class="grid grid-rows-5 2xl:grid-rows-3 h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 2xl:gap-4 py-4 px-8">
+    <div class="grid md:grid-rows-5 2xl:grid-rows-3 h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 2xl:gap-4 py-4 px-8">
         
         <!-- Primeira linha -->
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="h-full grid place-items-center">
                 <h1 class=" text-lg 2xl:text-2xl font-bold text-gray-800">{{ $this->usuario_name }}, Bem vindo a sua ferramenta de Gestão</h1>
             </div>
-            <div class="h-full grid grid-cols-4 gap-4">
+            <div class="h-full grid md:grid-cols-4 gap-4">
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-allh-full bg-white rounded-3xl grid place-items-center p-1 2xl:p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                    <div class="flex gap-2 2xl:grid place-items-center">
-                        <i class="fas fa-users 2xl:text-4xl 2xl:mb-2"></i>
-                        <p class="2xl:text-lg font-medium">Funcionários</p>
-                    </div>
-                    <p class="text-2xl font-bold">{{$this->usuarios_count}}</p>
+                    <a href="{{route('funcionarios')}}" class="grid place-items-center">
+
+                    
+                        <div class="flex gap-2 2xl:grid place-items-center">
+                            <i class="fas fa-users 2xl:text-4xl 2xl:mb-2"></i>
+                            <p class="2xl:text-lg font-medium">Funcionários</p>
+                        </div>
+                        <p class="text-2xl font-bold">{{$this->usuarios_count}}</p>
+                    </a>
                 </div>
+                
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-allh-full bg-white rounded-3xl grid place-items-center 2xl:p-4 bg-gradient-to-r from-green-400 to-teal-500 text-white">
-                    <div class="flex gap-2 2xl:grid place-items-center">
-                        <i class="fas fa-user-friends 2xl:text-4xl 2xl:mb-2"></i> 
-                        <p class="2xl:text-lg font-medium">Clientes</p>
-                    </div>
-                    <p class="text-2xl font-bold">{{$this->clientes_count}}</p>
+                    <a href="{{route('clientes')}}" class="grid place-items-center">
+                        <div class="flex gap-2 2xl:grid place-items-center">
+                            <i class="fas fa-user-friends 2xl:text-4xl 2xl:mb-2"></i> 
+                            <p class="2xl:text-lg font-medium">Clientes</p>
+                        </div>
+                        <p class="text-2xl font-bold">{{$this->clientes_count}}</p>
+                    </a>
                 </div>
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center 2xl:p-4  bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                    <div class="flex gap-2 2xl:grid place-items-center">
-                        <i class="fas fa-truck 2xl:text-4xl 2xl:mb-2"></i>
-                        <p class="2xl:text-lg font-medium">Fornecedores</p>
-                    </div>
-                    <p class="text-2xl font-bold">{{$this->suppliers_count}}</p>
+                    <a href="{{route('clientes')}}" class="grid place-items-center">
+                        <div class="flex gap-2 2xl:grid place-items-center">
+                            <i class="fas fa-truck 2xl:text-4xl 2xl:mb-2"></i>
+                            <p class="2xl:text-lg font-medium">Fornecedores</p>
+                        </div>
+                        <p class="text-2xl font-bold">{{$this->suppliers_count}}</p>
+                    </a>
                 </div>
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center 2xl:p-4 bg-gradient-to-r from-pink-500 to-red-500 text-white">
-                    <div class="flex gap-2 2xl:grid place-items-center">
-                        <i class="fas fa-box 2xl:text-4xl 2xl:mb-2"></i>
-                        <p class="2xl:text-lg font-medium">Produtos</p>
-                    </div>
-                    <p class="text-2xl font-bold">{{$this->produtos_count}}</p>
+                    <a href="{{route('produtos')}}" class="grid place-items-center">
+                        <div class="flex gap-2 2xl:grid place-items-center">
+                            <i class="fas fa-box 2xl:text-4xl 2xl:mb-2"></i>
+                            <p class="2xl:text-lg font-medium">Produtos</p>
+                        </div>
+                        <p class="text-2xl font-bold">{{$this->produtos_count}}</p>
+                    </a>
                 </div>
             </div>
         </div>
         
         <!-- Segunda linha -->
-        <div class="h-full row-span-2 2xl:row-span-1 grid grid-cols-4 gap-4">
+        <div class="h-full row-span-2 2xl:row-span-1 grid md:grid-cols-4 gap-4">
             <div class="grid h-full gap-2">
                 <div class="h-full shadow-lg bg-white rounded-3xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
                     <i class="fas fa-user-circle text-3xl 2xl:mb-2"></i>
@@ -54,7 +65,7 @@
                     <p class=" text-xl 2xl:text-3xl font-bold">{{$this->clientes_adicionados_hoje}}</p>
                 </div>
             </div>
-            <div class="h-full flex-1 col-span-3 shadow-md bg-white rounded-3xl 2xl:p-4">
+            <div class="h-full flex-1 md:col-span-3 shadow-md bg-white rounded-3xl 2xl:p-4">
                 <div class="relative h-full">
                     <canvas id="myChart" style="width: 100%; height: 100%;"></canvas>
                 </div>
