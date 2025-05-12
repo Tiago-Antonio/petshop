@@ -9,8 +9,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/header', \App\Http\Livewire\Components\Header\Header::class)->name('header');
     Route::get('/clientes', \App\Http\Livewire\Clientes\Clientes::class)->name('clientes');
     Route::get('/produtos', \App\Http\Livewire\Produtos\Produtos::class)->name('produtos');
-
+    Route::get('/supplier', \App\Http\Livewire\Supplier\SupplierModule::class)->name('supplier'); 
 });
+
 
 Route::middleware(['admin'])->group(function () {
     Route::get('/funcionarios', \App\Http\Livewire\Funcionarios\ModuloFuncionarios::class)->name('funcionarios');
