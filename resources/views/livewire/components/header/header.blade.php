@@ -7,30 +7,34 @@
                 </a>
             </div>
             <nav class="hidden md:flex space-x-6">
-                <a href="{{ route('home') }}" 
-                   :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'home', 'text-gray-600': activePage !== 'home' }" 
-                   class="hover:text-blue-600 transition font-semibold pb-1">
+                <a href="{{ route('home') }}"
+                    
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'home', 'text-gray-600': activePage !== 'home' }" 
+                    class="hover:text-blue-600 transition font-semibold pb-1">
                     Home
                 </a>
 
                 {{-- Só é exibido para os Admin --}}
                 @if(auth()->user()->admin == 1)
-                    <a href="{{ route('funcionarios') }}" 
-                       :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'funcionarios', 'text-gray-600': activePage !== 'funcionarios' }" 
-                       class="hover:text-blue-600 transition font-semibold pb-1">
+                    <a href="{{ route('funcionarios') }}"
+                        wire:navigate 
+                        :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'funcionarios', 'text-gray-600': activePage !== 'funcionarios' }" 
+                        class="hover:text-blue-600 transition font-semibold pb-1">
                         Funcionários
                     </a>
                 @endif
 
                 <a href="{{ route('clientes') }}" 
-                   :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'clientes', 'text-gray-600': activePage !== 'clientes' }" 
-                   class="hover:text-blue-600 transition font-semibold pb-1">
+                    wire:navigate
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'clientes', 'text-gray-600': activePage !== 'clientes' }" 
+                    class="hover:text-blue-600 transition font-semibold pb-1">
                     Clientes
                 </a>
 
                 <a href="{{ route('produtos') }}" 
-                   :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'produtos', 'text-gray-600': activePage !== 'produtos' }" 
-                   class="hover:text-blue-600 transition font-semibold pb-1">
+                    wire:navigate
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'produtos', 'text-gray-600': activePage !== 'produtos' }" 
+                    class="hover:text-blue-600 transition font-semibold pb-1">
                     Produtos
                 </a>
 

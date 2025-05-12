@@ -10,9 +10,7 @@
             </div>
             <div class="h-full grid md:grid-cols-4 gap-4">
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-allh-full bg-white rounded-3xl grid place-items-center p-1 2xl:p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                    <a href="{{route('funcionarios')}}" class="grid place-items-center">
-
-                    
+                    <a href="{{route('funcionarios')}}" wire:navigate class="grid place-items-center">
                         <div class="flex gap-2 2xl:grid place-items-center">
                             <i class="fas fa-users 2xl:text-4xl 2xl:mb-2"></i>
                             <p class="2xl:text-lg font-medium">Funcionários</p>
@@ -22,7 +20,7 @@
                 </div>
                 
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-allh-full bg-white rounded-3xl grid place-items-center 2xl:p-4 bg-gradient-to-r from-green-400 to-teal-500 text-white">
-                    <a href="{{route('clientes')}}" class="grid place-items-center">
+                    <a href="{{route('clientes')}}" wire:navigate class="grid place-items-center">
                         <div class="flex gap-2 2xl:grid place-items-center">
                             <i class="fas fa-user-friends 2xl:text-4xl 2xl:mb-2"></i> 
                             <p class="2xl:text-lg font-medium">Clientes</p>
@@ -31,7 +29,7 @@
                     </a>
                 </div>
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center 2xl:p-4  bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                    <a href="{{route('clientes')}}" class="grid place-items-center">
+                    <a href="{{route('clientes')}}" wire:navigate class="grid place-items-center">
                         <div class="flex gap-2 2xl:grid place-items-center">
                             <i class="fas fa-truck 2xl:text-4xl 2xl:mb-2"></i>
                             <p class="2xl:text-lg font-medium">Fornecedores</p>
@@ -40,7 +38,7 @@
                     </a>
                 </div>
                 <div class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center 2xl:p-4 bg-gradient-to-r from-pink-500 to-red-500 text-white">
-                    <a href="{{route('produtos')}}" class="grid place-items-center">
+                    <a href="{{route('produtos')}}" wire:navigate class="grid place-items-center">
                         <div class="flex gap-2 2xl:grid place-items-center">
                             <i class="fas fa-box 2xl:text-4xl 2xl:mb-2"></i>
                             <p class="2xl:text-lg font-medium">Produtos</p>
