@@ -20,6 +20,11 @@
                        class="hover:text-blue-600 transition font-semibold pb-1">
                         Funcionários
                     </a>
+                    <a href="{{ route('suppliers') }}" 
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'funcionarios', 'text-gray-600': activePage !== 'funcionarios' }" 
+                    class="hover:text-blue-600 transition font-semibold pb-1">
+                     Fornecedores
+                 </a>
                 @endif
 
                 <a href="{{ route('clientes') }}" 

@@ -8,24 +8,53 @@
                 <input type="text" class="w-1/3 px-4 py-2 rounded-lg shadow-md text-gray-800" placeholder="Pesquisar fornecedores..." />
                 
                 <!-- Botão Adicionar -->
-                <button class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all">Adicionar Fornecedor</button>
-                <button
-                wire:click="deleteSelected"
-                class="px-6 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-all"
-                @disabled(!is_array($selectedSuppliers) || count($selectedSuppliers) === 0)
-                >Deletar Selecionados
+                <button class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                    Adicionar Fornecedor
                 </button>
-            
-                <div class=" col-span-4 flex justify-between">
+                
+                <!-- Botão Deletar -->
+                <button type="button" wire:click='openModalSupplierDelete' class="px-6 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-all">
+                    Excluir
+                </button>
+
+                <!-- Modal de confirmação de exclusão de fornecedores selecionados -->
+                @if($show == true)
+                <div x-transition @click.away="" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div class="bg-white rounded-lg p-6 shadow-xl">
+                        <h2 class="text-lg font-semibold text-gray-800">Tem certeza?</h2>
+                        <p class="text-sm text-gray-600 mb-6">Essa ação não poderá ser desfeita.</p>
+                        <div class="flex justify-end gap-4">
+                            <button wire:click='closeModalSupplierDelete' class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancelar</button>
+                            <button wire:click='deleteSelectedSuppliers' class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif    
+                <!-- Mensagem de sucesso -->
+                @if (session()->has('message'))
+                    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                        {{ session('message') }}
+                    </div>
+                @endif
+                
+                <!-- Mensagem de erro -->
+                @if (session()->has('error'))
+                    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                
+                <div class="col-span-4 flex justify-between">
                     <button wire:click="previousPage" class="px-4 py-2 bg-gray-300 rounded-md mr-2"><i class="fa-solid fa-arrow-left"></i></button>
                     <button wire:click="nextPage" class="px-4 py-2 bg-gray-300 rounded-md"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
-
             </div>
         </div>
 
         <!-- Segunda linha -->
-        <div class="h-full row-span-2 2x4:row-span-1 grid grid-cols-1 gap-4 overflow-auto">
+        <div class="h-full row-span-2 2xl:row-span-1 grid grid-cols-1 gap-4 overflow-auto">
             <div class="overflow-x-auto bg-white shadow-lg rounded-3xl p-4">
                 <table class="min-w-full table-auto text-left border-separate border-spacing-y-2">
                     <thead class="bg-gray-100">
@@ -38,21 +67,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <!--TESTE DO BODY DA TABLE-->
-                    @foreach ($suppliers as $item)
-                        <tr class="bg-white shadow rounded-xl">
-                            <td class="px-4 py-2 text-gray-800">
-                                <form action="#">
-                                    <input type="checkbox" id="checkBox" name="checkBoxFornecedor" value="check">
-                                </form>
-                            </td>
-                            <td class="px-4 py-2 text-gray-800">{{$item['name']}}</td>
-                            <td class="px-4 py-2 text-gray-800">{{$item['email']}}</td>
-                            <td class="px-4 py-2 text-gray-800">{{$item['phone']}}</td>
-                            <td class="px-4 py-2 text-gray-500 text-sm">{{$item['address']}}</td>
-                        </tr>
-                    @endforeach
-                    <!--TESTE DO BODY DA TABLE-->
+                        @foreach ($suppliers as $item)
+                            <tr class="bg-white shadow rounded-xl">
+                                <td class="px-4 py-2 text-gray-800">
+                                    <form action="#">
+                                        <input type="checkbox" wire:model="selectedSuppliers" value="{{ $item['id'] }}">
+                                    </form>
+                                </td>
+                                <td class="px-4 py-2 text-gray-800">{{$item['name']}}</td>
+                                <td class="px-4 py-2 text-gray-800">{{$item['email']}}</td>
+                                <td class="px-4 py-2 text-gray-800">{{$item['phone']}}</td>
+                                <td class="px-4 py-2 text-gray-500 text-sm">{{$item['address']}}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

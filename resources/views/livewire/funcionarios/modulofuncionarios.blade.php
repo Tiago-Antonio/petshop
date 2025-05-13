@@ -141,7 +141,7 @@
 
                         <!-- Modal de Confirmação -->
                         @if($confirmando == true)
-                        <div  x-transition @click.away="confirmando = false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div x-transition @click.away="confirmando = false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                             <div class="bg-white rounded-lg p-6 shadow-xl">
                                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Tem certeza?</h2>
                                 <p class="text-sm text-gray-600 mb-6">Essa ação não poderá ser desfeita.</p>
