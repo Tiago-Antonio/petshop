@@ -21,6 +21,7 @@ class Home extends Component
     public $clientes_adicionados_hoje;
     public $ultimos_clientes;
     public $query_produtos;
+    public $min_produtos;
 
     public function render()
     {
@@ -38,7 +39,8 @@ class Home extends Component
         $this->query_produtos = Product::selectRaw('LEFT(name, 8) as name, current_stock')
             ->orderBy('id', 'asc')
             ->get();
-
+        
+        $this->min_produtos = Product::whereColumn('current_stock', '<', 'min_stock')->get();
         
         return view('livewire.home.home');
     }

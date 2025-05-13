@@ -49,10 +49,20 @@ class ModuloFuncionarios extends Component
 
     }
 
+
+    public function rules(){
+        return [
+            'nome'=>'required',
+            'password'=>'required',
+            'email'=>'required'
+        ];
+    }
+
     
 
     public function CadastrarFuncionario()
     {
+        $this->validate();
         try {
             if ($this->funcionarioId) {
                 $funcionario = User::findOrFail($this->funcionarioId);
@@ -82,7 +92,7 @@ class ModuloFuncionarios extends Component
                 session()->flash('success', 'Funcionário cadastrado com sucesso!');
             }
 
-            $this->resetarCampos();
+           
 
         } catch (\Exception $e) {
             session()->flash('error', 'Erro ao salvar funcionário.');
@@ -113,7 +123,7 @@ class ModuloFuncionarios extends Component
     
     public function resetarCampos()
     {
-        $this->reset(['nome', 'email', 'telefone', 'cargo', 'data_nascimento', 'path_foto', 'password']);
+        $this->reset(['nome', 'email', 'telefone', 'cargo', 'data_nascimento', 'path_foto', 'password', 'funcionarioId']);
     }
 
      public function updatednomeFuncionario()
@@ -148,8 +158,7 @@ class ModuloFuncionarios extends Component
 
     public function render()
     {
-        Paginator::defaultView('pagination::tailwind');
-        $funcionarios = User::where('name', 'like', '%' . $this->nomeFuncionario . '%')->paginate(8); 
+        $funcionarios = User::where('name', 'like', '%'.$this->nomeFuncionario.'%')->paginate(8); 
         
         return view('livewire.funcionarios.modulofuncionarios', ['funcionarios' => $funcionarios,]);
     }

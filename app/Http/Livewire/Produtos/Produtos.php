@@ -64,7 +64,7 @@ class Produtos extends Component
                 DB::beginTransaction();
 
                 $pedido = Order::create([
-                    'client_id' => 1, //criar um dropdown para selecionar o cliente
+                    'client_id' => 1, //Preciso criar um dropdown para selecionar um cliente 
                     'status' => 'pendente',
                     'data' => now(),
                 ]);
@@ -85,10 +85,6 @@ class Produtos extends Component
         }
 
     }
-
-    
-    
-
 
     public function mount(){
         $this->dropdownProdutos = Product::orderBy('id')->get();
@@ -137,6 +133,7 @@ class Produtos extends Component
     }
 
     public function fecharModalProduto(){
+        $this->resetarCampos();
         $this->show = false;
     }
     

@@ -19,28 +19,33 @@ class Clientes extends Component
     public $nome;
     public $email;
     public $telefone;
+    public $imagemAtual;
     public $endereco;
     public $photo_path;
     public $query = [];
     public $confirmando = false;
-    public $clienteId = null; 
+    public $clienteId = null;
     public $clientesPaginados;
     public $show = false;
-    public $perPage = 6; 
+    public $perPage = 6;
 
     public $nomeCliente;
     // Buscar
 
 
-    public function CadastrarCliente()
-    {
-        $this->validate([
+    public function rules(){
+        return [
             'nome' => 'required|string|max:255',
             'email' => 'required|email',
             'telefone' => 'required|string',
             'endereco' => 'required|string',
-            'photo_path' => 'nullable|image|max:2048', 
-        ]);
+            'photo_path' => 'nullable|image|max:2048',
+        ];
+    }
+
+    public function CadastrarCliente()
+    {
+        $validated = $this->validate();
 
         try {
             if ($this->clienteId) {
@@ -54,9 +59,9 @@ class Clientes extends Component
                     'address' => $this->endereco,
                 ];
 
-               
+
                 if ($this->photo_path) {
-                    
+
                     if ($cliente->photo_path) {
                         Storage::disk('public')->delete($cliente->photo_path);
                     }
@@ -84,11 +89,11 @@ class Clientes extends Component
             }
 
             $this->resetarCampos();
-
+            
         } catch (\Exception $e) {
 
             session()->flash('error', 'Erro ao salvar cliente.');
-            dd($e->getMessage()); 
+            
         }
     }
 
@@ -103,7 +108,7 @@ class Clientes extends Component
         $this->telefone = $cliente->phone;
         $this->imagemAtual = $cliente->photo_path;
         $this->photo_path = null;
-        
+
         $this->endereco = $cliente->address;
         $this->show = true;
     }
@@ -129,33 +134,35 @@ class Clientes extends Component
     public function excluirCliente($id)
     {
         $cliente = Client::find($id);
-        
+
         if ($cliente) {
             $cliente->delete();
-            session()->flash('message', 'Cliente excluído com sucesso.'); 
+            session()->flash('message', 'Cliente excluído com sucesso.');
         } else {
-            session()->flash('error', 'Cliente não encontrado.');  
+            session()->flash('error', 'Cliente não encontrado.');
         }
-    
+
         $this->confirmando = false;
     }
-    
-    public function abrirModelAdicionar(){
+
+    public function abrirModelAdicionar()
+    {
         $this->show = true;
     }
-    public function fecharModelAdicionar(){
+    public function fecharModelAdicionar()
+    {
         $this->resetarCampos();
-
     }
 
-    public function updatednomeCliente(){
+    public function updatednomeCliente()
+    {
         $this->resetPage();
     }
 
 
     public function render()
     {
-        
+
         $query = Client::query();
 
         if (!empty($this->nomeCliente)) {
