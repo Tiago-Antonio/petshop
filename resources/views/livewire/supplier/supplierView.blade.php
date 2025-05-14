@@ -5,11 +5,14 @@
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <!-- Campo de pesquisa -->
-                <input 
-                type="text" 
-                class="w-full sm:w-1/3 px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500"
-                placeholder="Pesquisar fornecedores" 
-                />
+                <div  class="relative">
+                    <input 
+                    type="text" 
+                    wire:model.live.debounce.100="searchSupplierByName"
+                    placeholder="Pesquisar"
+                    class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                   
+                </div>
 
                 <div class="flex items-center gap-2">
                     <!-- Botão Adicionar -->
@@ -66,7 +69,7 @@
 
         <!-- Segunda linha -->
         <div class="h-full row-span-2 2xl:row-span-1 grid grid-cols-1 gap-4 overflow-auto">
-            <div class="overflow-x-auto bg-[#f5f5f5] shadow-lg rounded-3xl">
+            <div class="overflow-x-auto bg-[#f5f5f5] shadow-lg">
                 <table class="min-w-full table-auto text-left border-separate border-spacing-y-2">
                     <thead class="bg-[#f5f5f5]">
                         <tr>
@@ -84,7 +87,7 @@
                                 <td class="px-4 py-2 h-16 text-gray-800 text-center ">
                                     <input type="checkbox"
                                     wire:model="selectedSuppliers"
-                                    value="{{ $item['id'] }}"
+                                    value="({{ $item['id'] }})"
                                     class="w-5 h-5 accent-[#2096f2] cursor-pointer">
                                 </td>
                                 <td class="px-4 py-2 h-16 text-gray-800 align-middle">{{$item['name']}}</td>

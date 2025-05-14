@@ -15,6 +15,7 @@ class SupplierModule extends Component
     public $updated_at;
     public $selectedSuppliers = [];
     public $openModalConfirmDelete = false;
+    public $searchSupplierByName;
 
     public $show = false;
 
@@ -28,8 +29,11 @@ class SupplierModule extends Component
 
     public function render()
     {
-        $suppliers = Supplier::all();
 
+
+        $suppliers = Supplier::where('name', 'like', '%'.$this->searchSupplierByName.'%')->paginate(5);
+
+       
         return view('livewire.supplier.supplierView', [
             'suppliers' => $suppliers,
         ]);
@@ -50,9 +54,5 @@ class SupplierModule extends Component
         session()->flash('message', 'Fornecedores apagados!');
     }
 
-    // Método para atualizar a lista de fornecedores selecionados
-    public function updatedSelectedSuppliers()
-    {
 
-    }
 }
