@@ -4,9 +4,14 @@ namespace App\Http\Livewire\Supplier;
 
 use Livewire\Component;
 use App\Models\Supplier;
+use Livewire\WithPagination;
+use Illuminate\Pagination\Paginator;
 
 class SupplierModule extends Component
 {
+    
+    use WithPagination;
+
     public $name = '';
     public $phone = 8;
     public $email;
@@ -30,10 +35,8 @@ class SupplierModule extends Component
     public function render()
     {
 
+        $suppliers = Supplier::where('name', 'like', '%'.$this->searchSupplierByName.'%')->paginate(10);
 
-        $suppliers = Supplier::where('name', 'like', '%'.$this->searchSupplierByName.'%')->paginate(5);
-
-       
         return view('livewire.supplier.supplierView', [
             'suppliers' => $suppliers,
         ]);
