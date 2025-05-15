@@ -16,7 +16,7 @@
 
                 <div class="flex items-center gap-2">
                     <!-- Botão Adicionar -->
-                    <button class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                    <button type="button" wire:click='openModalCreateSupplier' class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                     
@@ -35,7 +35,7 @@
                     </button>
 
                     <!-- Modal de confirmação de exclusão de fornecedores selecionados -->
-                    @if($show == true)
+                    @if($showModalDeleteSupplier == true)
                     <div x-transition @click.away="" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div class="bg-white rounded-lg p-6 shadow-xl">
                             <h2 class="text-lg font-semibold text-gray-800">Tem certeza?</h2>
@@ -55,12 +55,65 @@
                             {{ session('message') }}
                         </div>
                     @endif
-                    
                     <!-- Mensagem de erro -->
                     @if (session()->has('error'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
                             {{ session('error') }}
                         </div>
+                    @endif
+
+                    @if($showModalCreateSupplier == true)
+                    <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0" style="background-color:rgba(0,0,0,0.6)">
+                        <form wire:submit='createSupplier' class="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-4 relative">
+
+                            <!-- FECHAR MODAL -->
+                            <div class="absolute top-3 right-3">
+                                <button type="button" wire:click='closeModalCreateSupplier' class="text-red-600 hover:text-red-800  transition-all duration-200 ease-in-out">
+                                    <i class="fa-solid fa-xmark fa-lg"></i>
+                                </button>
+                            </div>
+
+                            <!-- TITULO MODAL -->
+                            <p class="text-center font-bold text-2xl text-gray-700 mb-4">Cadastro de Fornecedor</p>
+                        
+                            <!-- NAME -->
+                            <div>
+                                <label for="nome" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
+                                <input type="text" wire:model="name" placeholder="Nome"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                        
+                            <!-- PHONE -->
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-600 mb-1">Telefone</label>
+                                <input type="text"  wire:model="phone" placeholder="(xx) xxxxx-xxxx"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                        
+                            <!-- EMAIL -->
+                            <div>
+                                <label for="email"  class="block text-sm font-medium text-gray-600 mb-1">E-mail</label>
+                                <input type="email" autocomplete="email" placeholder="exemplo@exemplo.com" wire:model="email"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                        
+                            <!-- ADDRESS -->
+                            <div>
+                                <label for="address" class="block text-sm font-medium text-gray-600 mb-1">Logradouro</label>
+                                <input type="text" autocomplete="address" placeholder="Rua Exemplo, n 10" wire:model="address"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                        
+                            <!-- Botão -->
+                            <div class="pt-4">
+                                <button
+                                    class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                                    Cadastrar
+                                </button>
+                            </div>
+                        
+                        </form>
+                    </div>
                     @endif
 
                 </div>
