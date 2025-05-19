@@ -8,7 +8,9 @@ use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Title;
 
+#[Title('Clientes')]
 class Clientes extends Component
 {
     use WithPagination;

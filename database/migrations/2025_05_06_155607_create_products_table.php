@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('photo_path')->nullable();  
             $table->decimal('purchase_price', 10, 2); 
             $table->decimal('sale_price', 10, 2);     
-            $table->integer('current_stock')->nullable();         
-            $table->integer('min_stock')->nullable();             
+            $table->unsignedInteger('current_stock')->nullable();         
+            $table->unsignedInteger('min_stock')->nullable();             
             $table->timestamps();
         });
     }

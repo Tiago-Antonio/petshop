@@ -118,7 +118,7 @@
 
         <div x-data="{ confirmando: false, clienteIdParaExcluir: null }" class="overflow-x-auto rounded-xl shadow-lg bg-white mt-2 ">
             <table class="min-w-full table-auto">
-                <thead class="bg-blue-200 text-blue-800">
+                <thead class="bg-blue-600 text-white">
                     <tr>
                         <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Nome</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Email</th>

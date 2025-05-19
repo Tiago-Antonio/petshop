@@ -6,8 +6,9 @@ use Livewire\Component;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Pagination\Paginator;
+use Livewire\Attributes\Title;
 
-
+#[Title('Funcionários')]
 class ModuloFuncionarios extends Component
 {
     use WithPagination;
@@ -22,7 +23,7 @@ class ModuloFuncionarios extends Component
     public $path_foto;
     public $password;
     public $funcionarioId = null; 
-    public $confirmando = false;
+    public $confirmando = null;
 
     public $show = false;
     public $abrirOpcoes = false;
@@ -53,12 +54,30 @@ class ModuloFuncionarios extends Component
     public function rules(){
         return [
             'nome'=>'required',
-            'password'=>'required',
             'email'=>'required'
         ];
     }
 
-    
+    public function confirmarExclusao($id)
+    {
+        $this->confirmando = $this->confirmando === $id ? null : $id;
+    }
+
+
+
+    public function excluirFuncionario($id)
+    {
+        $funcionario = User::find($id);
+        
+        if ($funcionario) {
+            $funcionario->delete();
+            session()->flash('message', 'Funcionário excluído com sucesso.'); 
+        } else {
+            session()->flash('error', 'Funcionário não encontrado.');  
+        }
+        $this->modalAbertoParaId = false;
+        $this->confirmando = false;
+    }
 
     public function CadastrarFuncionario()
     {
@@ -100,22 +119,6 @@ class ModuloFuncionarios extends Component
         }
     }
 
-
-    public function excluirFuncionario($id)
-    {
-        $funcionario = User::find($id);
-        
-        if ($funcionario) {
-            $funcionario->delete();
-            session()->flash('message', 'Funcionário excluído com sucesso.'); 
-        } else {
-            session()->flash('error', 'Funcionário não encontrado.');  
-        }
-    
-        $this->confirmando = false;
-    }
-    
-    
     public function buscar()
     {
         $this->nomeFuncionario = $this->nomeFuncionario;

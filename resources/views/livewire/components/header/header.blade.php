@@ -1,4 +1,4 @@
-<header x-data="{ activePage: '{{ Route::currentRouteName() }}' }" class="bg-white shadow-md w-full z-50 ">
+<header x-data="{ activePage: '{{ Route::currentRouteName() }}' }" class="bg-white shadow-md w-screen z-50 ">
     <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <div class="flex-shrink-0">
@@ -9,7 +9,7 @@
             <nav class="hidden md:flex space-x-6">
                 <a href="{{ route('home') }}"
                     
-                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'home', 'text-gray-600': activePage !== 'home' }" 
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'home', 'text-gray-600': activePage !== 'home'}" 
                     class="hover:text-blue-600 transition font-semibold pb-1">
                     Home
                 </a>
@@ -37,6 +37,11 @@
                     class="hover:text-blue-600 transition font-semibold pb-1">
                     Produtos
                 </a>
+
+                <a href="{{ route('vendas') }}"
+                    wire:navigate
+                    :class="{'text-blue-600 border-b-2 border-blue-600':activePage === 'vendas', 'text-gray-600': activePage !== 'vendas'}"
+                    class="hover:text-blue-600 transition font-semibold pb-1">Vendas</a>
 
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

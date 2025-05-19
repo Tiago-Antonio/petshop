@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->string('status')->default('pending');
-            $table->date('date')->nullable();
+            $table->date('order_date')->nullable();
             $table->timestamps();
         });
     }

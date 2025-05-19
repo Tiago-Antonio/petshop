@@ -12,7 +12,6 @@ class Sale extends Model
         'order_id',
         'user_id',
         'sale_date',
-        'total_amount',
     ];
 
     public function payments(): HasMany{
@@ -23,7 +22,4 @@ class Sale extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function user(): BelongsTo{
-        return $this->belongsTo(User::class);
-    }
 }
