@@ -54,6 +54,7 @@ class Produtos extends Component
 
     public function adicionarCarrinho($product_id)
     {
+        //Escolher um cliente
         if (empty($this->client_id)) {
 
             $this->client_name = true;
@@ -104,10 +105,19 @@ class Produtos extends Component
 
     public function removerCarrinho($product_id)
     {
-        $this->carrinho = array_filter($this->carrinho, function ($item) use ($product_id) {
-            return $item['id'] != $product_id;
-        });
+        foreach ($this->carrinho as $index => $item) {
+            if ($item['id'] == $product_id) {
+                if ($item['quantidade'] > 1) {
+                    $this->carrinho[$index]['quantidade'] -= 1;
+                } else {
+                    unset($this->carrinho[$index]);
+                    $this->carrinho = array_values($this->carrinho);
+                }
+                break;
+            }
+        }
     }
+
 
     //Finalizando o pedido - Envia os dados para a tabela Order e OrderItems
     public function finalizarPedido()
@@ -122,9 +132,24 @@ class Produtos extends Component
             } else {
                 try {
 
+                    //inicia a operacao
                     DB::beginTransaction();
+
+                    //Quantidade do produto não pode ser < 0
+                    foreach ($this->carrinho as $produto) {
+                        $produto_id = $produto['id'];
+                        $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
+                        $produtoEstoque = Product::find($produto_id);
+                        
+                        
+                        if ($produtoEstoque->current_stock < $quantity) {
+                            throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
+                        }
+                    }
+
+
                     $pedido = Order::create([
-                        'client_id' => $this->client_id, //Preciso criar um dropdown para selecionar um cliente 
+                        'client_id' => $this->client_id,
                         'user_id' => $user_id,
                         'status' => 'pendente',
                         'total_amount' => $this->preco_total,
@@ -132,11 +157,8 @@ class Produtos extends Component
                     ]);
 
                     foreach ($this->carrinho as $produto) {
-
-
                         $produto_id = $produto['id'];
                         $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
-
                         //remove a quantidade dos Product para enviar para a tabela OrderItem
                         $removendo_produto = Product::find($produto['id']);
                         $removendo_produto->current_stock -= $quantity;
@@ -149,13 +171,23 @@ class Produtos extends Component
                         ]);
                     }
                     
+                    //confirma a operacao
                     DB::commit();
+
                     $this->carrinho = [];
                     $this->client_id = '';
                     session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
                 } catch (\Exception $e) {
+
+                    //reorna a operacao caso de algum erro
                     DB::rollBack();
-                    session()->flash('erroPedido', 'Falha no pedido!');
+
+                    $mensagemErro = $e->getMessage();
+                    if (str_contains($mensagemErro, 'Estoque insuficiente')) {
+                        session()->flash('erroPedido', $mensagemErro);
+                    } else {
+                        session()->flash('erroPedido', 'Falha no pedido!');
+                    }
                 }
             }
         } else {

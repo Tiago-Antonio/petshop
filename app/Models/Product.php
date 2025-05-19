@@ -22,6 +22,7 @@ class Product extends Model
     ];
 
 
+
     public function stockentries(): HasMany
     {
         return $this->hasMany(StockEntry::class);

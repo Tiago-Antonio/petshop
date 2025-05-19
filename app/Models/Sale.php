@@ -12,7 +12,6 @@ class Sale extends Model
         'order_id',
         'user_id',
         'sale_date',
-        'total_amount',
     ];
 
     public function payments(): HasMany{

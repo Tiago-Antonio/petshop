@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Vendas;
 
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Sale;
 use App\Models\OrderItem;
 use App\Models\Client;
 
@@ -18,9 +19,20 @@ class Vendas extends Component
     public $query;
     public $showProducts;
     
-    public function confirmarVenda(){
+    public function confirmarVenda($id){
         try{
-            dd('confirmado');
+            $venda = Order::find($id);
+            if (!$venda) {
+                session()->flash('erro', 'Pedido não encontrado.');
+                return;
+            }
+
+            Sale::create([
+                'order_id'=> $venda->id,
+            ]);
+
+            $venda->status = 'Finalizado';
+            $venda->save();
 
             session()->flash('sucesso', 'Sucesso ao confirmar a venda!');
         } catch(\Exception $e){
@@ -33,6 +45,7 @@ class Vendas extends Component
         $pedidos = Order::with([
                     'client:id,name',
                     'orderitem.product:id,name',
+                    'sale:id,order_id',
                     'user:id,name',
         ]);
 
@@ -43,11 +56,6 @@ class Vendas extends Component
             });
         }
        
-   
-        // $pedidos = Order::where('status', 'like', '%'.$this->query.'%')
-        //                 ->paginate(5);
-
-
         return view('livewire.vendas.vendas', [
             'pedidos' => $pedidos->paginate(5)
         ]);
