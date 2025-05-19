@@ -12,7 +12,7 @@ class SupplierModule extends Component {
     use WithPagination;
 
     public $name = '';
-    public $phone = 8;
+    public $phone;
     public $email;
     public $address;
     public $created_at;
@@ -21,10 +21,9 @@ class SupplierModule extends Component {
     public $openModalConfirmDelete = false;
     public $searchSupplierByName;
     public $supplierId = null;
-
     public $showModalCreateSupplier = false;
     public $showModalDeleteSupplier = false;
-
+    public $showModalUpdateSupplier = false;
 
 
     public function render() {
@@ -36,13 +35,14 @@ class SupplierModule extends Component {
         ]);
     }
 
+
     //DELETE FORNECEDOR
     public function deleteSelectedSuppliers() {
         if (empty($this->selectedSuppliers)) {
             session()->flash('error', 'Selecione ao menos um registro!');
             return;
         }
-
+        
         Supplier::whereIn('id', $this->selectedSuppliers)->delete();
         
         $this->selectedSuppliers = [];
@@ -50,53 +50,105 @@ class SupplierModule extends Component {
         session()->flash('message', 'Fornecedores apagados!');
     }
 
-    //CREATE FORNECEDOR
-    public function createSupplier() {
-
-        Supplier::create([
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'address' => $this->address,
+    //CRUD - CREATE
+    public function createSupplier()
+    {
+        // VALIDACAO
+        $validatedData = $this->validate([
+            'name'    => 'nullable|string|max:255',
+            'phone'   => 'nullable|string|max:20',
+            'email'   => 'required|email|unique:suppliers,email',
+            'address' => 'nullable|string|max:255',
         ]);
 
-        session()->flash('success', 'Fornecedor cadastrado com sucesso!');
+        try {
+            Supplier::create($validatedData);
+
+            session()->flash('success', 'Fornecedor cadastrado com sucesso!');
+            $this->showModalCreateSupplier = false;
+
+            // Opcional: limpa os campos do formulário
+            $this->reset(['name', 'phone', 'email', 'address']);
+
+        } catch (\Throwable $e) {
+            session()->flash('error', 'Erro ao cadastrar fornecedor. Tente novamente.');
+            \Log::error('Erro ao cadastrar fornecedor: ' . $e->getMessage());
+        }
     }
 
-    //UPDATE FORNECEDOR
-    public function updateSupplier($id) {
-        
-        $supplier = User::findOrFail($id);
-        $this->supplierId = $id;
-        $this->name = $supplier->name;
-        $this->phone = $supplier->phone;
-        $this->email = $supplier->email;
-        $this->address = $supplier->address;
-        
-        //$this->show = true;
-        //$this->modalAbertoParaId = false;
+    //CRUD - UPDATE
+    public function bringInfoSupplier($id)
+    {
+        try {
+            $supplier = Supplier::findOrFail($id);
+
+            $this->supplierId = $supplier->id;
+            $this->name       = $supplier->name;
+            $this->phone      = $supplier->phone;
+            $this->email      = $supplier->email;
+            $this->address    = $supplier->address;
+
+            $this->showModalUpdateSupplier = true;
+
+        } catch (\Throwable $e) {
+            session()->flash('error', 'Erro ao carregar dados do fornecedor.');
+            \Log::error('Erro ao carregar fornecedor ID ' . $id . ': ' . $e->getMessage());
+        }
+    }
+    //
+    public function updateSupplier()
+    {
+        try {
+            $supplier = Supplier::findOrFail($this->supplierId);
+
+            $validatedData = $this->validate([
+                'name'    => 'nullable|string|max:255',
+                'phone'   => 'nullable|string|max:20',
+                'email'   => 'required|email|unique:suppliers,email,' . $supplier->id,
+                'address' => 'nullable|string|max:255',
+            ]);
+
+            $supplier->update($validatedData);
+
+            session()->flash('success', 'Fornecedor atualizado com sucesso!');
+            $this->showModalUpdateSupplier = false;
+
+            $this->reset(['name', 'phone', 'email', 'address', 'supplierId']);
+
+        } catch (\Throwable $e) {
+            session()->flash('error', 'Erro ao atualizar fornecedor. Tente novamente.');
+            \Log::error('Erro ao atualizar fornecedor: ' . $e->getMessage());
+        }
     }
 
-    //ABRIR MODAL DE CADASTRO DE FORNECEDORES
+
+    //OPEN CREATE MODAL
     public function openModalCreateSupplier() {
         $this->showModalCreateSupplier = true;
     }
-
-    //FECHAR MODAL DE CADASTRO DE FORNECEDORES
+    //CLOSE CREATE MODAL
     public function closeModalCreateSupplier() {
-        $this->resetErrorBag();
-        $this->resetarCampos();
+        //$this->resetErrorBag();
+        //$this->resetarCampos();
         $this->supplierId = null;
         $this->showModalCreateSupplier = false; 
     }
 
-    //FECHAR MODAL DE DELETAR FORNECEDORES
+    //OPEN DELETE MODAL
     public function openModalSupplierDelete() {
         $this->showModalDeleteSupplier = true;
     }
-    //FECHAR MODAL DE DELETAR FORNECEDORES
+    //CLOSE DELETE MODAL
     public function closeModalSupplierDelete() {
         $this->showModalDeleteSupplier = false;
     }
 
+    //OPEN UPDATE MODAL
+    public function openModalUpdateSupplier() {
+        $this->showModalUpdateSupplier = true;
+    }
+    //CLOSE UPDATE MODAL
+    public function closeModalUpdateSupplier() {
+        $this->showModalUpdateSupplier = false;
+    }
 }
