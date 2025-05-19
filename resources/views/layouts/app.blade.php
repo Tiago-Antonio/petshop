@@ -6,7 +6,7 @@
 
 
         {{-- Titulo --}}
-        <title>PetShop</title>
+        <title>{{ $title ?? 'Petshop' }}</title>
 
         {{-- FAV ICON --}}
         <link rel="icon" href="/img/pet-icon.svg" type="image/x-icon">
@@ -24,7 +24,7 @@
         
         @livewireStyles
     </head>
-    <body class=" font-poppins">
+    <body class=" font-poppins overflow-x-hidden">
         
         
         {{ $slot }}

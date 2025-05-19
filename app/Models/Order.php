@@ -10,17 +10,22 @@ class Order extends Model
 {
     protected $fillable = [
         'client_id',
+        'user_id',
         'total_amount',
         'status',
-        'date',
+        'order_date',
     ];
 
-    public function cliente(): BelongsTo
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function items(): HasMany
+    public function user(): BelongsTo{
+        return $this->belongsTo(User::class);
+    }
+
+    public function orderitem(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }

@@ -148,6 +148,52 @@
 
         </div>
 
+        {{-- Selecionar Cliente --}}
+        <div x-data="{ client_name: @entangle('client_name') }">
+           
+            <div x-show="client_name"
+                x-transition.opacity
+                @click="client_name = false"
+                class="fixed inset-0 bg-black bg-opacity-50 z-40">
+            </div>
+            <div x-show="client_name"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                class="fixed inset-0 flex items-center justify-center z-50 p-4">
+
+                <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6 relative">
+
+                    <h2 class="text-xl font-bold text-gray-800 text-center mb-4">Selecionar Cliente</h2>
+
+                    <form wire:submit.prevent='clienteForms' class="grid gap-4">
+                        <div>
+                            <label for="client_id" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+                            <select id="client_id" wire:model='client_id' required
+                                    class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Selecione um cliente</option>
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md shadow transition-all">
+                            Confirmar
+                        </button>
+                        <button type="button" @click="client_name = false"
+                                class="text-sm text-gray-500 hover:text-red-500 transition-all underline mx-auto">
+                            Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         {{-- Cards dos Produtos --}}
         <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach ($produtos as $item)
@@ -201,7 +247,7 @@
                 </svg>
                 <span x-show="$wire.carrinho.length > 0"
                     class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {{ count($carrinho) }}
+                    {{ $soma}}
                 </span>
             </button>
             <!-- Overlay -->
@@ -228,7 +274,7 @@
                         </div>
                         <span
                             class="bg-white text-indigo-600 rounded-full h-6 w-6 flex items-center justify-center text-sm font-semibold">
-                            {{ count($carrinho) }}
+                            {{ $soma}}
                         </span>
                     </div>
 
@@ -261,7 +307,10 @@
                                                     {{ number_format($item['preco'], 2, ',', '.') }}</p>
                                             </div>
                                         </div>
-                                        {{-- Quantidade --}}
+                                        {{-- Quantidade - Produtos --}}
+                                        <div>
+                                            {{ $item['quantidade'] }}
+                                        </div>
                                         <button wire:click="removerCarrinho({{ $item['id'] }})"
                                             class="text-red-400 hover:text-red-600 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -292,7 +341,7 @@
                             <div class="flex justify-between mb-3">
                                 <span class="font-medium text-gray-600">Total:</span>
                                 <span class="font-bold text-lg">R$
-                                    {{ number_format(array_sum(array_column($carrinho, 'preco')), 2, ',', '.') }}</span>
+                                    {{ number_format($preco_total, 2, ',', '.')}}</span>
                             </div>
                             <button wire:click="finalizarPedido"
                                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors">
