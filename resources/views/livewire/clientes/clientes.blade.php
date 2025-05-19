@@ -37,9 +37,9 @@
                             <label for="nome" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
                             <input type="text" wire:model="nome" placeholder="Digite o nome completo"
                                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('nome')
-                                    <span class="text-red-500 text-xs italic">{{$message}}</span>
-                                @enderror
+                            @error('nome')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <!-- Email -->
@@ -48,9 +48,9 @@
                             <input type="email" autocomplete="new-email" placeholder="exemplo@dominio.com"
                                 wire:model="email"
                                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('email')
-                                    <span class="text-red-500 text-xs italic">{{$message}}</span>
-                                @enderror
+                            @error('email')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
                         </div>
 
 
@@ -59,9 +59,9 @@
                             <label for="telefone" class="block text-sm font-medium text-gray-600 mb-1">Telefone</label>
                             <input type="tel" placeholder="(99) 99999-9999" wire:model="telefone"
                                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('telefone')
-                                    <span class="text-red-500 text-xs italic">{{$message}}</span>
-                                @enderror
+                            @error('telefone')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <!-- Endereço -->
@@ -69,9 +69,9 @@
                             <label for="endereco" class="block text-sm font-medium text-gray-600 mb-1">Endereço</label>
                             <input type="text" placeholder="Rua..." wire:model="endereco"
                                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('endereco')
-                                    <span class="text-red-500 text-xs italic">{{$message}}</span>
-                                @enderror
+                            @error('endereco')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <!-- Foto -->
@@ -79,19 +79,19 @@
                             <label for="imagem" class="block text-sm font-medium text-gray-600 mb-1">Imagem</label>
                             <input type="file" placeholder="Rua..." wire:model="photo_path"
                                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('photo_path')
-                                    <span class="text-red-500 text-xs italic">{{$message}}</span>
-                                @enderror
-                                <div wire:loading wire:target='photo_path'>
-                                    <span class="text-green-500 font-semibold text-sm">Carregando imagem...</span>
-                                </div>
+                            @error('photo_path')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
+                            <div wire:loading wire:target='photo_path'>
+                                <span class="text-green-500 font-semibold text-sm">Carregando imagem...</span>
+                            </div>
                         </div>
 
                         <!-- Cadastrar -->
                         <div class="pt-4">
                             <button
                                 class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                                @if($clienteId)
+                                @if ($clienteId)
                                     Atualizar
                                 @else
                                     Cadastrar
@@ -190,6 +190,12 @@
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
                     class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
                     {{ session('error') }}
+                </div>
+            @endif
+            @if (session()->has('erro'))
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                    class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                    {{ session('erro') }}
                 </div>
             @endif
         </div>

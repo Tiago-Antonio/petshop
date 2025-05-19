@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Clientes;
 use Livewire\Component;
 use App\Models\Client;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -137,13 +138,21 @@ class Clientes extends Component
     {
         $cliente = Client::find($id);
 
-        if ($cliente) {
-            $cliente->delete();
-            session()->flash('message', 'Cliente excluído com sucesso.');
-        } else {
-            session()->flash('error', 'Cliente não encontrado.');
+        try{
+            if ($cliente) {
+                $cliente->delete();
+                session()->flash('message', 'Cliente excluído com sucesso.');
+            }
+        }catch(QueryException $e){
+            if ($e->getCode() == '23000') {
+            session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
+            } else {
+                // Para outras exceções, exibe uma mensagem genérica
+                session()->flash('erro', 'Erro ao deletar cliente.');
+            }
+        } catch (\Exception $e) {
+            session()->flash('erro', 'Erro inesperado ao deletar cliente.');
         }
-
         $this->confirmando = false;
     }
 
