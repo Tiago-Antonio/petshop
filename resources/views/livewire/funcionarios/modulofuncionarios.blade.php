@@ -127,7 +127,6 @@
            
         </div>
         <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-4">
-
             @foreach ($funcionarios as $item)
                 <div wire:key='item-{{ $item->id}}' class="grid gap-4 bg-white shadow-lg rounded-xl px-4 py-2 relative">
                     <div class="flex justify-between">
