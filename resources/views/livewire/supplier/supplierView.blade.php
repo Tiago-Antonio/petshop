@@ -42,7 +42,7 @@
                             <p class="text-sm text-gray-600 mb-6">Essa ação não poderá ser desfeita.</p>
                             <div class="flex justify-end gap-4">
                                 <button wire:click='closeModalSupplierDelete' class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancelar</button>
-                                <button wire:click='' class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                                <button wire:click='deleteSelectedSuppliers' class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                                     Confirmar
                                 </button>
                             </div>
@@ -141,7 +141,7 @@
                                 <td class="px-4 py-2 h-16 text-gray-800 text-center ">
                                     <input type="checkbox"
                                     wire:model="selectedSuppliers"
-                                    value="({{ $item['id'] }})"
+                                    value="{{ $item['id'] }}"
                                     class="w-5 h-5 accent-[#2096f2] cursor-pointer">
                                 </td>
                                 <td class="px-4 py-2 h-16 text-gray-800 align-middle">{{$item['name']}}</td>

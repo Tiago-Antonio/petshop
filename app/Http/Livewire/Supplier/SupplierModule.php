@@ -26,29 +26,36 @@ class SupplierModule extends Component {
     public $showModalUpdateSupplier = false;
 
 
-    public function render() {
+public function render()
+{
+    $suppliers = Supplier::where('active', 1)
+        ->where('name', 'like', '%' . $this->searchSupplierByName . '%')
+        ->paginate(10);
 
-        $suppliers = Supplier::where('name', 'like', '%'.$this->searchSupplierByName.'%')->paginate(10);
+    return view('livewire.supplier.supplierView', [
+        'suppliers' => $suppliers,
+    ]);
+}
 
-        return view('livewire.supplier.supplierView', [
-            'suppliers' => $suppliers,
-        ]);
-    }
 
 
     //DELETE FORNECEDOR
-    public function deleteSelectedSuppliers() {
+    public function deleteSelectedSuppliers()
+    {
         if (empty($this->selectedSuppliers)) {
             session()->flash('error', 'Selecione ao menos um registro!');
             return;
         }
-        
-        Supplier::whereIn('id', $this->selectedSuppliers)->delete();
-        
+
+        Supplier::whereIn('id', $this->selectedSuppliers)->update(['active' => false]);
+
         $this->selectedSuppliers = [];
         
-        session()->flash('message', 'Fornecedores apagados!');
+        session()->flash('message', 'Fornecedores desativados!');
+        
+        $this->showModalDeleteSupplier = false;
     }
+
 
     //CRUD - CREATE
     public function createSupplier()
