@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
-use App\Models\Supplier;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockEntry extends Model
 {
@@ -19,12 +18,12 @@ class StockEntry extends Model
         'entry_date',
     ];
 
-    public function produto()
+    public function produto(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function fornecedor()
+    public function fornecedor(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
     }

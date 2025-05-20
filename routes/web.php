@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Errors\Error404;
-
+use Illuminate\Support\Facades\Auth;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', \App\Http\Livewire\Home\Home::class)->name('home');
@@ -10,6 +10,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/clientes', \App\Http\Livewire\Clientes\Clientes::class)->name('clientes');
     Route::get('/produtos', \App\Http\Livewire\Produtos\Produtos::class)->name('produtos');
     Route::get('/supplier', \App\Http\Livewire\Supplier\SupplierModule::class)->name('suppliers'); 
+    Route::get('/vendas', \App\Http\Livewire\Vendas\Vendas::class)->name('vendas');
 });
 
 

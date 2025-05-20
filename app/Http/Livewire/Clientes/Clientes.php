@@ -5,10 +5,13 @@ namespace App\Http\Livewire\Clientes;
 use Livewire\Component;
 use App\Models\Client;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Title;
 
+#[Title('Clientes')]
 class Clientes extends Component
 {
     use WithPagination;
@@ -19,28 +22,33 @@ class Clientes extends Component
     public $nome;
     public $email;
     public $telefone;
+    public $imagemAtual;
     public $endereco;
     public $photo_path;
     public $query = [];
     public $confirmando = false;
-    public $clienteId = null; 
+    public $clienteId = null;
     public $clientesPaginados;
     public $show = false;
-    public $perPage = 6; 
+    public $perPage = 6;
 
     public $nomeCliente;
     // Buscar
 
 
-    public function CadastrarCliente()
-    {
-        $this->validate([
+    public function rules(){
+        return [
             'nome' => 'required|string|max:255',
             'email' => 'required|email',
             'telefone' => 'required|string',
             'endereco' => 'required|string',
-            'photo_path' => 'nullable|image|max:2048', 
-        ]);
+            'photo_path' => 'nullable|image|max:2048',
+        ];
+    }
+
+    public function CadastrarCliente()
+    {
+        $validated = $this->validate();
 
         try {
             if ($this->clienteId) {
@@ -54,9 +62,9 @@ class Clientes extends Component
                     'address' => $this->endereco,
                 ];
 
-               
+
                 if ($this->photo_path) {
-                    
+
                     if ($cliente->photo_path) {
                         Storage::disk('public')->delete($cliente->photo_path);
                     }
@@ -84,11 +92,11 @@ class Clientes extends Component
             }
 
             $this->resetarCampos();
-
+            
         } catch (\Exception $e) {
 
             session()->flash('error', 'Erro ao salvar cliente.');
-            dd($e->getMessage()); 
+            
         }
     }
 
@@ -103,7 +111,7 @@ class Clientes extends Component
         $this->telefone = $cliente->phone;
         $this->imagemAtual = $cliente->photo_path;
         $this->photo_path = null;
-        
+
         $this->endereco = $cliente->address;
         $this->show = true;
     }
@@ -129,33 +137,43 @@ class Clientes extends Component
     public function excluirCliente($id)
     {
         $cliente = Client::find($id);
-        
-        if ($cliente) {
-            $cliente->delete();
-            session()->flash('message', 'Cliente excluído com sucesso.'); 
-        } else {
-            session()->flash('error', 'Cliente não encontrado.');  
+
+        try{
+            if ($cliente) {
+                $cliente->delete();
+                session()->flash('message', 'Cliente excluído com sucesso.');
+            }
+        }catch(QueryException $e){
+            if ($e->getCode() == '23000') {
+            session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
+            } else {
+                // Para outras exceções, exibe uma mensagem genérica
+                session()->flash('erro', 'Erro ao deletar cliente.');
+            }
+        } catch (\Exception $e) {
+            session()->flash('erro', 'Erro inesperado ao deletar cliente.');
         }
-    
         $this->confirmando = false;
     }
-    
-    public function abrirModelAdicionar(){
+
+    public function abrirModelAdicionar()
+    {
         $this->show = true;
     }
-    public function fecharModelAdicionar(){
+    public function fecharModelAdicionar()
+    {
         $this->resetarCampos();
-
     }
 
-    public function updatednomeCliente(){
+    public function updatednomeCliente()
+    {
         $this->resetPage();
     }
 
 
     public function render()
     {
-        
+
         $query = Client::query();
 
         if (!empty($this->nomeCliente)) {
