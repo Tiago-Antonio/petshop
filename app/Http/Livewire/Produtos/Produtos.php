@@ -113,6 +113,7 @@ class Produtos extends Component
                     unset($this->carrinho[$index]);
                     $this->carrinho = array_values($this->carrinho);
                 }
+                $this->preco_total -= 1 * $item['preco'];
                 break;
             }
         }
@@ -146,13 +147,12 @@ class Produtos extends Component
                             throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
                         }
                     }
-
-
                     $pedido = Order::create([
                         'client_id' => $this->client_id,
-                        'user_id' => $user_id,
+                        'user_id' => $user_id,                     
                         'status' => 'pendente',
                         'total_amount' => $this->preco_total,
+                        //sem o payment_id
                         'data' => now(),
                     ]);
 
@@ -186,7 +186,7 @@ class Produtos extends Component
                     if (str_contains($mensagemErro, 'Estoque insuficiente')) {
                         session()->flash('erroPedido', $mensagemErro);
                     } else {
-                        session()->flash('erroPedido', 'Falha no pedido!');
+                        session()->flash('erroPedido', 'Falha no pedido:'.$e->getMessage());
                     }
                 }
             }
@@ -264,6 +264,10 @@ class Produtos extends Component
         $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id']);
     }
 
+    public function cancelarSecao(){
+        $this->client_name = false;
+        $this->client_id = '';
+    }
 
     public function render()
     {

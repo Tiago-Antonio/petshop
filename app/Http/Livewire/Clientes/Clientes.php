@@ -174,7 +174,8 @@ class Clientes extends Component
     public function render()
     {
 
-        $query = Client::query();
+        $query = Client::query()
+        ->orderBy('created_at', 'desc');
 
         if (!empty($this->nomeCliente)) {
             $query->where('name', 'like', '%' . $this->nomeCliente . '%');

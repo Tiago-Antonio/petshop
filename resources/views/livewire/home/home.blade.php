@@ -39,7 +39,7 @@
                 {{-- Fornecedores --}}
                 <div
                     class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                    <a href="{{ route('clientes') }}" wire:navigate
+                    <a href="{{ route('suppliers') }}" wire:navigate
                         class="flex flex-col items-center justify-center h-full w-full">
                         <div class="flex gap-2 2xl:grid place-items-center">
                             <i class="fas fa-truck 2xl:text-4xl 2xl:mb-2"></i>

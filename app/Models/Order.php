@@ -12,6 +12,7 @@ class Order extends Model
     protected $fillable = [
         'client_id',
         'user_id',
+        'payment_id',
         'total_amount',
         'status',
         'order_date',
@@ -34,5 +35,10 @@ class Order extends Model
     public function sale(): HasOne
     {
         return $this->hasOne(Sale::class, 'order_id');
+    }
+
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class);
     }
 }

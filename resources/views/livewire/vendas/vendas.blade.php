@@ -17,6 +17,44 @@
         </div>
     @endif
 
+    @if ($pagamento)
+        <div class="bg-black fixed inset-0 bg-opacity-50 z-50">
+            <form wire:submit.prevent="confirmarPagamento"
+                class="fixed z-50 max-w-md w-full mx-auto left-1/2 -translate-x-1/2 bg-white rounded-md top-1/2 -translate-y-1/2 p-6 shadow-lg">
+
+                <h2 class="text-lg font-semibold mb-4 text-gray-800">Escolha um Método de Pagamento</h2>
+
+                <div class="px-3 py-2 mb-4 ">
+                    <label for="escolhaMetodoPagamento"
+                        class="block text-sm font-medium text-gray-700 mb-1">Método:</label>
+                    <select id="escolhaMetodoPagamento" name="metodoPagamento" wire:model="escolhaMetodoPagamento"
+                        class="w-full border border-gray-300 rounded-md focus:outline-none min-h-8">
+                        <option value="">Selecione...</option>
+                        <option value="1">Cartão crédito</option>
+                        <option value="2">Cartão débito</option>
+                        <option value="3">Dinheiro</option>
+                        <option value="4">Pix</option>
+                    </select>
+                    @error('escolhaMetodoPagamento')
+                        <span class="text-red-600 text-sm font-medium">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="flex justify-end gap-2">
+
+                    <button type="button" wire:click="$set('pagamento', false)"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl px-4 py-1 font-semibold">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-900 rounded-xl px-4 py-1 text-white font-semibold">
+                        Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    @endif
+
     <div class="overflow-x-auto px-4 py-8 max-w-screen-xl mx-auto ">
         <div class="relative w-full md:w-1/2 xl:w-1/4">
             <input type="text" wire:model.live.debounce.100="query" placeholder="Pesquisar"
@@ -26,7 +64,7 @@
             </button>
         </div>
         <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden mt-4">
-            <thead class="bg-blue-600 text-white">
+            <thead class="bg-blue-600 text-white shadow">
                 <tr>
                     <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Id</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Cliente</th>
@@ -41,37 +79,74 @@
             </thead>
 
             @foreach ($pedidos as $item)
-                <tbody x-data="{ showProducts{{ $item->id }}: false }" wire:key='group-{{ $item->id }}'>
+                <tbody class="" x-data="{ showProducts{{ $item->id }}: false }" wire:key='group-{{ $item->id }}'>
                     <tr class="hover:bg-gray-100 transition-colors duration-200">
                         <td class="px-4 py-4 text-sm text-gray-800">{{ $item['id'] }}</td>
                         <td class="px-4 py-4 text-sm text-gray-800">{{ $item->client->name }}</td>
                         <td class="px-4 py-4 text-sm text-gray-800">{{ $item->user->name }}</td>
                         <td class="px-4 py-4 text-sm text-gray-800">
-                            <button type="button"
-                                x-on:click="showProducts{{ $item->id }} = !showProducts{{ $item->id }}"
-                                class="flex items-center gap-1 bg-blue-500 text-white text-xs font-medium px-3 py-1 rounded hover:bg-blue-600 transition-colors ease-in-out delay-75">
-                                <span x-text="showProducts{{ $item->id }} ? '➖ ' : '➕ '"></span> Produtos
+                            <button
+                                type="button"x-on:click="showProducts{{ $item->id }} = !showProducts{{ $item->id }}"
+                                class="flex items-center gap-1.5 bg-blue-500/10 text-blue-600 text-xs font-medium px-3 py-1.5 rounded-md hover:bg-blue-500/20 transition-colors border border-blue-500/20">
+                                <div x-show="!showProducts{{ $item->id }}" class="w-4 h-4">
+                                    <i class="fa-solid fa-plus"></i>
+                                </div>
+                                <div x-show="showProducts{{ $item->id }}" class="w-4 h-4">
+                                    <i class="fa-solid fa-minus"></i>
+                                </div>
+                                <span>Produtos</span>
                             </button>
                         </td>
                         <td class="px-4 py-4 text-sm text-gray-800">
-                            {{ number_format($item['total_amount'], 2, ',', '.') }}</td>
-                        <td class="px-4 py-4 text-sm text-gray-800">{{ $item['status'] }}</td>
+                            R${{ number_format($item['total_amount'], 2, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-sm text-gray-800">
+                            @if ($item['status'] == 'pendente')
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ ucfirst($item['status']) }}
+                                </span>
+                            @elseif($item['status'] == 'finalizado')
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    {{ ucfirst($item['status']) }}
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    {{ ucfirst($item['status']) }}
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-4 py-4 text-sm text-gray-800">{{ $item->created_at->format('d/m/y') }}
                         </td>
                         <td class="px-4 py-4 text-sm text-gray-800">
-                            @if ($item->sale)
-                                <p>Compra finalizada!</p>
-                            @else
-                                <div class="flex gap-4">
-                                    <button type="button" wire:click='confirmarVenda({{ $item->id }})'
-                                        class=" px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition">
+                            @if ($item['status'] == 'pendente')
+                                <div class="flex gap-2">
+                                    <button wire:click='metodoPagamento({{ $item->id }})'
+                                        class="px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
                                         Confirmar
                                     </button>
-                                    <button
-                                        class=" px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600 transition">
+                                    <button wire:click='cancelarVenda({{ $item->id }})'
+                                        class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                         Cancelar
                                     </button>
                                 </div>
+                            @elseif($item['status'] == 'cancelado')
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Pedido
+                                    cancelado</span>
+                            @elseif($item['status'] == 'finalizado')
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Pedido
+                                    finalizado</span>
                             @endif
 
                         </td>
@@ -107,7 +182,7 @@
                                                     </td>
                                                     <td class="px-4 py-2 text-sm text-gray-800">
                                                         R$
-                                                        {{ number_format($produtos->unit_price, 2, ',', '.') }}
+                                                        {{ number_format($produtos->product->sale_price, 2, ',', '.') }}
                                                     </td>
                                                 </tr>
                                             @endforeach

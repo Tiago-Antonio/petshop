@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Client;
-use App\Models\Supplier;
-use App\Models\Product;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ClientsSeeder::class);
         $this->call(SuppliersSeeder::class);
         $this->call(ProductsSeeder::class);
+        $this->call(PaymentsSeeder::class);
     }
 }

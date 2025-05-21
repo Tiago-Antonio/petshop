@@ -30,6 +30,7 @@ public function render()
 {
     $suppliers = Supplier::where('active', 1)
         ->where('name', 'like', '%' . $this->searchSupplierByName . '%')
+        ->orderBy('created_at', 'desc')
         ->paginate(10);
 
     return view('livewire.supplier.supplierView', [

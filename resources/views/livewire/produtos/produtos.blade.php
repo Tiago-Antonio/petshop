@@ -1,4 +1,4 @@
-<section class="h-screen w-screen bg-slate-100 overflow-x-hidden">
+<section class="h-screen w-screen bg-blue-100 overflow-x-hidden">
     <livewire:components.header.header />
     <div class=" max-w-screen-xl mx-auto grid grid-cols-4 gap-4 mt-8 px-8 ">
         <div class=" col-span-4 grid grid-cols-4 gap-4 ">
@@ -10,7 +10,7 @@
                 </button>
             </div>
 
-            <div class=" grid place-items-end col-start-4">
+            <div class=" grid place-items-end col-span-1 col-start-4">
                 <button type="button" wire:click='abrirModalProduto'
                     class="text-white px-4 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
                     <i class="fa-solid fa-box-open "></i>
@@ -149,7 +149,7 @@
         </div>
 
         {{-- Selecionar Cliente --}}
-        <div x-data="{ client_name: @entangle('client_name') }">
+        <div x-data="{ client_name: @entangle('client_name') }" class="fixed z-50">
 
             <div x-show="client_name" x-transition.opacity @click="client_name = false"
                 class="fixed inset-0 bg-black bg-opacity-50 z-40">
@@ -166,7 +166,7 @@
 
                     <h2 class="text-xl font-bold text-gray-800 text-center mb-4">Selecionar Cliente</h2>
 
-                    <form wire:submit.prevent='clienteForms' class="grid gap-4">
+                    <form class="grid gap-4">
                         <div>
                             <label for="client_id" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
                             <select id="client_id" wire:model='client_id' required
@@ -178,11 +178,11 @@
                             </select>
                         </div>
 
-                        <button type="submit"
+                        <button type="submit" wire:click.prevent='clienteForms'
                             class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md shadow transition-all">
                             Confirmar
                         </button>
-                        <button type="button" @click="client_name = false"
+                        <button type="button" wire:click="cancelarSecao"
                             class="text-sm text-gray-500 hover:text-red-500 transition-all underline mx-auto">
                             Cancelar
                         </button>
@@ -191,13 +191,14 @@
             </div>
         </div>
 
+
         {{-- Cards dos Produtos --}}
         <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach ($produtos as $item)
                 <div wire:key='item-{{ $item->id }}'
                     class="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-lg transition duration-300 relative">
-                    {{-- Ícone de opções --}}
-                    <div x-data="{ showOpcoes: false }" class="absolute top-2 right-2 z-10">
+                    {{-- Ícone de opções - remover --}}
+                    {{-- <div x-data="{ showOpcoes: false }" class="absolute top-2 right-2 z-10">
                         @if (auth()->user()->admin == 1)
                             <button @click="showOpcoes = !showOpcoes" class="text-gray-500 hover:text-gray-700">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -211,7 +212,7 @@
                             <button
                                 class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100">Excluir</button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="p-4 flex flex-col items-center relative h-full">
                         <img src="{{ asset($item['photo_path']) }}" alt="Produto"
                             class="w-32 h-32 rounded-full object-cover border border-gray-200 mb-4">
@@ -267,7 +268,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <h3 class="font-bold text-lg">Seu Carrinho</h3>
+                            <h3 class="font-bold text-lg">Seu Pedido</h3>
                         </div>
                         <span
                             class="bg-white text-indigo-600 rounded-full h-6 w-6 flex items-center justify-center text-sm font-semibold">
@@ -299,7 +300,8 @@
                                                 @endif
                                             </div>
                                             <div>
-                                                <p class="font-medium text-gray-800">{{ $item['nome'] }}</p>
+                                                <p class="font-medium text-gray-800 max-w-24 min-w-24">
+                                                    {{ $item['nome'] }}</p>
                                                 <p class="text-sm text-gray-500">R$
                                                     {{ number_format($item['preco'], 2, ',', '.') }}</p>
                                             </div>

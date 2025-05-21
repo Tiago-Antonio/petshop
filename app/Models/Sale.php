@@ -14,10 +14,6 @@ class Sale extends Model
         'sale_date',
     ];
 
-    public function payments(): HasMany{
-        return $this->hasMany(Payment::class);
-    }
-
     public function order(): BelongsTo{
         return $this->belongsTo(Order::class);
     }

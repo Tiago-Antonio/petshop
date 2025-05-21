@@ -3,19 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Payment extends Model
 {
     protected $fillable = [
-        'sale_id',
-        'payment_method',
-        'amount_paid',          
+        'payment_method',        
     ];
 
 
-
-    public function sale(): BelongsTo{
-        return $this->belongsTo(Sale::class);
+    public function order(): HasMany{
+        return $this->hasMany(Order::class);
     }
 }

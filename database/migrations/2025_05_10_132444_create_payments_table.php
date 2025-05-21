@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sale_id');
             $table->string('payment_method');
-            $table->decimal('amount_paid', 10, 2);
             $table->timestamps();
         });
     }

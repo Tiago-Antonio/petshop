@@ -171,7 +171,9 @@ class ModuloFuncionarios extends Component
 
     public function render()
     {
-        $funcionarios = User::where('name', 'like', '%'.$this->nomeFuncionario.'%')->paginate(8); 
+        $funcionarios = User::where('name', 'like', '%'.$this->nomeFuncionario.'%')
+            ->orderBy('created_at', 'desc')
+            ->paginate(8); 
         
         return view('livewire.funcionarios.modulofuncionarios', ['funcionarios' => $funcionarios,]);
     }
