@@ -29,9 +29,6 @@ class ModuloFuncionarios extends Component
     public $abrirOpcoes = false;
     public $modalAbertoParaId = null;
 
-
-   
-
     public function editarFuncionario($id)
     {
         
@@ -54,7 +51,16 @@ class ModuloFuncionarios extends Component
     public function rules(){
         return [
             'nome'=>'required',
-            'email'=>'required'
+            'email'=>'required',
+            'password'=>'required',
+            'telefone'=>'max:11',
+        ];
+    }
+
+    protected function rulesUpdate()
+    {
+        return [
+            'telefone' => 'nullable|min:6|max:11',
         ];
     }
 
@@ -81,9 +87,15 @@ class ModuloFuncionarios extends Component
 
     public function CadastrarFuncionario()
     {
-        $this->validate();
+
+        if (!$this->funcionarioId) {
+            $this->validate(); 
+        }
+
+        $this->validate($this->rulesUpdate());
         try {
             if ($this->funcionarioId) {
+                // Atualizar funcionário
                 $funcionario = User::findOrFail($this->funcionarioId);
 
                 $funcionario->update([
@@ -111,13 +123,11 @@ class ModuloFuncionarios extends Component
                 session()->flash('success', 'Funcionário cadastrado com sucesso!');
             }
 
-           
-
         } catch (\Exception $e) {
             session()->flash('error', 'Erro ao salvar funcionário.');
-            dd($e->getMessage());
         }
     }
+
 
     public function buscar()
     {

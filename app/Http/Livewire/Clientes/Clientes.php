@@ -38,9 +38,9 @@ class Clientes extends Component
 
     public function rules(){
         return [
-            'nome' => 'required|string|max:255',
+            'nome' => 'required|string',
             'email' => 'required|email',
-            'telefone' => 'required|string',
+            'telefone' => 'required|string|max:11|min:6',
             'endereco' => 'required|string',
             'photo_path' => 'nullable|image|max:2048',
         ];
