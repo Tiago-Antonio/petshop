@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Errors\Error404;
 use Illuminate\Support\Facades\Auth;
+// -------------------- Rota do gráficos pizza de fornecedores --------------------
+use App\Http\Controllers\SupplierController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', \App\Http\Livewire\Home\Home::class)->name('home');
@@ -22,9 +24,11 @@ Route::middleware(['admin'])->group(function () {
 Route::post('/logout', function () {Auth::logout();request()->session()->invalidate();request()->session()->regenerateToken(); return redirect('/login');})->name('logout');
 Route::get('/login', \App\Http\Livewire\Login\Login::class)->middleware('guest')->name('login');
 
-
 // Erro
 Route::fallback(Error404::class);
+
+// Retorna os 5 fornecedores com mais entregas
+Route::get('/labelDataGraphicPie', [SupplierController::class, 'labelDataGraphicPie']);
 
 
 

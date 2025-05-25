@@ -14,7 +14,7 @@
                 <div class="flex items-center gap-2">
                     <!-- Botão Adicionar -->
                     <button type="button" wire:click='openModalCreateSupplier'
-                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-red-600 transition-all shadow-md">
                         <i class="fa-solid fa-plus"></i>
                     </button>
 
@@ -22,6 +22,12 @@
                     <button type="button" wire:click='openModalSupplierDelete'
                         class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-red-600 transition-all shadow-md">
                         <i class="fa-solid fa-trash"></i>
+                    </button>
+
+                    <!--Botao Grafico-->
+                    <button type="button" wire:click='openModalGraphic'
+                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-red-600 transition-all shadow-md">
+                        <i class="fa-solid fa-chart-pie"></i>
                     </button>
 
                     <!-- Paginação -->
@@ -50,21 +56,8 @@
                             </div>
                         </div>
                     @endif
-                    <!-- Mensagem de sucesso -->
-                    @if (session()->has('message'))
-                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                            class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
-                            {{ session('message') }}
-                        </div>
-                    @endif
-                    <!-- Mensagem de erro -->
-                    @if (session()->has('error'))
-                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-                            class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
-                            {{ session('error') }}
-                        </div>
-                    @endif
 
+                    <!-- Modal de criação de fornecedores -->
                     @if ($showModalCreateSupplier == true)
                         <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
                             style="background-color:rgba(0,0,0,0.6)">
@@ -127,6 +120,83 @@
                             </form>
                         </div>
                     @endif
+
+                    <!-- Modal do gráfico -->
+                    @if ($showModalGraphic == true)
+                        <div class="h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
+                        style="background-color:rgba(0,0,0,0.6)">
+                            <div class="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-4 relative">
+                                <!-- FECHAR MODAL -->
+                                <div class="absolute top-3 right-3">
+                                    <button type="button" wire:click='closeModalGraphic'
+                                        class="text-red-600 hover:text-red-800  transition-all duration-200 ease-in-out">
+                                        <i class="fa-solid fa-xmark fa-lg"></i>
+                                    </button>
+                                </div>
+
+                                <!-- TITULO MODAL -->
+                                <p class="text-center font-bold text-2xl text-gray-700 mb-4">Gráfico Fornecedor</p>
+
+                                <!--GRAFICO-->
+                                <div class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+                                    <div class="relative h-full">
+                                        <canvas id="PieGraphicSupplier" style="width: 100%; height: 100%;"></canvas>
+                                    </div>
+
+                                    <script>
+                                        fetch('/labelDataGraphicPie')
+                                            .then(res => res.json())
+                                            .then(res => {
+                                                console.log(dados.labels);
+                                                const ctx = document.getElementById('PieGraphicSupplier').getContext('2d');
+
+                                                new Chart(ctx, {
+                                                    type: 'pie',
+                                                    data: {
+                                                        labels: res.labels,
+                                                        datasets: [{
+                                                            label: 'Entregas por Fornecedor',
+                                                            data: res.data,
+                                                            backgroundColor: [
+                                                                '#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'
+                                                            ]
+                                                        }]
+                                                    },
+                                                    options: {
+                                                        responsive: true,
+                                                        plugins: {
+                                                            legend: { position: 'top' },
+                                                            title: {
+                                                                display: true,
+                                                                text: 'Top 5 Fornecedores por Entregas'
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                    </script>
+                                </div>
+                            </div>
+                       </div>
+                    @endif
+
+                    <!-- Mensagem de sucesso -->
+                    @if (session()->has('message'))
+                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                            class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                            {{ session('message') }}
+                        </div>
+                    @endif
+                    
+                    <!-- Mensagem de erro -->
+                    @if (session()->has('error'))
+                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                            class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+
                     <!--FALTA ADD MENSAGEM DE SUCESSO E ERRO EM CREATE-->
 
                 </div>

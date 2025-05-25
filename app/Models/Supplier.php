@@ -13,4 +13,9 @@ class Supplier extends Model
         'address',
         'active',         
     ];
+
+    public function stockEntries(): HasMany
+    {
+        return $this->hasMany(StockEntry::class, 'supplier_id');
+    }
 }

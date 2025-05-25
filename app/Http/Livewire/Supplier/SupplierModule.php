@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Supplier;
 use Livewire\WithPagination;
 use Illuminate\Pagination\Paginator;
+use App\Http\Controllers\SupplierController;
 
 class SupplierModule extends Component {
     
@@ -24,20 +25,20 @@ class SupplierModule extends Component {
     public $showModalCreateSupplier = false;
     public $showModalDeleteSupplier = false;
     public $showModalUpdateSupplier = false;
+    public $showModalGraphic = false;
 
 
-public function render()
-{
-    $suppliers = Supplier::where('active', 1)
-        ->where('name', 'like', '%' . $this->searchSupplierByName . '%')
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
+    public function render()
+    {
+        $suppliers = Supplier::where('active', 1)
+            ->where('name', 'like', '%' . $this->searchSupplierByName . '%')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-    return view('livewire.supplier.supplierView', [
-        'suppliers' => $suppliers,
-    ]);
-}
-
+        return view('livewire.supplier.supplierView', [
+            'suppliers' => $suppliers,
+        ]);
+    }
 
 
     //DELETE FORNECEDOR
@@ -56,7 +57,6 @@ public function render()
         
         $this->showModalDeleteSupplier = false;
     }
-
 
     //CRUD - CREATE
     public function createSupplier()
@@ -84,7 +84,7 @@ public function render()
         }
     }
 
-    //CRUD - UPDATE
+    //CRUD - BRING DATA
     public function bringInfoSupplier($id)
     {
         try {
@@ -103,7 +103,8 @@ public function render()
             \Log::error('Erro ao carregar fornecedor ID ' . $id . ': ' . $e->getMessage());
         }
     }
-    //
+
+    //CRUD - UPDATE
     public function updateSupplier()
     {
         try {
@@ -159,4 +160,14 @@ public function render()
     public function closeModalUpdateSupplier() {
         $this->showModalUpdateSupplier = false;
     }
+
+    //OPEN GRAPHIC MODAL
+    public function openModalGraphic() {
+        $this->showModalGraphic = true;
+    }
+    //CLOSE GRAPHIC MODAL
+    public function closeModalGraphic() {
+        $this->showModalGraphic = false;
+    }
+
 }
