@@ -260,7 +260,14 @@
                         </div>
                     </div> --}}
                     <div class="p-4 flex flex-col items-center relative h-full">
-                        <img src="{{ asset($item['photo_path']) }}" alt="Produto"
+                        @php
+                            $path = $item['photo_path'];
+                            $imgSrc = Str::startsWith($path, 'produtos/')
+                                ? asset('storage/' . $path)
+                                : asset('img/products/' . basename($path));
+                        @endphp
+
+                        <img src="{{ $imgSrc }}" alt="Produto"
                             class="w-32 h-32 rounded-full object-cover border border-gray-200 mb-4">
                         <h3 class="text-lg font-semibold text-gray-800 text-center mb-1">{{ $item['name'] }}</h3>
                         <p class="text-sm text-gray-500 text-center mb-2 max-h-10 min-h-10 overflow-auto">
@@ -283,7 +290,7 @@
         <div x-data="{ open: false }" class="relative">
             <!-- Botão para abrir o carrinho -->
             <button @click="open = true"
-                class="fixed top-10 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg z-40">
+                class="fixed  bottom-6 right-20 bg-indigo-600 text-white p-3 rounded-full shadow-lg z-40">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
