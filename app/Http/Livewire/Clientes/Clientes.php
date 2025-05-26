@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
+use Spatie\Browsershot\Browsershot;
 
 #[Title('Clientes')]
 class Clientes extends Component
@@ -162,6 +163,26 @@ class Clientes extends Component
     public function fecharModelAdicionar()
     {
         $this->resetarCampos();
+    }
+
+    public function gerarRelatorio()
+    {
+        $clientes = Client::select('clients.*')
+            ->withCount('orders')
+            ->orderByDesc('orders_count')
+            ->get();
+
+        $html = view('livewire.clientes.relatorio', compact('clientes'))->render();
+        $path = storage_path('app/public/relatorios/clientes.pdf');
+
+        Browsershot::html($html)
+            ->format('A4')
+            ->margins(10, 10, 10, 10)
+            ->save($path);
+
+        session()->flash('success', 'Relatório gerado com sucesso!');
+
+        return response()->download($path);
     }
 
     public function updatednomeCliente()

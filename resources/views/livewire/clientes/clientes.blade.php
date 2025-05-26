@@ -11,12 +11,17 @@
                     <i class="fas fa-search"></i>
                 </div>
             </div>
-            <div class="col-span-1 grid grid-cols-2 col-start-4 ">
+            <div class="col-span-1 grid grid-cols-2 col-start-4 gap-4">
                 <button type="button" wire:click='abrirModelAdicionar'
-                    class=" col-start-2 max-h-11 text-white px-2 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
+                    class="max-h-11 text-white px-2 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
                     <i class="fa-solid fa-user-plus"></i> Adicionar
                 </button>
+                <button type="button" wire:click="gerarRelatorio"
+                    class="max-h-11 text-white px-2 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-800 transition-all ease-in-out duration-300">
+                    <i class="fa-solid fa-file-pdf"></i> Relatório
+                </button>
             </div>
+
 
             @if ($show == true)
                 <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
