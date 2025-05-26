@@ -1,23 +1,20 @@
 <section class="min-h-screen w-screen bg-blue-100 pb-8">
     <livewire:components.header.header />
 
-    <div class="max-w-screen-xl mx-auto mt-8 px-4">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 hidden">Clientes</h1>
-        <div class="col-span-4 grid grid-cols-4 gap-4">
-            <div class="relative w-full col-span-1 ">
-                <input type="text" wire:model.live.debounce.500ms="nomeCliente" placeholder="Pesquisar"
-                    class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
-                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+            <div class="relative ">
+                <input type="text" wire:model.live.debounce.100="nomeCliente" placeholder="Pesquisar" class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
-                </div>
-            </div>
-            <div class="col-span-1 grid grid-cols-2 col-start-4 ">
-                <button type="button" wire:click='abrirModelAdicionar'
-                    class=" col-start-2 max-h-11 text-white px-2 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
-                    <i class="fa-solid fa-user-plus"></i> Adicionar
                 </button>
             </div>
-
+            <div class="flex items-center gap-2">
+                <button type="button" wire:click='abrirModelAdicionar'
+                    class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
             @if ($show == true)
                 <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
                     style="background-color:rgba(0,0,0,0.6)">
