@@ -1,21 +1,32 @@
 <section class="h-screen w-screen bg-blue-100 overflow-x-hidden">
     <livewire:components.header.header />
-    <div class=" max-w-screen-xl mx-auto grid grid-cols-4 gap-4 mt-8 px-8 ">
+    <div class=" max-w-screen-xl mx-auto grid grid-cols-4 gap-4 mt-8 px-8  ">
         <div class=" col-span-4 grid grid-cols-4 gap-4 ">
             <div class="relative w-full col-span-1">
                 <input type="text" wire:model.live.debounce.100="nomeProduto" placeholder="Pesquisar"
-                    class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
+                    class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
                 <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
 
-            <div class=" grid place-items-end col-span-1 col-start-4">
+            <div class=" flex justify-end items-center gap-2 col-start-4">
+
+                <!-- Botão Adicionar -->
                 <button type="button" wire:click='abrirModalProduto'
-                    class="text-white px-4 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
-                    <i class="fa-solid fa-box-open "></i>
-                    <i class="fa-solid fa-plus "></i>
+                    class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                    <i class="fa-solid fa-plus"></i>
                 </button>
+
+                <!-- Paginação -->
+                <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+
 
                 @if ($show == true)
                     <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
@@ -227,10 +238,11 @@
 
 
         {{-- Cards dos Produtos --}}
-        <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div
+            class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-4 md:max-h-[450px] 2xl:max-h-[800px] overflow-y-auto ">
             @foreach ($produtos as $item)
                 <div wire:key='item-{{ $item->id }}'
-                    class="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-lg transition duration-300 relative">
+                    class="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-lg transition duration-300 relative min-h-[336px] ">
                     {{-- Ícone de opções - remover --}}
                     {{-- <div x-data="{ showOpcoes: false }" class="absolute top-2 right-2 z-10">
                         @if (auth()->user()->admin == 1)
@@ -263,9 +275,9 @@
                 </div>
             @endforeach
         </div>
-        <div class="p-4 border border-t col-span-4">
+        {{-- <div class="p-4 border border-t col-span-4">
             {{ $produtos->links() }}
-        </div>
+        </div> --}}
         {{-- Final do Card Produtos --}}
 
         <div x-data="{ open: false }" class="relative">
