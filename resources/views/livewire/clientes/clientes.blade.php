@@ -14,6 +14,12 @@
                     class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+                <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
             @if ($show == true)
                 <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
@@ -152,11 +158,13 @@
                 </tbody>
 
             </table>
-            <div class="p-4 border border-t">
-                {{ $clientes->links() }}
-            </div>
 
-
+            <!--Navegação antiga-->
+            {{--
+                <div class="p-4 border border-t">
+                    {{ $clientes->links() }}
+                </div>
+            --}}
 
             <!-- Modal de Confirmação-->
             <div x-show="confirmando" x-transition @click.away="confirmando = false"
