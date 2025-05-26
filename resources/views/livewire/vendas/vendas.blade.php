@@ -57,11 +57,10 @@
 
     <div class="overflow-x-auto px-4 py-8 max-w-screen-xl mx-auto ">
         <div class="relative w-full md:w-1/2 xl:w-1/4">
-            <input type="text" wire:model.live.debounce.100="query" placeholder="Pesquisar"
-                class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
-            <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
-                <i class="fas fa-search"></i>
-            </button>
+                    <input type="text" wire:model.live.debounce.100="query" placeholder="Pesquisar" class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                    <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                    <i class="fas fa-search"></i>
+                    </button>
         </div>
         <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden mt-4">
             <thead class="bg-blue-600 text-white shadow">
