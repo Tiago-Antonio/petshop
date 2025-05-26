@@ -31,6 +31,7 @@ class Clientes extends Component
     public $clientesPaginados;
     public $show = false;
     public $perPage = 6;
+    public $query_clientes;
 
     public $nomeCliente;
     // Buscar
@@ -92,11 +93,9 @@ class Clientes extends Component
             }
 
             $this->resetarCampos();
-            
         } catch (\Exception $e) {
 
             session()->flash('error', 'Erro ao salvar cliente.');
-            
         }
     }
 
@@ -138,14 +137,14 @@ class Clientes extends Component
     {
         $cliente = Client::find($id);
 
-        try{
+        try {
             if ($cliente) {
                 $cliente->delete();
                 session()->flash('message', 'Cliente excluído com sucesso.');
             }
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             if ($e->getCode() == '23000') {
-            session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
+                session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
             } else {
                 // Para outras exceções, exibe uma mensagem genérica
                 session()->flash('erro', 'Erro ao deletar cliente.');
@@ -175,13 +174,20 @@ class Clientes extends Component
     {
 
         $query = Client::query()
-        ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         if (!empty($this->nomeCliente)) {
             $query->where('name', 'like', '%' . $this->nomeCliente . '%');
         }
 
         $clientesPaginados = $query->paginate(5);
+
+        $this->query_clientes = Client::selectRaw('name, COUNT(orders.id) as total_compras')
+            ->join('orders', 'clients.id', '=', 'orders.client_id')
+            ->groupBy('clients.id', 'clients.name')
+            ->orderByDesc('total_compras')
+            ->limit(10)
+            ->get();
 
         return view('livewire.clientes.clientes', [
             'clientes' => $clientesPaginados

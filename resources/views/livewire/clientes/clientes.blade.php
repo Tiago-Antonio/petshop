@@ -159,8 +159,6 @@
                 {{ $clientes->links() }}
             </div>
 
-
-
             <!-- Modal de Confirmação-->
             <div x-show="confirmando" x-transition @click.away="confirmando = false"
                 class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -198,6 +196,42 @@
                     {{ session('erro') }}
                 </div>
             @endif
+        </div>
+
+        <div
+            class="hidden md:block h-full row-span-2 2xl:row-span-1 shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto mt-2">
+            <div class="relative h-full">
+                <canvas id="clientesChart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+
+            <script>
+                const ctxClientes = document.getElementById('clientesChart').getContext('2d');
+
+                const labelsClientes = @json($query_clientes->pluck('name'));
+                const dataClientes = @json($query_clientes->pluck('total_compras'));
+
+                new Chart(ctxClientes, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsClientes,
+                        datasets: [{
+                            label: 'Total de Compras por Cliente',
+                            data: dataClientes,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
         </div>
     </div>
 
