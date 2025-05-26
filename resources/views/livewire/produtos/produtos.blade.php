@@ -70,12 +70,45 @@
                                 @enderror
                             </div>
 
-                            <!-- Fornecedor / FornecedorID -->
-                            {{-- <div>
-                            <label for="description" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
-                            <input type="text" wire:model="description" placeholder="Descrição do produto"
-                                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        </div> --}}
+
+                            <!-- Fornecedor -->
+                            <div x-data="{ open: false, selectedId: @entangle('supplier_id') }" class="relative">
+                                <label for="supplier_id" class="block text-sm font-medium text-gray-600 mb-1">
+                                    Fornecedor
+                                </label>
+
+                                <!-- Botão de abertura -->
+                                <button type="button" @click="open = !open"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-left">
+
+                                    <template x-if="selectedId">
+                                        <span
+                                            x-text="$refs.optionList.querySelector('[data-id=\'' + selectedId + '\']')?.innerText || 'Selecione um produto'"></span>
+                                    </template>
+
+                                    <template x-if="!selectedId">
+                                        <span class="text-gray-400">Selecione um Fornecedor</span>
+                                    </template>
+                                </button>
+
+                                <!-- Lista de opções -->
+                                <div x-show="open" @click.outside="open = false" x-transition x-ref="optionList"
+                                    class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                    @foreach ($dropdownSupplier as $supplier)
+                                        <div wire:key='supplier-{{ $supplier->id }}'
+                                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                                            :class="{ 'bg-blue-200': selectedId == '{{ $supplier->id }}' }"
+                                            @click="selectedId = '{{ $supplier->id }}'; open = false"
+                                            data-id="{{ $supplier->id }}">
+                                            {{ $supplier->name }}
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                @error('supplier_id')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                             <!-- Quantidade -->
                             <div>
@@ -168,7 +201,8 @@
 
                     <form class="grid gap-4">
                         <div>
-                            <label for="client_id" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+                            <label for="client_id"
+                                class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
                             <select id="client_id" wire:model='client_id' required
                                 class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">Selecione um cliente</option>

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained();
             $table->unsignedInteger('quantity')->nullable();
+            $table->unsignedInteger('snapshot_quantity')->nullable()->comment('Guarda a quantidade original quando cancela');
             $table->decimal('unit_price', 10, 2)->nullable();
             $table->timestamps();
         });

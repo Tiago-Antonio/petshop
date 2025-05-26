@@ -2,11 +2,14 @@
 
 namespace App\Http\Livewire\Funcionarios;
 
+use App\Models\Order;
 use Livewire\Component;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
+use Spatie\Browsershot\Browsershot;
 
 #[Title('Funcionários')]
 class ModuloFuncionarios extends Component
@@ -28,6 +31,27 @@ class ModuloFuncionarios extends Component
     public $show = false;
     public $abrirOpcoes = false;
     public $modalAbertoParaId = null;
+
+    public function gerarRelatorioPDF()
+    {
+        try {
+            $funcionarios = User::all();
+
+            $html = view('pdf.funcionarios', compact('funcionarios'))->render();
+
+            $fileName = 'funcionarios.pdf';
+
+            Browsershot::html($html)
+                ->setOption('args', ['--no-sandbox'])
+                ->save(storage_path("app/public/{$fileName}"));
+
+            return response()->download(storage_path("app/public/{$fileName}"));
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        }
+    }
+
 
     public function editarFuncionario($id)
     {
@@ -53,14 +77,14 @@ class ModuloFuncionarios extends Component
             'nome'=>'required',
             'email'=>'required',
             'password'=>'required',
-            'telefone'=>'max:11',
+            'telefone'=>'max:11|min:11',
         ];
     }
 
     protected function rulesUpdate()
     {
         return [
-            'telefone' => 'nullable|min:6|max:11',
+            'telefone' => 'nullable|min:11|max:11',
         ];
     }
 
@@ -171,10 +195,28 @@ class ModuloFuncionarios extends Component
 
     public function render()
     {
-        $funcionarios = User::where('name', 'like', '%'.$this->nomeFuncionario.'%')
+        $funcionarios = User::withCount('order')
+            ->where('name', 'like', '%' . $this->nomeFuncionario . '%')
             ->orderBy('created_at', 'desc')
-            ->paginate(8); 
-        
-        return view('livewire.funcionarios.modulofuncionarios', ['funcionarios' => $funcionarios,]);
+            ->paginate(8);
+
+        $funcionarios_pedidos = User::withCount([
+                'order',
+                'order as completed_orders_count' => function ($query) {
+                    $query->where('status', 'finalizado');
+                }
+            ])
+            ->whereHas('order')
+            ->orderByDesc('order_count') 
+            ->take(10) 
+            ->get();
+
+        return view('livewire.funcionarios.modulofuncionarios', [
+            'funcionarios' => $funcionarios,
+            'funcionarios_pedidos' => $funcionarios_pedidos,
+        ]);
     }
+
+
+
 }

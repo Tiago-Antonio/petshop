@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\StockEntry;
+use App\Models\Supplier;
 use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -29,9 +30,11 @@ class Produtos extends Component
     public $query;
     public $show;
     public $dropdownProdutos;
+    public $dropdownSupplier;
 
     // Forms
     public $product_id;
+    public $supplier_id;
     public $quantity;
     public $unit_price;
     public $entry_date;
@@ -196,10 +199,11 @@ class Produtos extends Component
     }
 
 
-    //DropDown para a escolha do Tipo do Produto
+    //DropDown para a escolha do Tipo do Produto e Fornecedor
     public function mount()
     {
         $this->dropdownProdutos = Product::orderBy('id')->get();
+         $this->dropdownSupplier = Supplier::orderBy('id')->get();
     }
 
 
@@ -209,6 +213,7 @@ class Produtos extends Component
     {
         $this->validate([
             'product_id' => 'required',
+            'supplier_id' => 'required',
             'quantity' => 'required',
             'unit_price' => 'required',
         ]);
@@ -217,7 +222,7 @@ class Produtos extends Component
 
             StockEntry::create([
                 'product_id' => $this->product_id,
-                'supplier_id' => 1,
+                'supplier_id' => $this->supplier_id,
                 'quantity' => $this->quantity,
                 'unit_price' => $this->unit_price,
                 'entry_date' => $this->entry_date ?? now(),
@@ -261,7 +266,7 @@ class Produtos extends Component
     }
     public function resetarCampos()
     {
-        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id']);
+        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id', 'supplier_id']);
     }
 
     public function cancelarSecao(){

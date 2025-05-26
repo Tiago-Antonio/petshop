@@ -1,4 +1,98 @@
 <section class="h-screen w-screen bg-blue-100 overflow-x-hidden">
+    <div wire:loading wire:target='gerarRelatorioPDF'
+        class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+        <div class="h-full w-full grid place-items-center">
+            <div>
+                <div class="relative w-20 h-20 mb-4 mx-auto">
+                    <svg class="animate-spin w-full h-full text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <div class="absolute inset-0 grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-white font-medium animate-pulse">Gerando relatório PDF...</p>
+            </div>
+        </div>
+    </div>
+    <button wire:click="gerarRelatorioPDF"
+        class="fixed bottom-6 right-20 bg-indigo-600 hover:bg-indigo-800 text-white p-4 rounded-full shadow-lg z-50 transition ">
+        <i class="fa-solid fa-file-pdf fa-lg"></i>
+    </button>
+    <div x-data="{ showChart: false }">
+        <button @click="showChart = !showChart"
+            class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-800 text-white p-4 rounded-full shadow-lg z-50 transition">
+            <i class="fa-solid fa-chart-column fa-lg"></i>
+        </button>
+
+        <div x-show="showChart" x-transition
+            class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center">
+            <div @click.away="showChart = false"
+                class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-4xl h-96 relative">
+                <button @click="showChart = false"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
+                    <i class="fa-solid fa-xmark fa-xl"></i>
+                </button>
+
+                <!-- Gráfico -->
+                <div
+                    class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+                    <div class="relative h-full">
+                        <canvas id="myChart" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+
+                    <script>
+                        const ctx = document.getElementById('myChart').getContext('2d');
+
+                        const labels = @json($funcionarios_pedidos->pluck('name'));
+                        const pedidos = @json($funcionarios_pedidos->pluck('order_count'));
+                        const concluidos = @json($funcionarios_pedidos->pluck('completed_orders_count'));
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                        label: 'Pedidos',
+                                        data: pedidos,
+                                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Pedidos Concluídos',
+                                        data: concluidos,
+                                        backgroundColor: 'rgba(75, 192, 75, 0.5)',
+                                        borderColor: 'rgba(75, 192, 75, 1)',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <livewire:components.header.header />
     <div class="max-w-screen-xl mx-auto gap-4 mt-8 px-8 ">
         <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-center ">
@@ -26,6 +120,7 @@
                     class=" text-white px-8 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
                     <i class="fa-solid fa-user-plus"></i> Adicionar
                 </button>
+
 
                 @if ($show == true)
                     <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
@@ -98,7 +193,8 @@
 
                             <!-- Cargo -->
                             <div>
-                                <label for="cargo" class="block text-sm font-medium text-gray-600 mb-1">Cargo</label>
+                                <label for="cargo"
+                                    class="block text-sm font-medium text-gray-600 mb-1">Cargo</label>
                                 <input type="text" placeholder="Ex: Atendente, Veterinário" wire:model="cargo"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                 @error('cargo')
@@ -239,5 +335,4 @@
             {{ $funcionarios->links() }}
         </div>
     </div>
-
 </section>

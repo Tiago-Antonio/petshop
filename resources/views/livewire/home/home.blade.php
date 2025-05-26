@@ -70,8 +70,8 @@
                 <div
                     class="h-full shadow-lg bg-white rounded-3xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
                     <i class="fas fa-user-circle text-3xl 2xl:mb-2"></i>
-                    <p class="2xl:text-lg">Usuário logado</p>
-                    <p class="2xl:text-2xl font-bold">{{ $this->usuario_name }}</p>
+                    <p class="2xl:text-lg">Pedidos</p>
+                    <p class="2xl:text-2xl font-bold">{{ $this->funcionarios_pedidos }}</p>
                 </div>
                 <div
                     class="h-full bg-white rounded-3xl grid place-items-center p-2 2xl:p-4 shadow-lg bg-gradient-to-r from-emerald-400 to-green-600 text-white">
