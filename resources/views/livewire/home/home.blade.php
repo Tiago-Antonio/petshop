@@ -6,8 +6,8 @@
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="h-full grid place-items-center">
                 <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800">
-                    {{ $this->usuario_name }}, Bem vindo a sua
-                    ferramenta de Gestão</h1>
+                Olá, seja bem-vindo <span class="text-indigo-600 text-3xl font-bold">{{ $this->usuario_name }}</span>.
+                </h1>
             </div>
             <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {{-- Funcionarios --}}
