@@ -1,150 +1,163 @@
 <section class="h-screen w-screen bg-blue-100 overflow-x-hidden">
     <livewire:components.header.header />
     <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
-        <div class=" col-span-4 grid grid-cols-4 gap-4 ">
-            <div class="relative w-full col-span-1">
+        <div class="grid gap-2 2xl:gap-4 h-full">
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div class="relative">
                     <input type="text" wire:model.live.debounce.100="nomeProduto" placeholder="Pesquisar" class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
                     <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
                     </button>
-            </div>
+                </div>
 
-            <div class=" grid place-items-end col-span-1 col-start-4">
-                    <button type="button" wire:click='abrirModalProduto'
-                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                <div class="flex items-center gap-2">
+                        <button type="button" wire:click='abrirModalProduto'
+                            class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
 
-                @if ($show == true)
-                    <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
-                        style="background-color:rgba(0,0,0,0.6)">
-                        <form wire:submit.prevent='CadastrarProduto'
-                            class="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-4 relative">
-                            <!-- Botão de fechar -->
-                            <div class="absolute top-3 right-3">
-                                <button type="button" wire:click='fecharModalProduto'
-                                    class="text-red-600 hover:text-red-800  transition-all duration-200 ease-in-out">
-                                    <i class="fa-solid fa-xmark fa-lg"></i>
-                                </button>
-                            </div>
-                            <p class="text-center font-bold text-2xl text-gray-700 mb-4">Cadastro de Produtos</p>
+                    @if ($show == true)
+                        <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
+                            style="background-color:rgba(0,0,0,0.6)">
+                            <form wire:submit.prevent='CadastrarProduto'
+                                class="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-4 relative">
+                                <!-- Botão de fechar -->
+                                <div class="absolute top-3 right-3">
+                                    <button type="button" wire:click='fecharModalProduto'
+                                        class="text-red-600 hover:text-red-800  transition-all duration-200 ease-in-out">
+                                        <i class="fa-solid fa-xmark fa-lg"></i>
+                                    </button>
+                                </div>
+                                <p class="text-center font-bold text-2xl text-gray-700 mb-4">Cadastro de Produtos</p>
 
-                            <!-- Nome / produtoID -->
-                            <div x-data="{ open: false, selectedId: @entangle('product_id') }" class="relative">
-                                <label for="product_id" class="block text-sm font-medium text-gray-600 mb-1">
-                                    Produto
-                                </label>
+                                <!-- Nome / produtoID -->
+                                <div x-data="{ open: false, selectedId: @entangle('product_id') }" class="relative">
+                                    <label for="product_id" class="block text-sm font-medium text-gray-600 mb-1">
+                                        Produto
+                                    </label>
 
-                                <!-- Botão de abertura -->
-                                <button type="button" @click="open = !open"
-                                    class="w-full border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-left">
+                                    <!-- Botão de abertura -->
+                                    <button type="button" @click="open = !open"
+                                        class="w-full border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-left">
 
-                                    <template x-if="selectedId">
-                                        <span
-                                            x-text="$refs.optionList.querySelector('[data-id=\'' + selectedId + '\']')?.innerText || 'Selecione um produto'"></span>
-                                    </template>
+                                        <template x-if="selectedId">
+                                            <span
+                                                x-text="$refs.optionList.querySelector('[data-id=\'' + selectedId + '\']')?.innerText || 'Selecione um produto'"></span>
+                                        </template>
 
-                                    <template x-if="!selectedId">
-                                        <span class="text-gray-400">Selecione um produto</span>
-                                    </template>
-                                </button>
+                                        <template x-if="!selectedId">
+                                            <span class="text-gray-400">Selecione um produto</span>
+                                        </template>
+                                    </button>
 
-                                <!-- Lista de opções -->
-                                <div x-show="open" @click.outside="open = false" x-transition x-ref="optionList"
-                                    class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                                    @foreach ($dropdownProdutos as $produto)
-                                        <div wire:key='produto-{{ $produto->id }}'
-                                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-                                            :class="{ 'bg-blue-200': selectedId == '{{ $produto->id }}' }"
-                                            @click="selectedId = '{{ $produto->id }}'; open = false"
-                                            data-id="{{ $produto->id }}">
-                                            {{ $produto->name }}
-                                        </div>
-                                    @endforeach
+                                    <!-- Lista de opções -->
+                                    <div x-show="open" @click.outside="open = false" x-transition x-ref="optionList"
+                                        class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                        @foreach ($dropdownProdutos as $produto)
+                                            <div wire:key='produto-{{ $produto->id }}'
+                                                class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                                                :class="{ 'bg-blue-200': selectedId == '{{ $produto->id }}' }"
+                                                @click="selectedId = '{{ $produto->id }}'; open = false"
+                                                data-id="{{ $produto->id }}">
+                                                {{ $produto->name }}
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    @error('product_id')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
-                                @error('product_id')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Fornecedor / FornecedorID -->
-                            {{-- <div>
-                            <label for="description" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
-                            <input type="text" wire:model="description" placeholder="Descrição do produto"
-                                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        </div> --}}
-
-                            <!-- Quantidade -->
-                            <div>
-                                <label for="quantity" class="block text-sm font-medium text-gray-600 mb-1">
-                                    Quantidade
-                                </label>
-                                <input min="1" type="number" wire:model="quantity"
+                                <!-- Fornecedor / FornecedorID -->
+                                {{-- <div>
+                                <label for="description" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
+                                <input type="text" wire:model="description" placeholder="Descrição do produto"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('quantity')
-                                    <span class="text-red-500 text-sm">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
+                            </div> --}}
 
-                            <!-- Preço Compra -->
-                            <div>
-                                <label for="unit_price" class="block text-sm font-medium text-gray-600 mb-1">
-                                    Valor unitário
-                                </label>
-                                <input type="number" min="0.01" step="0.01" wire:model="unit_price"
-                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('unit_price')
-                                    <span class="text-red-500 text-sm">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
+                                <!-- Quantidade -->
+                                <div>
+                                    <label for="quantity" class="block text-sm font-medium text-gray-600 mb-1">
+                                        Quantidade
+                                    </label>
+                                    <input min="1" type="number" wire:model="quantity"
+                                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    @error('quantity')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
 
-                            <!-- Data -->
-                            <div>
-                                <label for="entry_date" class="block text-sm font-medium text-gray-600 mb-1">
-                                    Data
-                                </label>
-                                <input type="date" placeholder="Data" wire:model="entry_date"
-                                    class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                @error('entry_date')
-                                    <span class="text-red-500 text-sm">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
+                                <!-- Preço Compra -->
+                                <div>
+                                    <label for="unit_price" class="block text-sm font-medium text-gray-600 mb-1">
+                                        Valor unitário
+                                    </label>
+                                    <input type="number" min="0.01" step="0.01" wire:model="unit_price"
+                                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    @error('unit_price')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <!-- Data -->
+                                <div>
+                                    <label for="entry_date" class="block text-sm font-medium text-gray-600 mb-1">
+                                        Data
+                                    </label>
+                                    <input type="date" placeholder="Data" wire:model="entry_date"
+                                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    @error('entry_date')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
 
 
-                            <!-- Botão -->
-                            <div class="pt-4">
-                                <button type="submit"
-                                    class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                                    Cadastrar
-                                </button>
-                            </div>
-                        </form>
+                                <!-- Botão -->
+                                <div class="pt-4">
+                                    <button type="submit"
+                                        class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                                        Cadastrar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+
+                @if (session()->has('successoCadastrar'))
+                    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                        class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                        {{ session('successoCadastrar') }}
                     </div>
                 @endif
+
+                @if (session()->has('erroCadastrar'))
+                    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                        class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                        {{ session('erroCadastrar') }}
+                    </div>
+                @endif
+
             </div>
-
-            @if (session()->has('successoCadastrar'))
-                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
-                    class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
-                    {{ session('successoCadastrar') }}
-                </div>
-            @endif
-
-            @if (session()->has('erroCadastrar'))
-                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
-                    class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
-                    {{ session('erroCadastrar') }}
-                </div>
-            @endif
-
         </div>
+
+
+        <div class="h-full row-span-2 2xl:row-span-1 grid grid-cols-1 gap-4 overflow-auto">
+
+            
 
         {{-- Selecionar Cliente --}}
         <div x-data="{ client_name: @entangle('client_name') }" class="fixed z-50">
@@ -227,16 +240,21 @@
                 </div>
             @endforeach
         </div>
+
+        <!---->
+        {{--
         <div class="p-4 border border-t col-span-4">
             {{ $produtos->links() }}
         </div>
+        --}}
+
         {{-- Final do Card Produtos --}}
 
         <div x-data="{ open: false }" class="relative">
             <!-- Botão para abrir o carrinho -->
             <button @click="open = true"
-                class="fixed top-10 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg z-40">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                class="fixed bottom-10 right-10 bg-indigo-600 text-white p-5 rounded-full shadow-lg z-40 text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -246,6 +264,7 @@
                     {{ $soma }}
                 </span>
             </button>
+
             <!-- Overlay -->
             <div x-show="open" @click="open = false" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
             <div x-show="open" x-transition:enter="transition ease-out duration-300"
@@ -367,4 +386,6 @@
                 {{ session('erroPedido') }}
             </div>
         @endif
+        </div>
+
 </section>
