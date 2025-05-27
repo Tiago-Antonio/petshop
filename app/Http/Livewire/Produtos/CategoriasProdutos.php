@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Produtos;
 
 use App\Models\Client;
 use App\Models\Product;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -30,6 +31,30 @@ class CategoriasProdutos extends Component
     public $imagemAtual;
     
     public $nomeProduto;
+
+
+    public function excluirProduto($id)
+    {
+        $produto = Product::find($id);
+        
+        try{
+            if ($produto) {
+                $produto->delete();
+                session()->flash('sucesso', 'produto excluído com sucesso.');
+            }
+        }catch(QueryException $e){
+            if ($e->getCode() == '23000') {
+            session()->flash('erro', 'Não é possível deletar o produto porque existem pedidos relacionados a ele.');
+            } else {
+                session()->flash('erro', 'Erro ao deletar produto.');
+            }
+        } catch (\Exception $e) {
+            session()->flash('erro', 'Erro inesperado ao deletar produto.');
+        }
+        $this->confirmando = false;
+    }
+
+
 
      public function editarProduto($id)
     {
@@ -69,15 +94,15 @@ class CategoriasProdutos extends Component
                     'name'=>$this->name,
                     'description'=>$this->description,
                     'min_stock'=>$this->min_stock,
-                    'photo_path'=>$this->photo_path,
+                    'photo_path' => $produto->photo_path,
                 ];
                 
                 
                 if ($this->photo_path) {
-                    
                     if ($produto->photo_path) {
                         Storage::disk('public')->delete($produto->photo_path);
                     }
+
                     $dados['photo_path'] = $this->photo_path->store('produtos', 'public');
                 }
                 $produto->update($dados);

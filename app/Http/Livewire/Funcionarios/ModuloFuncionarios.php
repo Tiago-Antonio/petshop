@@ -31,6 +31,7 @@ class ModuloFuncionarios extends Component
     public $show = false;
     public $abrirOpcoes = false;
     public $modalAbertoParaId = null;
+    public $showChart = false;
 
     public function gerarRelatorioPDF()
     {

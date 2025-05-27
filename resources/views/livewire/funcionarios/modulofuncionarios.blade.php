@@ -35,13 +35,14 @@
         </button>
 
         <div x-show="showChart" x-transition
-            class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center">
+            class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center backdrop-blur-sm">
             <div @click.away="showChart = false"
-                class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-4xl h-96 relative">
+                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-4xl h-96 relative">
                 <button @click="showChart = false"
                     class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
                     <i class="fa-solid fa-xmark fa-xl"></i>
                 </button>
+
 
                 <!-- Gráfico -->
                 <div
@@ -95,7 +96,7 @@
 
     <livewire:components.header.header />
 
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-2">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 pt-4 pb-4 2xl:pb-16 px-2 ">
         <!-- Primeira linha -->
         <div class="grid gap-2 2xl:gap-4 h-full px-4">
             <div class="flex flex-wrap justify-between items-center gap-4">
@@ -238,13 +239,14 @@
 
         <!-- Lista de funcionários -->
         <div
-            class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-4 md:max-h-[500px] 2xl:max-h-[600px] overflow-y-auto px-2">
+            class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-4 md:max-h-[500px] 2xl:max-h-fit overflow-y-auto px-2 ">
             @foreach ($funcionarios as $item)
                 <div wire:key='item-{{ $item->id }}'
-                    class="grid gap-4 bg-white shadow-lg rounded-xl px-4 py-2 relative ">
+                    class="grid gap-4 bg-white shadow-lg rounded-xl px-4 py-2 relative max-h-80 ">
                     <div class="flex justify-between">
-                        <div class="bg-green-600 rounded-lg px-2 py-1 grid place-items-center">
-                            <p class="text-white font-medium">Ativo</p>
+                        <div
+                            class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-full px-3 py-1 flex items-center">
+                            <p class="text-white font-medium text-xs">Ativo</p>
                         </div>
                         <div class="relative">
                             <button type="button" wire:click='abrirModalOpcoes({{ $item['id'] }})'
@@ -297,20 +299,28 @@
                         </div>
                     </div>
 
+                    {{-- Nome e cargo do funcionario --}}
                     <div class="flex flex-col items-center">
-                        <div class="grid place-items-center">
-                            <img src="{{ $item['photo_path'] }}" alt="Usuário"
-                                class="w-24 h-24 rounded-full object-cover">
+                        <div class="grid place-items-center mb-3">
+                            <img src="{{ $item['photo_path'] }}" alt="Foto de {{ $item['name'] }}"
+                                class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md hover:border-emerald-200 transition-all duration-300">
                         </div>
-                        <p>{{ $item['name'] }}</p>
-                        <p>{{ $item['role'] }}</p>
+                        <h3 class="text-lg font-semibold text-gray-800">{{ $item['name'] }}</h3>
+                        <p class="text-sm text-emerald-600 font-medium">{{ $item['role'] }}</p>
                     </div>
 
-                    <div class="mt-2 text-xs w-full bg-gray-100 p-2 rounded-md">
-                        <ul class="space-y-1">
-                            <li class="font-semibold truncate md:max-w-52  2xl:max-w-60">Email: {{ $item->email }}
+                    {{-- Informações de contato --}}
+                    <div class="mt-2 text-xs w-full bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-envelope text-gray-400 mt-0.5"></i>
+                                <span
+                                    class="text-gray-700 truncate md:max-w-52 2xl:max-w-60">{{ $item->email }}</span>
                             </li>
-                            <li class="font-semibold truncate md:max-w-52 2xl:max-w-60">Telefone: {{ $item->phone }}
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-phone text-gray-400 mt-0.5"></i>
+                                <span
+                                    class="text-gray-700 truncate md:max-w-52 2xl:max-w-60">{{ $item->phone }}</span>
                             </li>
                         </ul>
                     </div>

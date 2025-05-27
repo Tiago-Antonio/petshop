@@ -1,4 +1,4 @@
-<section class="min-h-screen w-screen bg-blue-100 pb-8">
+<section class="min-h-screen w-screen bg-blue-100 pb-8 overflow-x-hidden">
     <livewire:components.header.header />
     <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
         <div class="flex flex-wrap justify-between items-center gap-4">
@@ -110,7 +110,7 @@
             </div>
         @endif
 
-        <div x-data="{ confirmando: false, clienteIdParaExcluir: null }" class="overflow-x-auto mt-2 ">
+        <div x-data="{ confirmando: false, produtoIdParaExcluir: null }" class="overflow-x-auto mt-2 ">
             <table class="min-w-full table-auto bg-white shadow-lg rounded-lg ">
                 <thead class="bg-blue-600 text-white">
                     <tr>
@@ -126,8 +126,15 @@
                     @foreach ($produtos as $item)
                         <tr wire:key='item-{{ $item->id }}' class="hover:bg-blue-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap flex items-center gap-3">
-                                <img src="{{ asset('storage/' . $item['photo_path']) }}" alt="Produtos"
-                                    class="w-12 h-12 rounded-full object-cover object-top">
+                                @php
+                                    $path = $item['photo_path'];
+                                    $imgSrc = Str::startsWith($path, 'produtos/')
+                                        ? asset('storage/' . $path)
+                                        : asset('img/products/' . basename($path));
+                                @endphp
+
+                                <img src="{{ $imgSrc }}" alt="Produto"
+                                    class="w-16 h-16 rounded-full object-cover border border-gray-200 mb-4">
                                 <span>{{ $item['name'] }}</span>
                             </td>
                             <td class="px-6 py-4 max-w-[250px] break-words ">{{ $item['description'] }}</td>
@@ -139,7 +146,7 @@
                                         class="flex items-center gap-1 px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition">
                                         ✏️ Editar
                                     </button>
-                                    <button @click="confirmando = true; clienteIdParaExcluir = {{ $item['id'] }}"
+                                    <button @click="confirmando = true; produtoIdParaExcluir = {{ $item['id'] }}"
                                         class="flex items-center gap-1 px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600 transition">
                                         🗑️ Excluir
                                     </button>
@@ -167,7 +174,7 @@
                     <div class="flex justify-end gap-4">
                         <button @click="confirmando = false"
                             class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancelar</button>
-                        <button @click="confirmando = false; $wire.excluirCliente(clienteIdParaExcluir)"
+                        <button @click="confirmando = false; $wire.excluirProduto(produtoIdParaExcluir)"
                             class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                             Confirmar
                         </button>
@@ -186,7 +193,7 @@
             @if (session()->has('erro'))
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
                     class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
-                    {{ session('error') }}
+                    {{ session('erro') }}
                 </div>
             @endif
 

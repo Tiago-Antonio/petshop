@@ -11,7 +11,10 @@
             </div>
 
             <div class=" flex justify-end items-center gap-2 col-start-4">
-
+                <a href="{{ route('produtosCategoria') }}" wire:navigate
+                    class="p-2 bg-green-600 text-white hover:bg-green-700 transition-all shadow-md rounded">
+                    <i class="fa-solid fa-tags"></i>
+                </a>
                 <!-- Botão Adicionar -->
                 <button type="button" wire:click='abrirModalProduto'
                     class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
@@ -337,11 +340,23 @@
                                     <li wire:key='carrinho-{{ $index }}'
                                         class="py-3 flex justify-between items-center">
                                         <div class="flex items-center space-x-3">
+                                            @php
+                                                $path = $item['imagem'] ?? null;
+
+                                                if ($path) {
+                                                    $imgSrc = Str::startsWith($path, 'produtos/')
+                                                        ? asset('storage/' . $path)
+                                                        : asset('img/products/' . basename($path));
+                                                } else {
+                                                    $imgSrc = null;
+                                                }
+                                            @endphp
+
                                             <div
-                                                class="bg-gray-100 rounded-md h-12 w-12 flex items-center justify-center">
-                                                @if (isset($item['imagem']))
-                                                    <img src="{{ $item['imagem'] }}" alt="{{ $item['nome'] }}"
-                                                        class="h-10 w-10 object-cover rounded">
+                                                class="bg-gray-100 rounded-md h-12 w-12 flex items-center justify-center overflow-hidden">
+                                                @if ($imgSrc)
+                                                    <img src="{{ $imgSrc }}" alt="{{ $item['nome'] }}"
+                                                        class="h-12 w-12 object-cover rounded">
                                                 @else
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="h-5 w-5 text-gray-400" fill="none"

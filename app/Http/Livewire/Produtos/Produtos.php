@@ -112,6 +112,7 @@ class Produtos extends Component
             if ($item['id'] == $product_id) {
                 if ($item['quantidade'] > 1) {
                     $this->carrinho[$index]['quantidade'] -= 1;
+                    $this->soma -= 1;
                 } else {
                     unset($this->carrinho[$index]);
                     $this->carrinho = array_values($this->carrinho);
@@ -119,6 +120,19 @@ class Produtos extends Component
                 $this->preco_total -= 1 * $item['preco'];
                 break;
             }
+        }
+
+        $this->somaCart = [];
+        $this->soma = 0;
+        $this->preco_total = 0;
+
+        foreach ($this->carrinho as $cart) {
+            $this->somaCart[$cart['id']] = [
+                'quantidade' => $cart['quantidade'],
+                'preco_total' => $cart['quantidade'] * $cart['preco'],
+            ];
+            $this->soma += $cart['quantidade'];
+            $this->preco_total += $cart['quantidade'] * $cart['preco'];
         }
     }
 

@@ -9,7 +9,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/header', \App\Http\Livewire\Components\Header\Header::class)->name('header');
     Route::get('/clientes', \App\Http\Livewire\Clientes\Clientes::class)->name('clientes');
     Route::get('/produtos', \App\Http\Livewire\Produtos\Produtos::class)->name('produtos');
-    Route::get('/produtos/categoria', \App\Http\Livewire\Produtos\CategoriasProdutos::class)->name('categoria_produtos');
+    Route::get('/produtos/categoria', \App\Http\Livewire\Produtos\CategoriasProdutos::class)->name('produtosCategoria');
     Route::get('/supplier', \App\Http\Livewire\Supplier\SupplierModule::class)->name('suppliers'); 
     Route::get('/vendas', \App\Http\Livewire\Vendas\Vendas::class)->name('vendas');
 });
