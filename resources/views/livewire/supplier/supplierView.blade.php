@@ -1,5 +1,5 @@
 <section class="h-screen w-screen bg-blue-100">
-    <div wire:loading wire:target='gerarRelatorioPDF'
+    <div wire:loading wire:target='generateRelatoryPDF'
         class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
         <div class="h-full w-full grid place-items-center">
             <div>
@@ -36,7 +36,7 @@
         <div x-show="showChart" x-transition
             class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center backdrop-blur-sm">
             <div @click.away="showChart = false"
-                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-[90vw] h-[80vh] relative">
+                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-[90vw] h-[90vh] relative">
                 <button @click="showChart = false"
                     class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
                     <i class="fa-solid fa-xmark fa-xl"></i>
