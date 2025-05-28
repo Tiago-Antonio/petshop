@@ -45,11 +45,12 @@ class Home extends Component
 
 
         $this->query_produtos = Product::selectRaw('LEFT(name, 8) as name, current_stock')
+            ->whereNotNull('current_stock')
             ->orderBy('current_stock', 'asc')
             ->take(15)
             ->get();
         
-        $this->min_produtos = Product::whereColumn('current_stock', '<', 'min_stock')->get();
+        $this->min_produtos = Product::whereColumn('current_stock', '<=', 'min_stock')->get();
         
         return view('livewire.home.home');
     }

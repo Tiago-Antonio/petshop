@@ -189,6 +189,13 @@
                 </div>
             @endif
 
+            @if (session()->has('estoqueMinimo'))
+                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                    class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-blue-100 border border-blue-400 text-blue-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">
+                    {{ session('estoqueMinimo') }}
+                </div>
+            @endif
+
             @if (session()->has('erroCadastrar'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
                     class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-md transition-all duration-300">

@@ -181,6 +181,10 @@ class Produtos extends Component
                         $removendo_produto->current_stock -= $quantity;
                         $removendo_produto->save();
 
+                        if($removendo_produto->current_stock <= $removendo_produto->min_stock){
+                            session()->flash('estoqueMinimo', "O produto '{$removendo_produto->name}' está abaixo do estoque mínimo!");
+                        }
+
                         OrderItem::create([
                             'order_id' => $pedido->id,
                             'product_id' => $produto['id'],
@@ -242,10 +246,18 @@ class Produtos extends Component
                 'entry_date' => $this->entry_date ?? now(),
             ]);
 
-            //Atualiza os Dados da tabela Produtos com a entrada dos novos produtos!
+            //Atualiza os Dados da tabela Produtos com a entrada dos novos produtos e a média do preço!
             $produto = Product::find($this->product_id);
+            $estoqueAntigo = $produto->current_stock;
+            $precoAntigo = $produto->purchase_price;
+            $novaQuantidade = $this->quantity;
+            $novoPreco = $this->unit_price;
+
+            $novoPrecoMedio = (($estoqueAntigo * $precoAntigo) + ($novaQuantidade * $novoPreco)) / ($estoqueAntigo + $novaQuantidade);
             if ($produto) {
-                $produto->current_stock += $this->quantity;
+                $produto->current_stock += $novaQuantidade;
+                $produto->purchase_price = $novoPrecoMedio;
+                $produto->sale_price = $novoPrecoMedio * 1.50;
                 $produto->save();
             }
 
@@ -312,7 +324,7 @@ class Produtos extends Component
             $query = Product::where('name', 'like', '%' . $this->nomeProduto . '%');
         }
 
-        $produtos = $query->orderBy('created_at', 'desc')
+        $produtos = $query->orderBy('created_at', 'asc')
         ->paginate(8);
 
         return view('livewire.produtos.produtos', [
