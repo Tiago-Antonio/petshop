@@ -42,8 +42,7 @@
                     <i class="fa-solid fa-xmark fa-xl"></i>
                 </button>
                 <!-- Gráfico -->
-                <div
-                    class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+                <div class="hidden md:block h-full shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
                     <div class="relative h-full">
                         <canvas id="myChart" class="w-full h-full"></canvas>
 
@@ -91,9 +90,10 @@
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <!-- Campo de pesquisa -->
                 <div class="relative">
-                    <input type="text" wire:model.live.debounce.100="searchSupplierByName" placeholder="Pesquisar" class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                    <input type="text" wire:model.live.debounce.100="searchSupplierByName" placeholder="Pesquisar"
+                        class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
                     <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
-                    <i class="fas fa-search"></i>
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
                 <!-- Botoes de interacao -->
@@ -112,7 +112,10 @@
                     <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <button wire:click="nextPage"
+                        class="p-2 bg-gray-300 hover:bg-gray-400 transition
+                        @if ($suppliers->currentPage() === $lastPage) opacity-50 cursor-not-allowed @endif"
+                        @if ($suppliers->currentPage() === $lastPage) disabled @endif>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
 
@@ -240,7 +243,7 @@
                     </thead>
                     <tbody>
                         @foreach ($suppliers as $item)
-                            <tr class="bg-[#fefeff] shadow">
+                            <tr class="bg-[#fefeff] shadow" wire:key='item-{{ $item->id }}'>
                                 <td class="px-4 py-2 h-16 text-gray-800 text-center ">
                                     <input type="checkbox" wire:model="selectedSuppliers" value="{{ $item['id'] }}"
                                         class="w-5 h-5 accent-[#2096f2] cursor-pointer">

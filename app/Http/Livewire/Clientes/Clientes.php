@@ -170,6 +170,20 @@ class Clientes extends Component
         $this->resetPage();
     }
 
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Client::where('name', 'like', '%' . $this->nomeCliente . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(5)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
 
     public function render()
     {
@@ -184,7 +198,8 @@ class Clientes extends Component
         $clientesPaginados = $query->paginate(5);
 
         return view('livewire.clientes.clientes', [
-            'clientes' => $clientesPaginados
+            'clientes' => $clientesPaginados,
+            'lastPage' => $clientesPaginados->lastPage(),
         ]);
     }
 }

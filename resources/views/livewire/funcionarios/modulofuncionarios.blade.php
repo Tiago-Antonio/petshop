@@ -112,20 +112,31 @@
                     </form>
                 </div>
                 <!-- Botoes de interacao -->
-                <div class="flex items-center gap-2">
-                    <!-- Botão Adicionar -->
-                    <button type="button" wire:click='abrirModal'
-                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                    <!-- Paginação -->
-                    <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                    <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <!-- Botão Adicionar -->
+                        <button type="button" wire:click='abrirModal'
+                            class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <!-- Paginação -->
+                        <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button wire:click="nextPage"
+                            class="p-2 bg-gray-300 hover:bg-gray-400 transition
+                            @if ($funcionarios->currentPage() === $lastPage) opacity-50 cursor-not-allowed @endif"
+                            @if ($funcionarios->currentPage() === $lastPage) disabled @endif>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    {{-- <p class="ml-auto text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-md shadow-sm mt-4">
+                        <i class="fa-solid fa-file-lines mr-1 text-blue-500"></i>
+                        Página <span class="font-semibold">{{ $funcionarios->currentPage() }}</span> de <span
+                            class="font-semibold">{{ $lastPage }}</span>
+                    </p> --}}
                 </div>
+
             </div>
             @if ($show == true)
                 <!-- Modal de Cadastro -->
@@ -239,7 +250,7 @@
 
         <!-- Lista de funcionários -->
         <div
-            class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-4 md:max-h-[500px] 2xl:max-h-fit overflow-y-auto px-2 ">
+            class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:max-h-[500px] 2xl:max-h-fit overflow-y-auto px-2 ">
             @foreach ($funcionarios as $item)
                 <div wire:key='item-{{ $item->id }}'
                     class="grid gap-4 bg-white shadow-lg rounded-xl px-4 py-2 relative max-h-80 ">

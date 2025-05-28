@@ -22,7 +22,7 @@
                     </a>
                 @endif
 
-                <a href="{{ route('suppliers') }}" wire:navigate
+                <a href="{{ route('suppliers') }}"
                     :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'suppliers', 'text-gray-600': activePage !== 'suppliers' }"
                     class="hover:text-blue-600 transition font-semibold pb-1">
                     Fornecedores

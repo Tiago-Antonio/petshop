@@ -30,6 +30,22 @@ class SupplierModule extends Component
     public $showModalGraphic = false;
     public $showChart = false;
 
+
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Supplier::where('name', 'like', '%' . $this->searchSupplierByName . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(10)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
+
     public function render()
     {
         $suppliers = Supplier::where('active', 1)
@@ -37,11 +53,17 @@ class SupplierModule extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $suppliersWithDeliveries = Supplier::select('suppliers.name', DB::raw('COUNT(stock_entries.id) as total_entregas'))->leftJoin('stock_entries', 'suppliers.id', '=', 'stock_entries.supplier_id')->groupBy('suppliers.id', 'suppliers.name')->get();
+        $suppliersWithDeliveries = Supplier::select('suppliers.name', DB::raw('COUNT(stock_entries.id) as total_entregas'))
+            ->leftJoin('stock_entries', 'suppliers.id', '=', 'stock_entries.supplier_id')
+            ->groupBy('suppliers.id', 'suppliers.name')
+            ->orderBy('total_entregas', 'desc')
+            ->take(15)
+            ->get();
 
         return view('livewire.supplier.supplierView', [
             'suppliers' => $suppliers,
             'suppliersWithDeliveries' => $suppliersWithDeliveries,
+            'lastPage' => $suppliers->lastPage(),
         ]);
     }
 

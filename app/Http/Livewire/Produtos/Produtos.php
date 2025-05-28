@@ -288,6 +288,21 @@ class Produtos extends Component
         $this->client_id = '';
     }
 
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Product::where('name', 'like', '%' . $this->nomeProduto . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(8)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
+
     public function render()
     {
         $this->clientes = Client::all();
@@ -297,8 +312,12 @@ class Produtos extends Component
             $query = Product::where('name', 'like', '%' . $this->nomeProduto . '%');
         }
 
-        $produtos = $query->paginate(8);
+        $produtos = $query->orderBy('created_at', 'desc')
+        ->paginate(8);
 
-        return view('livewire.produtos.produtos', ['produtos' => $produtos]);
+        return view('livewire.produtos.produtos', [
+            'produtos' => $produtos, 
+            'lastPage' => $produtos->lastPage(),
+        ]);
     }
 }

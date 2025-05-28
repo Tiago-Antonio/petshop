@@ -33,6 +33,13 @@ class ModuloFuncionarios extends Component
     public $modalAbertoParaId = null;
     public $showChart = false;
 
+    public $ultimaPagina;
+    public $usuarios;
+
+
+  
+
+
     public function gerarRelatorioPDF()
     {
         try {
@@ -193,6 +200,20 @@ class ModuloFuncionarios extends Component
            
     }
   
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = User::where('name', 'like', '%' . $this->nomeFuncionario . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(8)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
 
     public function render()
     {
@@ -215,6 +236,7 @@ class ModuloFuncionarios extends Component
         return view('livewire.funcionarios.modulofuncionarios', [
             'funcionarios' => $funcionarios,
             'funcionarios_pedidos' => $funcionarios_pedidos,
+            'lastPage' => $funcionarios->lastPage(),
         ]);
     }
 
