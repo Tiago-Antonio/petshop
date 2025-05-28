@@ -153,8 +153,10 @@ class SupplierModule extends Component
     //OPEN CREATE MODAL
     public function openModalCreateSupplier()
     {
+        $this->reset(['supplierId', 'name', 'phone', 'email', 'address']);
         $this->showModalCreateSupplier = true;
     }
+
     //CLOSE CREATE MODAL
     public function closeModalCreateSupplier()
     {
