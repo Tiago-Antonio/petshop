@@ -14,7 +14,8 @@ class Sale extends Model
         'sale_date',
     ];
 
-    public function order(): BelongsTo{
+    public function order(): BelongsTo
+    {
         return $this->belongsTo(Order::class);
     }
 
