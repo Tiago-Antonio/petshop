@@ -21,7 +21,7 @@ class OrderFactory extends Factory
             'client_id'=> $this->faker->numberBetween(1, 2),
             'user_id' => User::inRandomOrder()->first()?->id ?? 1, 
             'payment_id' => $this->faker->numberBetween(1, 4), 
-            'status' => $this->faker->randomElement(['pendente', 'concluido', 'cancelado']),
+            'status' => $this->faker->randomElement(['pendente', 'finalizado', 'cancelado']),
             'total_amount' => $this->faker->randomFloat(2, 10, 500),
             'created_at' => now(),
         ];

@@ -84,7 +84,7 @@
         </div>
     </div>
     <livewire:components.header.header />
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-7xl mx-auto gap-4 py-4 px-8">
         <!-- Primeira linha -->
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="flex flex-wrap justify-between items-center gap-4">

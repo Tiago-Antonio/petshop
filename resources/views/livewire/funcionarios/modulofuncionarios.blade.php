@@ -193,6 +193,15 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Confirme a Senha</label>
+                            <input type="password" autocomplete="new-password" placeholder="Digite a senha novamente"
+                                wire:model="password_confirmation"
+                                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            @error('password_confirmation')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
+                        </div>
 
                         <!-- Telefone -->
                         <div>
@@ -212,6 +221,30 @@
                             @error('cargo')
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
+                        </div>
+
+
+                        <!-- Foto -->
+                        <div>
+                            <label for="imagem" class="block text-sm font-medium text-gray-600 mb-1">Imagem</label>
+                            <input type="file" wire:model="photo_path"
+                                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            @error('photo_path')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
+                            <div wire:loading wire:target='photo_path' class="flex items-center space-x-2 mt-2">
+                                <!-- Spinner -->
+                                <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                </svg>
+
+                                <!-- Texto -->
+                                <span class="text-green-600 font-medium text-sm">Carregando imagem...</span>
+                            </div>
                         </div>
 
                         <!-- Botão -->
@@ -313,7 +346,13 @@
                     {{-- Nome e cargo do funcionario --}}
                     <div class="flex flex-col items-center">
                         <div class="grid place-items-center mb-3">
-                            <img src="{{ $item['photo_path'] }}" alt="Foto de {{ $item['name'] }}"
+                            @php
+                                $path = $item['photo_path'];
+                                $imgSrc = Str::startsWith($path, 'funcionarios/')
+                                    ? asset('storage/' . $path)
+                                    : asset('img/funcionarios/' . basename($path));
+                            @endphp
+                            <img src="{{ $imgSrc }}" alt="Foto de {{ $item['name'] }}"
                                 class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md hover:border-emerald-200 transition-all duration-300">
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">{{ $item['name'] }}</h3>

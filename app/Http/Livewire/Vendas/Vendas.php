@@ -61,6 +61,7 @@ class Vendas extends Component
             $this->confirmando = false;
         } else{
             session()->flash('erro', 'Apenas administradores podem cancelar uma venda!');
+            $this->confirmando = false;
         }  
     }
 

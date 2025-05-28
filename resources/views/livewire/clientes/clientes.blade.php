@@ -1,6 +1,6 @@
 <section class="min-h-screen w-screen bg-blue-100 pb-8">
     <livewire:components.header.header />
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-7xl mx-auto gap-4 py-4 px-8">
         <div class="flex flex-wrap justify-between items-center gap-4">
             <div class="relative ">
                 <input type="text" wire:model.live.debounce.100="nomeCliente" placeholder="Pesquisar"
