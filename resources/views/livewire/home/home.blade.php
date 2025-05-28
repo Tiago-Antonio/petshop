@@ -6,8 +6,9 @@
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="h-full grid place-items-center">
                 <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800">
-                    {{ $this->usuario_name }}, Bem vindo a sua
-                    ferramenta de Gestão</h1>
+                    Olá, seja bem-vindo <span
+                        class="text-indigo-600 text-3xl font-bold">{{ $this->usuario_name }}</span>.
+                </h1>
             </div>
             <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {{-- Funcionarios --}}
@@ -70,8 +71,8 @@
                 <div
                     class="h-full shadow-lg bg-white rounded-3xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
                     <i class="fas fa-user-circle text-3xl 2xl:mb-2"></i>
-                    <p class="2xl:text-lg">Usuário logado</p>
-                    <p class="2xl:text-2xl font-bold">{{ $this->usuario_name }}</p>
+                    <p class="2xl:text-lg">Pedidos</p>
+                    <p class="2xl:text-2xl font-bold">{{ $this->funcionarios_pedidos }}</p>
                 </div>
                 <div
                     class="h-full bg-white rounded-3xl grid place-items-center p-2 2xl:p-4 shadow-lg bg-gradient-to-r from-emerald-400 to-green-600 text-white">
@@ -80,15 +81,15 @@
                     <p class=" text-xl 2xl:text-3xl font-bold">{{ $this->clientes_adicionados_hoje }}</p>
                 </div>
             </div>
-            <div class="h-full flex-1 md:col-span-3 shadow-lg bg-white rounded-3xl p-4 max-h-64 overflow-auto">
-                <p class="text-center text-lg font-semibold text-emerald-600">Produtos abaixo do estoque mínimo</p>
+            <div class="h-full flex-1 md:col-span-3 shadow-lg bg-white rounded-3xl p-4 max-h-64 overflow-auto ">
+                <p class="text-center text-lg font-semibold text-emerald-600 ">Produtos abaixo do estoque mínimo</p>
 
                 <div class="mt-4 overflow-x-auto rounded-lg ">
                     <table class="md:min-w-full table-auto text-sm text-left border border-gray-200">
                         <thead class="bg-emerald-100 text-emerald-900">
                             <tr>
                                 <th
-                                    class="2xl:px-4 py-3 font-semibold md:uppercase md:tracking-wide text-xs md:text-base">
+                                    class="2xl:px-4 py-3 font-semibold md:uppercase md:tracking-wide text-xs md:text-base px-2">
                                     Produto</th>
                                 <th
                                     class="2xl:px-4 py-3 font-semibold md:uppercase md:tracking-wide text-xs md:text-base">
@@ -104,7 +105,7 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($min_produtos as $produto)
                                 <tr class="hover:bg-emerald-50 transition">
-                                    <td class="2xl:px-4 py-3 text-gray-800">{{ $produto['name'] }}</td>
+                                    <td class="2xl:px-4 py-3 text-gray-800 px-2">{{ $produto['name'] }}</td>
                                     <td class="2xl:px-4 py-3 font-medium text-red-600">{{ $produto['current_stock'] }}
                                     </td>
                                     <td class="2xl:px-4 py-3 text-gray-700">{{ $produto['min_stock'] }}</td>

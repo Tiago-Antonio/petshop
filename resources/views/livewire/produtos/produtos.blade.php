@@ -1,21 +1,35 @@
 <section class="h-screen w-screen bg-blue-100 overflow-x-hidden">
     <livewire:components.header.header />
-    <div class=" max-w-screen-xl mx-auto grid grid-cols-4 gap-4 mt-8 px-8 ">
+    <div class=" max-w-screen-xl mx-auto grid grid-cols-4 gap-4 mt-8 px-8  ">
         <div class=" col-span-4 grid grid-cols-4 gap-4 ">
             <div class="relative w-full col-span-1">
                 <input type="text" wire:model.live.debounce.100="nomeProduto" placeholder="Pesquisar"
-                    class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
+                    class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
                 <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
 
-            <div class=" grid place-items-end col-span-1 col-start-4">
+            <div class=" flex justify-end items-center gap-2 col-start-4">
+                <a href="{{ route('produtosCategoria') }}" wire:navigate
+                    class="p-2 bg-green-600 text-white hover:bg-green-700 transition-all shadow-md rounded">
+                    <i class="fa-solid fa-tags"></i>
+                </a>
+                <!-- Botão Adicionar -->
                 <button type="button" wire:click='abrirModalProduto'
-                    class="text-white px-4 py-2 rounded-lg bg-teal-700 hover:bg-teal-900 transition-all ease-in-out duration-300">
-                    <i class="fa-solid fa-box-open "></i>
-                    <i class="fa-solid fa-plus "></i>
+                    class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-blue-500 transition-all shadow-md">
+                    <i class="fa-solid fa-plus"></i>
                 </button>
+
+                <!-- Paginação -->
+                <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+
 
                 @if ($show == true)
                     <div class=" h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
@@ -70,12 +84,45 @@
                                 @enderror
                             </div>
 
-                            <!-- Fornecedor / FornecedorID -->
-                            {{-- <div>
-                            <label for="description" class="block text-sm font-medium text-gray-600 mb-1">Nome</label>
-                            <input type="text" wire:model="description" placeholder="Descrição do produto"
-                                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        </div> --}}
+
+                            <!-- Fornecedor -->
+                            <div x-data="{ open: false, selectedId: @entangle('supplier_id') }" class="relative">
+                                <label for="supplier_id" class="block text-sm font-medium text-gray-600 mb-1">
+                                    Fornecedor
+                                </label>
+
+                                <!-- Botão de abertura -->
+                                <button type="button" @click="open = !open"
+                                    class="w-full border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-left">
+
+                                    <template x-if="selectedId">
+                                        <span
+                                            x-text="$refs.optionList.querySelector('[data-id=\'' + selectedId + '\']')?.innerText || 'Selecione um produto'"></span>
+                                    </template>
+
+                                    <template x-if="!selectedId">
+                                        <span class="text-gray-400">Selecione um Fornecedor</span>
+                                    </template>
+                                </button>
+
+                                <!-- Lista de opções -->
+                                <div x-show="open" @click.outside="open = false" x-transition x-ref="optionList"
+                                    class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                    @foreach ($dropdownSupplier as $supplier)
+                                        <div wire:key='supplier-{{ $supplier->id }}'
+                                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                                            :class="{ 'bg-blue-200': selectedId == '{{ $supplier->id }}' }"
+                                            @click="selectedId = '{{ $supplier->id }}'; open = false"
+                                            data-id="{{ $supplier->id }}">
+                                            {{ $supplier->name }}
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                @error('supplier_id')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                             <!-- Quantidade -->
                             <div>
@@ -168,7 +215,8 @@
 
                     <form class="grid gap-4">
                         <div>
-                            <label for="client_id" class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+                            <label for="client_id"
+                                class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
                             <select id="client_id" wire:model='client_id' required
                                 class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">Selecione um cliente</option>
@@ -193,10 +241,11 @@
 
 
         {{-- Cards dos Produtos --}}
-        <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div
+            class="col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-4 md:max-h-[450px] 2xl:max-h-[800px] overflow-y-auto ">
             @foreach ($produtos as $item)
                 <div wire:key='item-{{ $item->id }}'
-                    class="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-lg transition duration-300 relative">
+                    class="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-lg transition duration-300 relative min-h-[336px] ">
                     {{-- Ícone de opções - remover --}}
                     {{-- <div x-data="{ showOpcoes: false }" class="absolute top-2 right-2 z-10">
                         @if (auth()->user()->admin == 1)
@@ -214,7 +263,14 @@
                         </div>
                     </div> --}}
                     <div class="p-4 flex flex-col items-center relative h-full">
-                        <img src="{{ asset($item['photo_path']) }}" alt="Produto"
+                        @php
+                            $path = $item['photo_path'];
+                            $imgSrc = Str::startsWith($path, 'produtos/')
+                                ? asset('storage/' . $path)
+                                : asset('img/products/' . basename($path));
+                        @endphp
+
+                        <img src="{{ $imgSrc }}" alt="Produto"
                             class="w-32 h-32 rounded-full object-cover border border-gray-200 mb-4">
                         <h3 class="text-lg font-semibold text-gray-800 text-center mb-1">{{ $item['name'] }}</h3>
                         <p class="text-sm text-gray-500 text-center mb-2 max-h-10 min-h-10 overflow-auto">
@@ -229,15 +285,15 @@
                 </div>
             @endforeach
         </div>
-        <div class="p-4 border border-t col-span-4">
+        {{-- <div class="p-4 border border-t col-span-4">
             {{ $produtos->links() }}
-        </div>
+        </div> --}}
         {{-- Final do Card Produtos --}}
 
         <div x-data="{ open: false }" class="relative">
             <!-- Botão para abrir o carrinho -->
             <button @click="open = true"
-                class="fixed top-10 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg z-40">
+                class="fixed  bottom-6 right-20 bg-indigo-600 text-white p-3 rounded-full shadow-lg z-40">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -284,11 +340,23 @@
                                     <li wire:key='carrinho-{{ $index }}'
                                         class="py-3 flex justify-between items-center">
                                         <div class="flex items-center space-x-3">
+                                            @php
+                                                $path = $item['imagem'] ?? null;
+
+                                                if ($path) {
+                                                    $imgSrc = Str::startsWith($path, 'produtos/')
+                                                        ? asset('storage/' . $path)
+                                                        : asset('img/products/' . basename($path));
+                                                } else {
+                                                    $imgSrc = null;
+                                                }
+                                            @endphp
+
                                             <div
-                                                class="bg-gray-100 rounded-md h-12 w-12 flex items-center justify-center">
-                                                @if (isset($item['imagem']))
-                                                    <img src="{{ $item['imagem'] }}" alt="{{ $item['nome'] }}"
-                                                        class="h-10 w-10 object-cover rounded">
+                                                class="bg-gray-100 rounded-md h-12 w-12 flex items-center justify-center overflow-hidden">
+                                                @if ($imgSrc)
+                                                    <img src="{{ $imgSrc }}" alt="{{ $item['nome'] }}"
+                                                        class="h-12 w-12 object-cover rounded">
                                                 @else
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                         class="h-5 w-5 text-gray-400" fill="none"
