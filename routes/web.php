@@ -27,8 +27,5 @@ Route::get('/login', \App\Http\Livewire\Login\Login::class)->middleware('guest')
 // Erro
 Route::fallback(Error404::class);
 
-// Retorna os 5 fornecedores com mais entregas
-Route::get('/labelDataGraphicPie', [SupplierController::class, 'labelDataGraphicPie']);
-
 
 

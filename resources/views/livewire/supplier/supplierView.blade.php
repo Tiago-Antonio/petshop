@@ -1,4 +1,89 @@
 <section class="h-screen w-screen bg-blue-100">
+    <div wire:loading wire:target='gerarRelatorioPDF'
+        class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+        <div class="h-full w-full grid place-items-center">
+            <div>
+                <div class="relative w-20 h-20 mb-4 mx-auto">
+                    <svg class="animate-spin w-full h-full text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <div class="absolute inset-0 grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-white font-medium animate-pulse">Gerando relatório PDF...</p>
+            </div>
+        </div>
+    </div>
+    <button wire:click="generateRelatoryPDF"
+        class="fixed bottom-6 right-20 bg-indigo-600 hover:bg-indigo-800 text-white p-4 rounded-full shadow-lg z-50 transition ">
+        <i class="fa-solid fa-file-pdf fa-lg"></i>
+    </button>
+    <div x-data="{ showChart: false }">
+        <button @click="showChart = !showChart"
+            class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-800 text-white p-4 rounded-full shadow-lg z-50 transition">
+            <i class="fa-solid fa-chart-column fa-lg"></i>
+        </button>
+        <div x-show="showChart" x-transition
+            class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center backdrop-blur-sm">
+            <div @click.away="showChart = false"
+                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-[90vw] h-[80vh] relative">
+                <button @click="showChart = false"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
+                    <i class="fa-solid fa-xmark fa-xl"></i>
+                </button>
+                <!-- Gráfico -->
+                <div
+                    class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+                    <div class="relative h-full">
+                        <canvas id="myChart" class="w-full h-full"></canvas>
+
+                    </div>
+
+                    <script>
+                        const ctx = document.getElementById('myChart').getContext('2d');
+
+                        const labels = @json($suppliersWithDeliveries->pluck('name'));
+                        const data = @json($suppliersWithDeliveries->pluck('total_entregas'));
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Total de Entregas',
+                                    data: data,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            precision: 0
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
     <livewire:components.header.header />
     <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 py-4 px-8">
         <!-- Primeira linha -->
@@ -22,12 +107,6 @@
                     <button type="button" wire:click='openModalSupplierDelete'
                         class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-red-600 transition-all shadow-md">
                         <i class="fa-solid fa-trash"></i>
-                    </button>
-
-                    <!--Botao Grafico-->
-                    <button type="button" wire:click='openModalGraphic'
-                        class="p-2 bg-[#2096f2] text-[#f5f5f5] hover:bg-red-600 transition-all shadow-md">
-                        <i class="fa-solid fa-chart-pie"></i>
                     </button>
 
                     <!-- Paginação -->
@@ -121,65 +200,6 @@
                         </div>
                     @endif
 
-                    <!-- Modal do gráfico -->
-                    @if ($showModalGraphic == true)
-                        <div class="h-screen w-screen z-50 fixed grid place-items-center left-0 top-0"
-                        style="background-color:rgba(0,0,0,0.6)">
-                            <div class="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-4 relative">
-                                <!-- FECHAR MODAL -->
-                                <div class="absolute top-3 right-3">
-                                    <button type="button" wire:click='closeModalGraphic'
-                                        class="text-red-600 hover:text-red-800  transition-all duration-200 ease-in-out">
-                                        <i class="fa-solid fa-xmark fa-lg"></i>
-                                    </button>
-                                </div>
-
-                                <!-- TITULO MODAL -->
-                                <p class="text-center font-bold text-2xl text-gray-700 mb-4">Gráfico Fornecedor</p>
-
-                                <!--GRAFICO-->
-                                <div class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
-                                    <div class="relative h-full">
-                                        <canvas id="PieGraphicSupplier" style="width: 100%; height: 100%;"></canvas>
-                                    </div>
-
-                                    <script>
-                                        fetch('/labelDataGraphicPie')
-                                            .then(res => res.json())
-                                            .then(res => {
-                                                console.log(dados.labels);
-                                                const ctx = document.getElementById('PieGraphicSupplier').getContext('2d');
-
-                                                new Chart(ctx, {
-                                                    type: 'pie',
-                                                    data: {
-                                                        labels: res.labels,
-                                                        datasets: [{
-                                                            label: 'Entregas por Fornecedor',
-                                                            data: res.data,
-                                                            backgroundColor: [
-                                                                '#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'
-                                                            ]
-                                                        }]
-                                                    },
-                                                    options: {
-                                                        responsive: true,
-                                                        plugins: {
-                                                            legend: { position: 'top' },
-                                                            title: {
-                                                                display: true,
-                                                                text: 'Top 5 Fornecedores por Entregas'
-                                                            }
-                                                        }
-                                                    }
-                                                });
-                                            });
-                                    </script>
-                                </div>
-                            </div>
-                       </div>
-                    @endif
-
                     <!-- Mensagem de sucesso -->
                     @if (session()->has('message'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
@@ -187,7 +207,7 @@
                             {{ session('message') }}
                         </div>
                     @endif
-                    
+
                     <!-- Mensagem de erro -->
                     @if (session()->has('error'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
@@ -202,7 +222,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Segunda linha -->
         <div class="h-full row-span-2 2xl:row-span-1 grid grid-cols-1 gap-4 overflow-auto">
             <div class="overflow-x-auto  shadow-lg">
@@ -255,7 +274,6 @@
                                     <i class="fa-solid fa-xmark fa-lg"></i>
                                 </button>
                             </div>
-
                             <!-- TITULO MODAL -->
                             <p class="text-center font-bold text-2xl text-gray-700 mb-4">Editar Fornecedor</p>
 
@@ -266,7 +284,6 @@
                                 <input type="text" wire:model="name" placeholder="Nome"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             </div>
-
                             <!-- PHONE -->
                             <div>
                                 <label for="phone"
@@ -274,7 +291,6 @@
                                 <input type="text" wire:model="phone" placeholder="(xx) xxxxx-xxxx"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             </div>
-
                             <!-- EMAIL -->
                             <div>
                                 <label for="email"
@@ -283,7 +299,6 @@
                                     wire:model="email"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             </div>
-
                             <!-- ADDRESS -->
                             <div>
                                 <label for="address"
@@ -292,7 +307,6 @@
                                     wire:model="address"
                                     class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             </div>
-
                             <!-- Botão -->
                             <div class="pt-4">
                                 <button
