@@ -1,10 +1,10 @@
-<section class="min-h-screen w-screen bg-blue-100 pb-8">
+<section class="max-h-screen w-screen bg-blue-100 pb-8 overflow-hidden">
     <livewire:components.header.header />
     <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-7xl mx-auto gap-4 py-4 px-8">
         <div class="flex flex-wrap justify-between items-center gap-4">
             <div class="relative ">
-                <input type="text" wire:model.live.debounce.100="nomeCliente" placeholder="Pesquisar"
-                    class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                <input type="text" wire:model.live.debounce.200="nomeCliente" placeholder="Pesquisar"
+                    class="w-full px-4 py-2 bg-white border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500 lg:min-w-64">
                 <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
                 </button>

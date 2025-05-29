@@ -7,11 +7,12 @@ use App\Models\Product;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\WithPagination;
 
-#[Title('Produtos')]
+#[Title('Categorias')]
 class CategoriasProdutos extends Component
 {
     
@@ -30,8 +31,14 @@ class CategoriasProdutos extends Component
     public $show = false;
     public $imagemAtual;
     
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeProduto;
 
+    public function updatednomeProduto()
+    {
+       $this->resetPage();
+    }
 
     public function excluirProduto($id)
     {

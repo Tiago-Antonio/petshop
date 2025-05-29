@@ -17,7 +17,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
-
+use Livewire\Attributes\Url;
 
 #[Title('Produtos')]
 class Produtos extends Component
@@ -25,8 +25,11 @@ class Produtos extends Component
     use WithFileUploads;
     use WithPagination;
 
-
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeProduto;
+
+    
     public $query;
     public $show;
     public $dropdownProdutos;

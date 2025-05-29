@@ -8,11 +8,18 @@ use Livewire\WithPagination;
 use Illuminate\Pagination\Paginator;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Spatie\Browsershot\Browsershot;
 
+#[Title('Fornecedores')]
 class SupplierModule extends Component
 {
     use WithPagination;
+
+    //URL query parameters
+    #[Url(as: 'q', history:true)]
+    public $searchSupplierByName;
 
     public $name = '';
     public $phone;
@@ -22,7 +29,7 @@ class SupplierModule extends Component
     public $updated_at;
     public $selectedSuppliers = [];
     public $openModalConfirmDelete = false;
-    public $searchSupplierByName;
+   
     public $supplierId = null;
     public $showModalCreateSupplier = false;
     public $showModalDeleteSupplier = false;
@@ -30,6 +37,11 @@ class SupplierModule extends Component
     public $showModalGraphic = false;
     public $showChart = false;
 
+
+    public function updatedsearchSupplierByName()
+    {
+       $this->resetPage();
+    }
 
     public function nextPage()
     {

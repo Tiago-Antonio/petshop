@@ -1,8 +1,8 @@
 <section class="h-screen min-h-full w-screen bg-blue-100 overflow-x-hidden">
     <livewire:components.header.header />
-    <div class="grid grid-rows-1 md:grid-rows-5 2xl:grid-rows-3 max-w-screen-xl mx-auto gap-6 py-4 px-4 2xl:px-8">
+    <div class="grid grid-rows-1 md:grid-rows-5 2xl:grid-rows-3 max-w-screen-xl mx-auto gap-6 px-4 2xl:px-8">
 
-        <!-- Primeira linha -->
+        {{-- Primeira linha  --}}
         <div class="grid gap-2 2xl:gap-4 h-full">
             <div class="h-full grid place-items-center">
                 <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800">
@@ -65,12 +65,12 @@
             </div>
         </div>
 
-        <!-- Segunda linha -->
+        {{-- Segunda linha  --}}
         <div class=" grid grid-cols-1 lg:grid-cols-4 gap-4 ">
             <div class="grid md:col-span-1 h-full gap-2">
                 <div
                     class="h-full shadow-lg bg-white rounded-3xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
-                    <i class="fas fa-user-circle text-3xl 2xl:mb-2"></i>
+                    <i class="fas fa-shopping-cart text-3xl 2xl:mb-2"></i>
                     <p class="2xl:text-lg">Pedidos</p>
                     <p class="2xl:text-2xl font-bold">{{ $this->funcionarios_pedidos }}</p>
                 </div>
@@ -81,7 +81,7 @@
                     <p class=" text-xl 2xl:text-3xl font-bold">{{ $this->clientes_adicionados_hoje }}</p>
                 </div>
             </div>
-            <div class="h-full flex-1 md:col-span-3 shadow-lg bg-white rounded-3xl p-4 max-h-64 overflow-auto ">
+            <div class="h-full flex-1 md:col-span-3 shadow-lg bg-white rounded-3xl p-4 overflow-auto ">
                 <p class="text-center text-lg font-semibold text-emerald-600 ">Produtos abaixo do estoque mínimo</p>
 
                 <div class="mt-4 overflow-x-auto rounded-lg ">
@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <!-- Terceira linha -->
+        {{-- <!-- Terceira linha --> --}}
         <div
             class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
             <div class="relative h-full">

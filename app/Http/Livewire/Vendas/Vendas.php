@@ -13,19 +13,23 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Spatie\Browsershot\Browsershot;
 
 #[Title('Vendas')]
 class Vendas extends Component
 {
     use WithPagination;
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $query;
     public $showProducts;
     public $pagamento = false;
     public $escolhaMetodoPagamento;
     public $order_id;
     public $confirmando = null;
-    
+
+    public $perPage = 5;
 
     public function metodoPagamento($id){
 
@@ -124,7 +128,7 @@ class Vendas extends Component
         }
     }
 
-    
+
     public function render()
     {   
         $pedidos = Order::with([
@@ -137,7 +141,7 @@ class Vendas extends Component
 
         // Filtrar apenas quando existir alguma pesquisa
          if (!empty($this->query)) {
-        $pedidos->where(function ($query) {
+            $pedidos->where(function ($query) {
             $query->whereHas('client', function ($q) {
                 $q->where('name', 'like', '%' . $this->query . '%');
             })
@@ -148,7 +152,7 @@ class Vendas extends Component
     }
        
         return view('livewire.vendas.vendas', [
-            'pedidos' => $pedidos->paginate(5)
+            'pedidos' => $pedidos->paginate($this->perPage)
         ]);
     }
 }

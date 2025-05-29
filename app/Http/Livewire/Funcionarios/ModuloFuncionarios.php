@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Spatie\Browsershot\Browsershot;
 
 #[Title('Funcionários')]
@@ -19,7 +20,11 @@ class ModuloFuncionarios extends Component
     use WithPagination;
     use WithFileUploads;
 
+    //Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeFuncionario = '';
+
+
     public $perPage = 8; 
     public $nome;
     public $data_nascimento;

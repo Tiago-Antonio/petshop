@@ -96,15 +96,15 @@
 
     <livewire:components.header.header />
 
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-6xl mx-auto gap-4 pt-4 pb-4 2xl:pb-16 px-2 ">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-4rem)] max-w-7xl mx-auto gap-4 pt-4 pb-4 2xl:pb-16 px-8 ">
         <!-- Primeira linha -->
-        <div class="grid gap-2 2xl:gap-4 h-full px-4">
+        <div class="grid gap-2 2xl:gap-4 h-full px-2">
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <!-- Campo de pesquisa -->
                 <div class="relative">
                     <form wire:submit.prevent="buscar">
-                        <input type="text" wire:model.live.debounce.100="nomeFuncionario" placeholder="Pesquisar"
-                            class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+                        <input type="text" wire:model.live.debounce.200="nomeFuncionario" placeholder="Pesquisar"
+                            class="w-full px-4 py-2 bg-white border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500 lg:min-w-64">
                         <button type="submit"
                             class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                             <i class="fas fa-search"></i>
@@ -364,13 +364,11 @@
                         <ul class="space-y-2">
                             <li class="flex items-start gap-2">
                                 <i class="fa-solid fa-envelope text-gray-400 mt-0.5"></i>
-                                <span
-                                    class="text-gray-700 truncate md:max-w-52 2xl:max-w-60">{{ $item->email }}</span>
+                                <span class="text-gray-700 truncate max-w-44">{{ $item->email }}</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="fa-solid fa-phone text-gray-400 mt-0.5"></i>
-                                <span
-                                    class="text-gray-700 truncate md:max-w-52 2xl:max-w-60">{{ $item->phone }}</span>
+                                <span class="text-gray-700 truncate max-w-44">{{ $item->phone }}</span>
                             </li>
                         </ul>
                     </div>

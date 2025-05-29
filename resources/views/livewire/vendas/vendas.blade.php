@@ -83,11 +83,11 @@
         </div>
     @endif
 
-    <div class="overflow-x-auto px-4 py-8 max-w-screen-xl mx-auto ">
+    <div class="overflow-x-auto px-8 py-4 max-w-7xl mx-auto ">
         <div class=" flex justify-between">
-            <div class="relative w-full md:w-1/2 xl:w-1/4">
-                <input type="text" wire:model.live.debounce.100="query" placeholder="Pesquisar"
-                    class="w-full px-4 py-2 bg-[#f5f5f5] border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500">
+            <div class="relative lg:max-w-64 md:w-1/2 xl:w-1/4">
+                <input type="text" wire:model.live.debounce.200="query" placeholder="Pesquisar"
+                    class="w-full px-4 py-2 bg-white border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500 lg:max-w-64">
                 <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
                     <i class="fas fa-search"></i>
                 </button>
@@ -242,15 +242,17 @@
                                                             {{ $produtos->quantity }}
                                                         @endif
                                                     </td>
+
                                                     <td class="px-4 py-2 text-sm text-gray-800">
                                                         R$
                                                         {{ number_format($produtos->product->sale_price, 2, ',', '.') }}
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                        </tbody>
 
+                                        </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </td>
@@ -259,5 +261,23 @@
             @endforeach
         </table>
         {{ $pedidos->links() }}
+        <div class="relative inline-block mt-4">
+            <select wire:model.live="perPage"
+                class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                <option value="5">5 itens</option>
+                <option value="10">10 itens</option>
+                <option value="20">20 itens</option>
+                <option value="50">50 itens</option>
+                <option value="100">100 itens</option>
+            </select>
+
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </div>
+        </div>
     </div>
 </div>

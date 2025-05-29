@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 
 #[Title('Clientes')]
 class Clientes extends Component
@@ -32,8 +33,10 @@ class Clientes extends Component
     public $show = false;
     public $perPage = 6;
 
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeCliente;
-    // Buscar
+    
 
 
     public function rules(){
