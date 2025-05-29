@@ -87,6 +87,8 @@ class CategoriasProdutos extends Component
         $this->reset(['name', 'description', 'min_stock', 'photo_path']);
     }
 
+    
+
 
     public function cadastrarProduto(){
 
@@ -146,6 +148,22 @@ class CategoriasProdutos extends Component
         $this->resetarCampos();
         $this->show = false;
     }
+
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Product::where('name', 'like', '%' . $this->nomeProduto . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(5)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
+
     public function render()
     {
          $query = Product::query()
@@ -158,7 +176,8 @@ class CategoriasProdutos extends Component
         $produtos = $query->paginate(5);
 
         return view('livewire.produtos.categorias-produtos', [
-            'produtos' => $produtos
+            'produtos' => $produtos,
+            'lastPage' => $produtos->lastPage(),
         ]);
     }
 }

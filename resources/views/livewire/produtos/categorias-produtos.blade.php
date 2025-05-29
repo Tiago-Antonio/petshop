@@ -17,7 +17,10 @@
                 <button wire:click="previousPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <button wire:click="nextPage" class="p-2 bg-gray-300 hover:bg-gray-400 transition">
+                <button wire:click="nextPage"
+                    class="p-2 bg-gray-300 hover:bg-gray-400 transition
+                    @if ($produtos->currentPage() === $lastPage) opacity-50 cursor-not-allowed @endif"
+                    @if ($produtos->currentPage() === $lastPage) disabled @endif>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
