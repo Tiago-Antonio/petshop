@@ -45,9 +45,7 @@
                 <div class="hidden md:block h-full shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
                     <div class="relative h-full">
                         <canvas id="myChart" class="w-full h-full"></canvas>
-
                     </div>
-
                     <script>
                         const ctx = document.getElementById('myChart').getContext('2d');
 
