@@ -18,7 +18,7 @@ class SupplierModule extends Component
     use WithPagination;
 
     //URL query parameters
-    #[Url(as: 'q', history:true)]
+    #[Url(as: 'q', history: true)]
     public $searchSupplierByName;
 
     public $name = '';
@@ -29,7 +29,7 @@ class SupplierModule extends Component
     public $updated_at;
     public $selectedSuppliers = [];
     public $openModalConfirmDelete = false;
-   
+
     public $supplierId = null;
     public $showModalCreateSupplier = false;
     public $showModalDeleteSupplier = false;
@@ -37,10 +37,9 @@ class SupplierModule extends Component
     public $showModalGraphic = false;
     public $showChart = false;
 
-
     public function updatedsearchSupplierByName()
     {
-       $this->resetPage();
+        $this->resetPage();
     }
 
     public function nextPage()
@@ -49,9 +48,9 @@ class SupplierModule extends Component
         $paginaAtual = $this->getPage($pageName);
 
         $ultimaPagina = Supplier::where('name', 'like', '%' . $this->searchSupplierByName . '%')
-                            ->orderBy('created_at', 'desc')
-                            ->paginate(10)
-                            ->lastPage();
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->lastPage();
 
         if ($paginaAtual < $ultimaPagina) {
             $this->setPage($paginaAtual + 1, $pageName);
@@ -65,12 +64,7 @@ class SupplierModule extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $suppliersWithDeliveries = Supplier::select('suppliers.name', DB::raw('COUNT(stock_entries.id) as total_entregas'))
-            ->leftJoin('stock_entries', 'suppliers.id', '=', 'stock_entries.supplier_id')
-            ->groupBy('suppliers.id', 'suppliers.name')
-            ->orderBy('total_entregas', 'desc')
-            ->take(15)
-            ->get();
+        $suppliersWithDeliveries = Supplier::select('suppliers.name', DB::raw('COUNT(stock_entries.id) as total_entregas'))->leftJoin('stock_entries', 'suppliers.id', '=', 'stock_entries.supplier_id')->groupBy('suppliers.id', 'suppliers.name')->orderBy('total_entregas', 'desc')->take(15)->get();
 
         return view('livewire.supplier.supplierView', [
             'suppliers' => $suppliers,
