@@ -44,7 +44,7 @@ class Home extends Component
         $this->suppliers_count = Supplier::count();
 
 
-        $this->query_produtos = Product::selectRaw('LEFT(name, 40) as name, current_stock')
+        $this->query_produtos = Product::selectRaw('LEFT(name, 8) as name, current_stock')
             ->whereNotNull('current_stock')
             ->orderBy('current_stock', 'asc')
             ->take(15)

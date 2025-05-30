@@ -42,7 +42,7 @@
 
                 <a href="{{ route('vendas') }}" wire:navigate
                     :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'vendas', 'text-gray-600': activePage !== 'vendas' }"
-                    class="hover:text-blue-600 transition font-semibold pb-1">Pedidos</a>
+                    class="hover:text-blue-600 transition font-semibold pb-1">Vendas</a>
 
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

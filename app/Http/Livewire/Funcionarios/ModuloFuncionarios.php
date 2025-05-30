@@ -189,27 +189,14 @@ class ModuloFuncionarios extends Component
     }
 
 
-    public function toggleStatus($id)
-    {
-        $funcionario = User::find($id);
-
-        if ($funcionario) {
-            $funcionario->active = 1;
-            $funcionario->save();
-
-            session()->flash('success', 'Funcionário ativado.' );
-        }
-    }
 
     public function excluirFuncionario($id)
     {
         $funcionario = User::find($id);
         
         if ($funcionario) {
-            $funcionario->active = 0;
-            $funcionario->update();
-
-            session()->flash('success', 'Funcionário excluído com sucesso.'); 
+            $funcionario->delete();
+            session()->flash('message', 'Funcionário excluído com sucesso.'); 
         } else {
             session()->flash('error', 'Funcionário não encontrado.');  
         }
@@ -278,7 +265,6 @@ class ModuloFuncionarios extends Component
     {
         $funcionarios = User::withCount('order')
             ->where('name', 'like', '%' . $this->nomeFuncionario . '%')
-            ->orderByRaw('active DESC')
             ->orderBy('created_at', 'desc')
             ->paginate(8);
 
