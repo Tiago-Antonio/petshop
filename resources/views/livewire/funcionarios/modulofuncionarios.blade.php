@@ -150,7 +150,7 @@
                                 <i class="fa-solid fa-xmark fa-lg"></i>
                             </button>
                         </div>
-                        <p class="text-center font-bold text-2xl text-gray-700 mb-4">Cadastro de Funcionários</p>
+                        <p class="text-center font-bold text-2xl text-gray-700 mb-4">Adicionar Funcionário</p>
 
                         <!-- Nome -->
                         <div>

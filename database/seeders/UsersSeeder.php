@@ -26,6 +26,16 @@ class UsersSeeder extends Seeder
             'admin'=>true,
         ]);
         User::create([
+            'name'     => 'Jonathan',
+            'email'    => 'jota',
+            'phone'    => '9999999',
+            'role'     => 'Desenvolvedor',
+            'photo_path'=> '/img/funcionarios/perfil.webp',
+            'birth_date'=> '1999-10-12',
+            'password' => Hash::make('jota'),
+            'admin'=>true,
+        ]);
+        User::create([
             'name'     => 'admin',
             'email'    => 'admin@admin.com',
             'phone'    => '11912345679',
