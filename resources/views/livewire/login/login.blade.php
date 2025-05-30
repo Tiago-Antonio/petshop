@@ -14,7 +14,7 @@
             <form wire:submit.prevent="formularioLogin" class="space-y-5">
                 <!-- E-mail -->
                 <div class="relative">
-                    <input type="email" wire:model="email" placeholder=" "
+                    <input type="email" autocomplete="new-email" wire:model="email" placeholder=" "
                         class="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 shadow focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     <label
                         class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
@@ -26,7 +26,7 @@
                 </div>
                 <!-- Senha -->
                 <div class="relative">
-                    <input type="password" wire:model="password" placeholder=" "
+                    <input type="password" autocomplete="new-password" wire:model="password" placeholder=" "
                         class="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 shadow focus:outline-none focus:ring-2 focus:ring-blue-500 mb-5" />
                     <label
                         class="absolute left-4 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">

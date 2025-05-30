@@ -1,10 +1,11 @@
-<section class="h-screen min-h-full w-screen bg-blue-100 overflow-x-hidden">
+<section class="h-screen min-h-full w-screen  bg-blue-100 overflow-x-hidden">
+
     <livewire:components.header.header />
-    <div class="grid grid-rows-1 md:grid-rows-5 2xl:grid-rows-3 max-w-screen-xl mx-auto gap-6 px-4 2xl:px-8">
+    <div class="flex flex-col max-w-screen-xl mx-auto gap-6 px-4 2xl:px-8">
 
         {{-- Primeira linha  --}}
         <div class="grid gap-2 2xl:gap-4 h-full">
-            <div class="h-full grid place-items-center">
+            <div class="h-full grid place-items-center py-4">
                 <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-800">
                     Olá, seja bem-vindo <span
                         class="text-indigo-600 text-3xl font-bold">{{ $this->usuario_name }}</span>.
@@ -13,53 +14,62 @@
             <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {{-- Funcionarios --}}
                 <div
-                    class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                    <a href="{{ route('funcionarios') }}" wire:navigate
-                        class="flex flex-col items-center justify-center h-full w-full">
+                    class="py-4 cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-2xl grid place-items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                    <a href="{{ route('funcionarios') }}" class="flex flex-col items-center justify-center h-full w-full">
                         <div class="flex flex-col items-center gap-2">
-                            <i class="fas fa-users 2xl:text-4xl 2xl:mb-2"></i>
+                            <div
+                                class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                                <i class="fas fa-users text-2xl "></i>
+                            </div>
                             <p class="text-sm sm:text-base md:text-lg font-medium">Funcionários</p>
                         </div>
-                        <p class="text-xl md:text-2xl font-bold">{{ $this->usuarios_count }}</p>
+                        <p class="text-xl md:text-3xl font-bold">{{ $this->usuarios_count }}</p>
                     </a>
                 </div>
 
                 {{-- Clientes --}}
                 <div
-                    class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center bg-gradient-to-r from-green-400 to-teal-500 text-white">
-                    <a href="{{ route('clientes') }}" wire:navigate
-                        class="flex flex-col items-center justify-center h-full w-full">
+                    class=" py-4 cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-2xl grid place-items-center bg-gradient-to-r from-green-400 to-teal-500 text-white">
+                    <a href="{{ route('clientes') }}" class="flex flex-col items-center justify-center h-full w-full">
                         <div class="flex gap-2 2xl:grid place-items-center">
-                            <i class="fas fa-user-friends 2xl:text-4xl 2xl:mb-2"></i>
+                            <div
+                                class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                                <i class="fas fa-user-plus text-2xl"></i>
+                            </div>
                             <p class="2xl:text-lg font-medium">Clientes</p>
                         </div>
-                        <p class="text-xl md:text-2xl font-bold">{{ $this->clientes_count }}</p>
+                        <p class="text-xl md:text-3xl font-bold">{{ $this->clientes_count }}</p>
                     </a>
                 </div>
 
                 {{-- Fornecedores --}}
                 <div
-                    class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                    <a href="{{ route('suppliers') }}" wire:navigate
-                        class="flex flex-col items-center justify-center h-full w-full">
+                    class="py-4 cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-2xl grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                    <a href="{{ route('suppliers') }}" class="flex flex-col items-center justify-center h-full w-full">
                         <div class="flex gap-2 2xl:grid place-items-center">
-                            <i class="fas fa-truck 2xl:text-4xl 2xl:mb-2"></i>
+                            <div
+                                class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                                <i class="fas fa-truck text-2xl"></i>
+                            </div>
                             <p class="2xl:text-lg font-medium">Fornecedores</p>
                         </div>
-                        <p class="text-xl md:text-2xl font-bold">{{ $this->suppliers_count }}</p>
+                        <p class="text-xl md:text-3xl font-bold">{{ $this->suppliers_count }}</p>
                     </a>
                 </div>
 
                 {{-- Produtos --}}
                 <div
-                    class="cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-3xl bg-gradient-to-r from-pink-500 to-red-500 text-white">
+                    class="py-4 cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-2xl bg-gradient-to-r from-pink-500 to-red-500 text-white">
                     <a href="{{ route('produtos') }}" wire:navigate
                         class=" h-full w-full flex flex-col items-center justify-center">
                         <div class="flex gap-2 2xl:grid place-items-center">
-                            <i class="fas fa-box 2xl:text-4xl 2xl:mb-2"></i>
+                            <div
+                                class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                                <i class="fas fa-box text-2xl"></i>
+                            </div>
                             <p class="2xl:text-lg font-medium">Produtos</p>
                         </div>
-                        <p class="text-xl md:text-2xl font-bold">{{ $this->produtos_count }}</p>
+                        <p class="text-xl md:text-3xl font-bold">{{ $this->produtos_count }}</p>
                     </a>
                 </div>
             </div>
@@ -69,14 +79,21 @@
         <div class=" grid grid-cols-1 lg:grid-cols-4 gap-4 ">
             <div class="grid md:col-span-1 h-full gap-2">
                 <div
-                    class="h-full shadow-lg bg-white rounded-3xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
-                    <i class="fas fa-shopping-cart text-3xl 2xl:mb-2"></i>
-                    <p class="2xl:text-lg">Pedidos</p>
-                    <p class="2xl:text-2xl font-bold">{{ $this->funcionarios_pedidos }}</p>
+                    class="h-full shadow-lg bg-white rounded-2xl grid place-items-center p-2 2xl:p-4  bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+                    <a href="{{ route('vendas') }}" class="h-full w-full flex flex-col items-center justify-center">
+                        <div
+                            class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                            <i class="fas fa-shopping-cart text-2xl"></i>
+                        </div>
+                        <p class="2xl:text-lg">Pedidos</p>
+                        <p class="2xl:text-2xl font-bold">{{ $this->funcionarios_pedidos }}</p>
+                    </a>
                 </div>
                 <div
-                    class="h-full bg-white rounded-3xl grid place-items-center p-2 2xl:p-4 shadow-lg bg-gradient-to-r from-emerald-400 to-green-600 text-white">
-                    <i class="fas fa-user-plus text-xl 2xl:text-3xl 2xl:mb-2"></i>
+                    class="h-full bg-white rounded-2xl grid place-items-center p-2 2xl:p-4 shadow-lg bg-gradient-to-r from-emerald-400 to-green-600 text-white">
+                    <div class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+                        <i class="fas fa-user-plus text-2xl"></i>
+                    </div>
                     <p class="2xl:text-lg font-medium">Clientes Adicionados hoje</p>
                     <p class=" text-xl 2xl:text-3xl font-bold">{{ $this->clientes_adicionados_hoje }}</p>
                 </div>
@@ -126,8 +143,7 @@
         </div>
 
         {{-- <!-- Terceira linha --> --}}
-        <div
-            class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+        <div class="hidden md:block h-64 shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
             <div class="relative h-full">
                 <canvas id="myChart" style="width: 100%; height: 100%;"></canvas>
             </div>
@@ -152,8 +168,34 @@
                     options: {
                         responsive: true,
                         scales: {
+                            x: {
+                                ticks: {
+                                    callback: function(value, index, ticks) {
+                                        const originalLabel = labels[index];
+                                        return originalLabel.length > 8 ? originalLabel.match(/.{1,10}/g) :
+                                            originalLabel;
+                                    },
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        return labels[tooltipItems[0].dataIndex];
+                                    }
+                                }
                             }
                         }
                     }
