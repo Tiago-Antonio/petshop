@@ -288,10 +288,48 @@
                 <div wire:key='item-{{ $item->id }}'
                     class="grid gap-4 bg-white shadow-lg rounded-xl px-4 py-2 relative max-h-80 ">
                     <div class="flex justify-between">
-                        <div
-                            class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-full px-3 py-1 flex items-center">
-                            <p class="text-white font-medium text-xs">Ativo</p>
-                        </div>
+
+                        @if ($item->active == 1)
+                            <div
+                                class="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 shadow-sm text-white text-xs font-medium">
+                                Ativo
+                            </div>
+                        @else
+                            <div x-data="{ showModal: false }" class="relative">
+                                <button @click="showModal = true"
+                                    class="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-red-500 to-red-600 shadow-sm text-white text-xs font-medium transition duration-200 hover:brightness-110">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Desligado
+                                </button>
+
+                                <!-- Modal de confirmação -->
+                                <div x-show="showModal" x-transition
+                                    class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+                                    <div @click.away="showModal = false"
+                                        class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+                                        <h2 class="text-lg font-semibold text-gray-700 mb-4">Confirmar Ação</h2>
+                                        <p class="text-gray-600 mb-6">Deseja realmente alterar o status deste
+                                            funcionário?</p>
+
+                                        <div class="flex justify-end gap-3">
+                                            <button @click="showModal = false"
+                                                class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition">
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                @click="$wire.toggleStatus({{ $item->id }}); showModal = false"
+                                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                                Confirmar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="relative">
                             <button type="button" wire:click='abrirModalOpcoes({{ $item['id'] }})'
                                 class="cursor-pointer">
@@ -368,7 +406,14 @@
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="fa-solid fa-phone text-gray-400 mt-0.5"></i>
-                                <span class="text-gray-700 truncate max-w-44">{{ $item->phone }}</span>
+                                @if (strlen($item->phone) === 11)
+                                    <span class="text-gray-700 truncate max-w-44">
+                                        ({{ substr($item->phone, 0, 2) }})
+                                        {{ substr($item->phone, 2, 5) }}-{{ substr($item->phone, 7) }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-700 truncate max-w-44">{{ $item->phone }}</span>
+                                @endif
                             </li>
                         </ul>
                     </div>

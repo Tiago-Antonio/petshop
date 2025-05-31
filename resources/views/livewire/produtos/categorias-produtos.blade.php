@@ -36,7 +36,7 @@
                                 <i class="fa-solid fa-xmark fa-lg"></i>
                             </button>
                         </div>
-                        <p class="text-center font-bold text-2xl text-gray-700 mb-4">Cadastro de Categoria/Produtos</p>
+                        <p class="text-center font-bold text-2xl text-gray-700 mb-4">Manutenção de Produtos</p>
 
                         <!-- Nome -->
                         <div>

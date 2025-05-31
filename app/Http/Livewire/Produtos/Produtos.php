@@ -140,82 +140,81 @@ class Produtos extends Component
     }
 
 
-    //Finalizando o pedido - Envia os dados para a tabela Order e OrderItems
     public function finalizarPedido()
     {
-        if (Auth::check()) {
+        
+        if (empty($this->client_id)) {
+            session()->flash('erroPedido', 'Selecione um cliente!');
+            return;
+        }
 
-            $user_id = Auth::user()->id;
+        if (!Auth::check()) {
+            return redirect()->route('logout');
+        }
 
-            if (count($this->carrinho) === 0) {
-                session()->flash('erroPedido', 'Seu carrinho está vazio!');
-                return;
-            } else {
-                try {
+        if (count($this->carrinho) === 0) {
+            session()->flash('erroPedido', 'Seu carrinho está vazio!');
+            return;
+        }
 
-                    //inicia a operacao
-                    DB::beginTransaction();
+        $user_id = Auth::user()->id;
 
-                    //Quantidade do produto não pode ser < 0
-                    foreach ($this->carrinho as $produto) {
-                        $produto_id = $produto['id'];
-                        $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
-                        $produtoEstoque = Product::find($produto_id);
-                        
-                        
-                        if ($produtoEstoque->current_stock < $quantity) {
-                            throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
-                        }
-                    }
-                    $pedido = Order::create([
-                        'client_id' => $this->client_id,
-                        'user_id' => $user_id,                     
-                        'status' => 'pendente',
-                        'total_amount' => $this->preco_total,
-                        //sem o payment_id
-                        'data' => now(),
-                    ]);
+        try {
+            DB::beginTransaction();
 
-                    foreach ($this->carrinho as $produto) {
-                        $produto_id = $produto['id'];
-                        $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
-                        //remove a quantidade dos Product para enviar para a tabela OrderItem
-                        $removendo_produto = Product::find($produto['id']);
-                        $removendo_produto->current_stock -= $quantity;
-                        $removendo_produto->save();
-
-                        if($removendo_produto->current_stock <= $removendo_produto->min_stock){
-                            session()->flash('estoqueMinimo', "O produto '{$removendo_produto->name}' está abaixo do estoque mínimo!");
-                        }
-
-                        OrderItem::create([
-                            'order_id' => $pedido->id,
-                            'product_id' => $produto['id'],
-                            'quantity' => $quantity,
-                        ]);
-                    }
-                    
-                    //confirma a operacao
-                    DB::commit();
-
-                    $this->carrinho = [];
-                    $this->client_id = '';
-                    session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
-                } catch (\Exception $e) {
-
-                    //reorna a operacao caso de algum erro
-                    DB::rollBack();
-
-                    $mensagemErro = $e->getMessage();
-                    if (str_contains($mensagemErro, 'Estoque insuficiente')) {
-                        session()->flash('erroPedido', $mensagemErro);
-                    } else {
-                        session()->flash('erroPedido', 'Falha no pedido:'.$e->getMessage());
-                    }
+           
+            foreach ($this->carrinho as $produto) {
+                $produto_id = $produto['id'];
+                $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
+                $produtoEstoque = Product::findOrFail($produto_id);
+                
+                if ($produtoEstoque->current_stock < $quantity) {
+                    throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
                 }
             }
-        } else {
-            return redirect()->route('logout');
+
+            $pedido = Order::create([
+                'client_id' => $this->client_id,
+                'user_id' => $user_id,                     
+                'status' => 'pendente',
+                'total_amount' => $this->preco_total,
+                'data' => now(),
+            ]);
+
+            $estoqueMinimoAlertas = [];
+            
+            foreach ($this->carrinho as $produto) {
+                $produto_id = $produto['id'];
+                $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
+                
+                $produtoAtualizado = Product::findOrFail($produto['id']);
+                $produtoAtualizado->current_stock -= $quantity;
+                $produtoAtualizado->save();
+
+                if ($produtoAtualizado->current_stock <= $produtoAtualizado->min_stock) {
+                    $estoqueMinimoAlertas[] = $produtoAtualizado->name;
+                }
+
+                OrderItem::create([
+                    'order_id' => $pedido->id,
+                    'product_id' => $produto['id'],
+                    'quantity' => $quantity,
+                ]);
+            }
+
+            DB::commit();
+
+            $this->resetarCampos();
+            
+            if (!empty($estoqueMinimoAlertas)) {
+                session()->flash('estoqueMinimo', 'Os seguintes produtos estão abaixo do estoque mínimo: ' . implode(', ', $estoqueMinimoAlertas));
+            }
+
+            session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('erroPedido', $e->getMessage());
         }
     }
 
@@ -295,7 +294,7 @@ class Produtos extends Component
     }
     public function resetarCampos()
     {
-        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id', 'supplier_id']);
+        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id', 'supplier_id', 'carrinho', 'client_id', 'preco_total', 'somaCart']);
     }
 
     public function cancelarSecao(){
