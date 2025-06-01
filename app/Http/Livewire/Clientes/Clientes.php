@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
+use Spatie\Browsershot\Browsershot;
 use Livewire\Attributes\Url;
 
 #[Title('Clientes')]
@@ -32,6 +33,7 @@ class Clientes extends Component
     public $clientesPaginados;
     public $show = false;
     public $perPage = 6;
+    public $query_clientes;
 
     // Url Query parameters
     #[Url(as: 'q', history:true)]
@@ -95,11 +97,9 @@ class Clientes extends Component
             }
 
             $this->resetarCampos();
-            
         } catch (\Exception $e) {
 
             session()->flash('error', 'Erro ao salvar cliente.');
-            
         }
     }
 
@@ -141,14 +141,14 @@ class Clientes extends Component
     {
         $cliente = Client::find($id);
 
-        try{
+        try {
             if ($cliente) {
                 $cliente->delete();
                 session()->flash('message', 'Cliente excluído com sucesso.');
             }
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             if ($e->getCode() == '23000') {
-            session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
+                session()->flash('erro', 'Não é possível deletar o cliente porque existem pedidos relacionados a ele.');
             } else {
                 // Para outras exceções, exibe uma mensagem genérica
                 session()->flash('erro', 'Erro ao deletar cliente.');
@@ -166,6 +166,31 @@ class Clientes extends Component
     public function fecharModelAdicionar()
     {
         $this->resetarCampos();
+    }
+
+    public function gerarRelatorio()
+    {
+        try {
+            $clientes = Client::select('clients.*')
+                ->withCount('orders')
+                ->orderByDesc('orders_count')
+                ->get();
+
+            $html = view('pdf.clientes', compact('clientes'))->render();
+
+            $fileName = 'clientes.pdf';
+
+            Browsershot::html($html)
+                ->setOption('args', ['--no-sandbox'])
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->save(storage_path("app/public/{$fileName}"));
+
+            return response()->download(storage_path("app/public/{$fileName}"));
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        }
     }
 
     public function updatednomeCliente()
@@ -192,13 +217,20 @@ class Clientes extends Component
     {
 
         $query = Client::query()
-        ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         if (!empty($this->nomeCliente)) {
             $query->where('name', 'like', '%' . $this->nomeCliente . '%');
         }
 
         $clientesPaginados = $query->paginate(5);
+
+        $this->query_clientes = Client::selectRaw('name, COUNT(orders.id) as total_compras')
+            ->join('orders', 'clients.id', '=', 'orders.client_id')
+            ->groupBy('clients.id', 'clients.name')
+            ->orderByDesc('total_compras')
+            ->limit(10)
+            ->get();
 
         return view('livewire.clientes.clientes', [
             'clientes' => $clientesPaginados,
