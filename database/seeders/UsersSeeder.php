@@ -27,7 +27,7 @@ class UsersSeeder extends Seeder
         ]);
         User::create([
             'name'     => 'Jonathan',
-            'email'    => 'jota',
+            'email'    => 'jota@gmail.com',
             'phone'    => '9999999',
             'role'     => 'Desenvolvedor',
             'photo_path'=> '/img/funcionarios/perfil.webp',
