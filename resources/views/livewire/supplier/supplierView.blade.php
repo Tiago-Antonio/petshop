@@ -36,15 +36,15 @@
         <div x-show="showChart" x-transition
             class="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center backdrop-blur-sm">
             <div @click.away="showChart = false"
-                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-[90vw] h-[90vh] relative">
+                class="bg-white p-6 rounded-3xl shadow-xl w-full max-w-4xl h-96 relative">
                 <button @click="showChart = false"
                     class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
                     <i class="fa-solid fa-xmark fa-xl"></i>
                 </button>
                 <!-- Gráfico -->
-                <div class="hidden md:block h-full shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
+                <div class="hidden md:block h-full  row-span-2 2xl:row-span-1  shadow-md bg-white rounded-3xl p-2 2xl:p-4 overflow-auto">
                     <div class="relative h-full">
-                        <canvas id="myChart" class="w-full h-full"></canvas>
+                        <canvas id="myChart" style="width: 100%; height: 100%;"></canvas>
                     </div>
                     <script>
                         const ctx = document.getElementById('myChart').getContext('2d');
