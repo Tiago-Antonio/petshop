@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\StockEntry;
+use App\Models\Supplier;
 use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -16,7 +17,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
-
+use Livewire\Attributes\Url;
 
 #[Title('Produtos')]
 class Produtos extends Component
@@ -24,14 +25,19 @@ class Produtos extends Component
     use WithFileUploads;
     use WithPagination;
 
-
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeProduto;
+
+    
     public $query;
     public $show;
     public $dropdownProdutos;
+    public $dropdownSupplier;
 
     // Forms
     public $product_id;
+    public $supplier_id;
     public $quantity;
     public $unit_price;
     public $entry_date;
@@ -109,6 +115,7 @@ class Produtos extends Component
             if ($item['id'] == $product_id) {
                 if ($item['quantidade'] > 1) {
                     $this->carrinho[$index]['quantidade'] -= 1;
+                    $this->soma -= 1;
                 } else {
                     unset($this->carrinho[$index]);
                     $this->carrinho = array_values($this->carrinho);
@@ -117,89 +124,106 @@ class Produtos extends Component
                 break;
             }
         }
-    }
 
+        $this->somaCart = [];
+        $this->soma = 0;
+        $this->preco_total = 0;
 
-    //Finalizando o pedido - Envia os dados para a tabela Order e OrderItems
-    public function finalizarPedido()
-    {
-        if (Auth::check()) {
-
-            $user_id = Auth::user()->id;
-
-            if (count($this->carrinho) === 0) {
-                session()->flash('erroPedido', 'Seu carrinho está vazio!');
-                return;
-            } else {
-                try {
-
-                    //inicia a operacao
-                    DB::beginTransaction();
-
-                    //Quantidade do produto não pode ser < 0
-                    foreach ($this->carrinho as $produto) {
-                        $produto_id = $produto['id'];
-                        $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
-                        $produtoEstoque = Product::find($produto_id);
-                        
-                        
-                        if ($produtoEstoque->current_stock < $quantity) {
-                            throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
-                        }
-                    }
-                    $pedido = Order::create([
-                        'client_id' => $this->client_id,
-                        'user_id' => $user_id,                     
-                        'status' => 'pendente',
-                        'total_amount' => $this->preco_total,
-                        //sem o payment_id
-                        'data' => now(),
-                    ]);
-
-                    foreach ($this->carrinho as $produto) {
-                        $produto_id = $produto['id'];
-                        $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
-                        //remove a quantidade dos Product para enviar para a tabela OrderItem
-                        $removendo_produto = Product::find($produto['id']);
-                        $removendo_produto->current_stock -= $quantity;
-                        $removendo_produto->save();
-
-                        OrderItem::create([
-                            'order_id' => $pedido->id,
-                            'product_id' => $produto['id'],
-                            'quantity' => $quantity,
-                        ]);
-                    }
-                    
-                    //confirma a operacao
-                    DB::commit();
-
-                    $this->carrinho = [];
-                    $this->client_id = '';
-                    session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
-                } catch (\Exception $e) {
-
-                    //reorna a operacao caso de algum erro
-                    DB::rollBack();
-
-                    $mensagemErro = $e->getMessage();
-                    if (str_contains($mensagemErro, 'Estoque insuficiente')) {
-                        session()->flash('erroPedido', $mensagemErro);
-                    } else {
-                        session()->flash('erroPedido', 'Falha no pedido:'.$e->getMessage());
-                    }
-                }
-            }
-        } else {
-            return redirect()->route('logout');
+        foreach ($this->carrinho as $cart) {
+            $this->somaCart[$cart['id']] = [
+                'quantidade' => $cart['quantidade'],
+                'preco_total' => $cart['quantidade'] * $cart['preco'],
+            ];
+            $this->soma += $cart['quantidade'];
+            $this->preco_total += $cart['quantidade'] * $cart['preco'];
         }
     }
 
 
-    //DropDown para a escolha do Tipo do Produto
+    public function finalizarPedido()
+    {
+        
+        if (empty($this->client_id)) {
+            session()->flash('erroPedido', 'Selecione um cliente!');
+            return;
+        }
+
+        if (!Auth::check()) {
+            return redirect()->route('logout');
+        }
+
+        if (count($this->carrinho) === 0) {
+            session()->flash('erroPedido', 'Seu carrinho está vazio!');
+            return;
+        }
+
+        $user_id = Auth::user()->id;
+
+        try {
+            DB::beginTransaction();
+
+           
+            foreach ($this->carrinho as $produto) {
+                $produto_id = $produto['id'];
+                $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
+                $produtoEstoque = Product::findOrFail($produto_id);
+                
+                if ($produtoEstoque->current_stock < $quantity) {
+                    throw new \Exception("Estoque insuficiente para o produto: {$produtoEstoque->name}. Disponível: {$produtoEstoque->current_stock}");
+                }
+            }
+
+            $pedido = Order::create([
+                'client_id' => $this->client_id,
+                'user_id' => $user_id,                     
+                'status' => 'pendente',
+                'total_amount' => $this->preco_total,
+                'data' => now(),
+            ]);
+
+            $estoqueMinimoAlertas = [];
+            
+            foreach ($this->carrinho as $produto) {
+                $produto_id = $produto['id'];
+                $quantity = $this->somaCart[$produto_id]['quantidade'] ?? $produto['quantidade'] ?? 1;
+                
+                $produtoAtualizado = Product::findOrFail($produto['id']);
+                $produtoAtualizado->current_stock -= $quantity;
+                $produtoAtualizado->save();
+
+                if ($produtoAtualizado->current_stock <= $produtoAtualizado->min_stock) {
+                    $estoqueMinimoAlertas[] = $produtoAtualizado->name;
+                }
+
+                OrderItem::create([
+                    'order_id' => $pedido->id,
+                    'product_id' => $produto['id'],
+                    'quantity' => $quantity,
+                ]);
+            }
+
+            DB::commit();
+
+            $this->resetarCampos();
+            
+            if (!empty($estoqueMinimoAlertas)) {
+                session()->flash('estoqueMinimo', 'Os seguintes produtos estão abaixo do estoque mínimo: ' . implode(', ', $estoqueMinimoAlertas));
+            }
+
+            session()->flash('sucessPedido', 'Pedido realizado com sucesso!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('erroPedido', $e->getMessage());
+        }
+    }
+
+
+    //DropDown para a escolha do Tipo do Produto e Fornecedor
     public function mount()
     {
         $this->dropdownProdutos = Product::orderBy('id')->get();
+         $this->dropdownSupplier = Supplier::orderBy('id')->get();
     }
 
 
@@ -209,6 +233,7 @@ class Produtos extends Component
     {
         $this->validate([
             'product_id' => 'required',
+            'supplier_id' => 'required',
             'quantity' => 'required',
             'unit_price' => 'required',
         ]);
@@ -217,16 +242,24 @@ class Produtos extends Component
 
             StockEntry::create([
                 'product_id' => $this->product_id,
-                'supplier_id' => 1,
+                'supplier_id' => $this->supplier_id,
                 'quantity' => $this->quantity,
                 'unit_price' => $this->unit_price,
                 'entry_date' => $this->entry_date ?? now(),
             ]);
 
-            //Atualiza os Dados da tabela Produtos com a entrada dos novos produtos!
+            //Atualiza os Dados da tabela Produtos com a entrada dos novos produtos e a média do preço!
             $produto = Product::find($this->product_id);
+            $estoqueAntigo = $produto->current_stock;
+            $precoAntigo = $produto->purchase_price;
+            $novaQuantidade = $this->quantity;
+            $novoPreco = $this->unit_price;
+
+            $novoPrecoMedio = (($estoqueAntigo * $precoAntigo) + ($novaQuantidade * $novoPreco)) / ($estoqueAntigo + $novaQuantidade);
             if ($produto) {
-                $produto->current_stock += $this->quantity;
+                $produto->current_stock += $novaQuantidade;
+                $produto->purchase_price = $novoPrecoMedio;
+                $produto->sale_price = $novoPrecoMedio * 1.50;
                 $produto->save();
             }
 
@@ -261,12 +294,27 @@ class Produtos extends Component
     }
     public function resetarCampos()
     {
-        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id']);
+        $this->reset(['quantity', 'unit_price', 'entry_date', 'product_id', 'supplier_id', 'carrinho', 'client_id', 'preco_total', 'somaCart']);
     }
 
     public function cancelarSecao(){
         $this->client_name = false;
         $this->client_id = '';
+    }
+
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Product::where('name', 'like', '%' . $this->nomeProduto . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(8)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
     }
 
     public function render()
@@ -278,8 +326,12 @@ class Produtos extends Component
             $query = Product::where('name', 'like', '%' . $this->nomeProduto . '%');
         }
 
-        $produtos = $query->paginate(8);
+        $produtos = $query->orderBy('created_at', 'asc')
+        ->paginate(8);
 
-        return view('livewire.produtos.produtos', ['produtos' => $produtos]);
+        return view('livewire.produtos.produtos', [
+            'produtos' => $produtos, 
+            'lastPage' => $produtos->lastPage(),
+        ]);
     }
 }

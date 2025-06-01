@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('payment_id')->nullable()->constrained();
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->string('status')->default('pending');
-            $table->date('order_date')->nullable();
             $table->timestamps();
         });
     }

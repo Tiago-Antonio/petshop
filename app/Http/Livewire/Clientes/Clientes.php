@@ -11,6 +11,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Spatie\Browsershot\Browsershot;
+use Livewire\Attributes\Url;
 
 #[Title('Clientes')]
 class Clientes extends Component
@@ -34,8 +35,10 @@ class Clientes extends Component
     public $perPage = 6;
     public $query_clientes;
 
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $nomeCliente;
-    // Buscar
+    
 
 
     public function rules(){
@@ -190,6 +193,20 @@ class Clientes extends Component
         $this->resetPage();
     }
 
+    public function nextPage()
+    {
+        $pageName = 'page';
+        $paginaAtual = $this->getPage($pageName);
+
+        $ultimaPagina = Client::where('name', 'like', '%' . $this->nomeCliente . '%')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(5)
+                            ->lastPage();
+
+        if ($paginaAtual < $ultimaPagina) {
+            $this->setPage($paginaAtual + 1, $pageName);
+        }
+    }
 
     public function render()
     {
@@ -211,7 +228,8 @@ class Clientes extends Component
             ->get();
 
         return view('livewire.clientes.clientes', [
-            'clientes' => $clientesPaginados
+            'clientes' => $clientesPaginados,
+            'lastPage' => $clientesPaginados->lastPage(),
         ]);
     }
 }

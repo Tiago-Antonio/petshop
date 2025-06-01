@@ -17,6 +17,34 @@
         </div>
     @endif
 
+
+    <div wire:loading wire:target='gerarPdfVenda'
+        class="fixed inset-0 h-screen w-screen  z-50 flex items-center justify-center"
+        style="background-color: rgba(0, 0, 0, 0.8)">
+        <div class="h-full w-full grid place-items-center ">
+            <div>
+                <div class="relative w-20 h-20 mb-4 mx-auto">
+                    <svg class="animate-spin w-full h-full text-blue-300" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <div class="absolute inset-0 grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-white font-medium animate-pulse">Gerando relatório PDF...</p>
+            </div>
+        </div>
+    </div>
+
     @if ($pagamento)
         <div class="bg-black fixed inset-0 bg-opacity-50 z-50">
             <form wire:submit.prevent="confirmarPagamento"
@@ -55,13 +83,22 @@
         </div>
     @endif
 
-    <div class="overflow-x-auto px-4 py-8 max-w-screen-xl mx-auto ">
-        <div class="relative w-full md:w-1/2 xl:w-1/4">
-            <input type="text" wire:model.live.debounce.100="query" placeholder="Pesquisar"
-                class="w-full px-4 py-1 pr-10 rounded-lg border border-gray-300 focus:outline-none">
-            <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
-                <i class="fas fa-search"></i>
-            </button>
+    <div class="overflow-x-auto px-8 py-4 max-w-7xl mx-auto ">
+        <div class=" flex justify-between">
+            <div class="relative lg:max-w-64 md:w-1/2 xl:w-1/4">
+                <input type="text" wire:model.live.debounce.200="query" placeholder="Pesquisar"
+                    class="w-full px-4 py-2 bg-white border-b border-gray-400 focus:outline-none focus:border-blue-500 transition-all text-sm text-gray-800 placeholder-gray-500 lg:max-w-64">
+                <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div>
+                <button wire:click='gerarPdfVenda'
+                    class=" bg-blue-600 px-4 py-1 rounded-md text-white font-semibold hover:bg-blue-800 transition flex gap-2 items-center justify-center min-h-11">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <p>Gerar PDF</p>
+                </button>
+            </div>
         </div>
         <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden mt-4">
             <thead class="bg-blue-600 text-white shadow">
@@ -124,15 +161,17 @@
                                 <div class="flex gap-2">
                                     <button wire:click='metodoPagamento({{ $item->id }})'
                                         class="px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M5 13l4 4L19 7" />
                                         </svg>
                                         Confirmar
                                     </button>
-                                    <button wire:click='cancelarVenda({{ $item->id }})'
+                                    <button wire:click='modalCancelarVenda({{ $item->id }})'
                                         class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M6 18L18 6M6 6l12 12" />
                                         </svg>
@@ -149,6 +188,25 @@
                                     finalizado</span>
                             @endif
 
+
+                            <!-- Modal de Confirmação -->
+                            @if ($confirmando === $item['id'])
+                                <div
+                                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                    <div class="bg-white rounded-lg p-6 shadow-xl">
+                                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Tem certeza?</h2>
+                                        <p class="text-sm text-gray-600 mb-6">Essa ação não poderá ser desfeita.</p>
+                                        <div class="flex justify-end gap-4">
+                                            <button wire:click='modalCancelarVenda({{ $item['id'] }})'
+                                                class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancelar</button>
+                                            <button wire:click='cancelarVenda({{ $item['id'] }})'
+                                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                                                Confirmar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -178,17 +236,23 @@
                                                         {{ $produtos->product->name ?? 'Produto não encontrado' }}
                                                     </td>
                                                     <td class="px-4 py-2 text-sm text-gray-800">
-                                                        {{ $produtos->quantity }}
+                                                        @if ($produtos->quantity == 0)
+                                                            {{ $produtos->snapshot_quantity }}
+                                                        @else
+                                                            {{ $produtos->quantity }}
+                                                        @endif
                                                     </td>
+
                                                     <td class="px-4 py-2 text-sm text-gray-800">
                                                         R$
                                                         {{ number_format($produtos->product->sale_price, 2, ',', '.') }}
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                        </tbody>
 
+                                        </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </td>
@@ -197,5 +261,23 @@
             @endforeach
         </table>
         {{ $pedidos->links() }}
+        <div class="relative inline-block mt-4">
+            <select wire:model.live="perPage"
+                class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                <option value="5">5 itens</option>
+                <option value="10">10 itens</option>
+                <option value="20">20 itens</option>
+                <option value="50">50 itens</option>
+                <option value="100">100 itens</option>
+            </select>
+
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </div>
+        </div>
     </div>
 </div>

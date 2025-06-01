@@ -15,14 +15,14 @@
 
                 {{-- Só é exibido para os Admin --}}
                 @if (auth()->user()->admin == 1)
-                    <a href="{{ route('funcionarios') }}" wire:navigate
+                    <a href="{{ route('funcionarios') }}"
                         :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'funcionarios', 'text-gray-600': activePage !== 'funcionarios' }"
                         class="hover:text-blue-600 transition font-semibold pb-1">
                         Funcionários
                     </a>
                 @endif
 
-                <a href="{{ route('suppliers') }}" wire:navigate
+                <a href="{{ route('suppliers') }}"
                     :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'suppliers', 'text-gray-600': activePage !== 'suppliers' }"
                     class="hover:text-blue-600 transition font-semibold pb-1">
                     Fornecedores
@@ -35,14 +35,21 @@
                 </a>
 
                 <a href="{{ route('produtos') }}" wire:navigate
-                    :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'produtos', 'text-gray-600': activePage !== 'produtos' }"
+                    :class="{
+                        'text-blue-600 border-b-2 border-blue-600': activePage === 'produtos' ||
+                            activePage === 'produtosCategoria',
+                        'text-gray-600': activePage !== 'produtos' &&
+                            activePage !== 'produtosCategoria'
+                    }"
                     class="hover:text-blue-600 transition font-semibold pb-1">
                     Produtos
                 </a>
 
+
+
                 <a href="{{ route('vendas') }}" wire:navigate
                     :class="{ 'text-blue-600 border-b-2 border-blue-600': activePage === 'vendas', 'text-gray-600': activePage !== 'vendas' }"
-                    class="hover:text-blue-600 transition font-semibold pb-1">Vendas</a>
+                    class="hover:text-blue-600 transition font-semibold pb-1">Pedidos</a>
 
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

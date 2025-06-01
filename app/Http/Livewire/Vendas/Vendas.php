@@ -9,20 +9,27 @@ use App\Models\OrderItem;
 use App\Models\Client;
 use App\Models\Payment;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
+use Spatie\Browsershot\Browsershot;
 
 #[Title('Vendas')]
 class Vendas extends Component
 {
     use WithPagination;
+    // Url Query parameters
+    #[Url(as: 'q', history:true)]
     public $query;
     public $showProducts;
     public $pagamento = false;
     public $escolhaMetodoPagamento;
     public $order_id;
-    
+    public $confirmando = null;
+
+    public $perPage = 5;
 
     public function metodoPagamento($id){
 
@@ -31,39 +38,38 @@ class Vendas extends Component
                
     }
 
+    public function modalCancelarVenda($id){
+        $this->confirmando = $this->confirmando === $id ? null : $id;
+    }
+
    public function cancelarVenda($id)
     {
-        // 1. Atualiza o status da venda para "cancelado"
-        $order = Order::findOrFail($id);
-        $order->update([
-            'status' => 'cancelado',
-        ]);
+        if (Auth::check() && Auth::user()->admin == 1){
+             $order = Order::findOrFail($id);
+            $order->update([
+                'status' => 'cancelado',
+            ]);
 
-        // 2. Busca todos os itens relacionados a essa venda
-        $orderItems = OrderItem::where('order_id', $id)->get();
+            $orderItems = OrderItem::where('order_id', $id)->get();
 
-        // 3. Para cada item, devolve a quantidade ao estoque e remove o item da tabela order_items
-        foreach ($orderItems as $item) {
-            // Busca o produto relacionado ao item
-            $product = Product::find($item->product_id);
+            foreach ($orderItems as $item) {
+                Product::where('id', $item->product_id)
+                ->increment('current_stock', $item->quantity);
 
-            if ($product) {
-                // Soma a quantidade devolvida ao estoque
-                $product->current_stock += $item->quantity;
-                $product->save();
+                $item->update([
+                    'snapshot_quantity' => $item->quantity,
+                    'quantity' => 0 
+                ]);
             }
-
-            // Remove o item do pedido
-            $item->delete();
-        }
-
-        // Opcional: mensagem ou redirecionamento
-        session()->flash('message', 'Venda cancelada com sucesso.');
-        return redirect()->back();
+            session()->flash('sucesso', 'Venda cancelada com sucesso.');
+            $this->confirmando = false;
+        } else{
+            session()->flash('erro', 'Apenas administradores podem cancelar uma venda!');
+            $this->confirmando = false;
+        }  
     }
 
     public function confirmarPagamento(){  
-
         $this->validate([
             'escolhaMetodoPagamento' => 'required|in:1,2,3,4',
         ]);
@@ -86,18 +92,42 @@ class Vendas extends Component
                 'order_id'=> $order->id,
             ]);
             
-            session()->flash('sucesso', 'Sucesso ao confirmar a venda!');
+            session()->flash('sucesso', 'Venda confirmada!');
             $this->reset(['pagamento', 'order_id', 'escolhaMetodoPagamento']);
         } catch(\Exception $e){
             session()->flash('erro', 'Erro ao confirmar a venda!'.$e->getMessage());
-        }
-        
+        }        
     }
 
-     public function updatedquery()
+    public function updatedquery()
     {
         $this->resetPage();
     }
+
+
+   public function gerarPdfVenda()
+    {
+        try {
+            $orders = Order::with(['client', 'orderitem.product', 'user'])
+                        ->latest()
+                        ->take(10)
+                        ->get(); 
+
+            $html = view('pdf.venda', compact('orders'))->render();
+
+            $fileName = 'ultimos_pedidos.pdf';
+
+            Browsershot::html($html)
+                ->setOption('args', ['--no-sandbox'])
+                ->save(storage_path("app/public/{$fileName}"));
+
+            return response()->download(storage_path("app/public/{$fileName}"));
+
+        } catch (\Exception $e) {
+            session()->flash('erro', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        }
+    }
+
 
     public function render()
     {   
@@ -110,14 +140,19 @@ class Vendas extends Component
         ->orderBy('created_at', 'desc');
 
         // Filtrar apenas quando existir alguma pesquisa
-        if(!empty($this->query)){
-            $pedidos->whereHas('client', function ($query) {
-                $query->where('name', 'like', '%' . $this->query . '%');
+         if (!empty($this->query)) {
+            $pedidos->where(function ($query) {
+            $query->whereHas('client', function ($q) {
+                $q->where('name', 'like', '%' . $this->query . '%');
+            })
+            ->orWhereHas('user', function ($q) {
+                $q->where('name', 'like', '%' . $this->query . '%');
             });
-        }
+        });
+    }
        
         return view('livewire.vendas.vendas', [
-            'pedidos' => $pedidos->paginate(5)
+            'pedidos' => $pedidos->paginate($this->perPage)
         ]);
     }
 }

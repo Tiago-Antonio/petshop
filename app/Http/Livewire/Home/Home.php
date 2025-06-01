@@ -6,6 +6,7 @@ use Livewire\Component;
 
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Order;
 use App\Models\Supplier;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -22,9 +23,16 @@ class Home extends Component
     public $ultimos_clientes;
     public $query_produtos;
     public $min_produtos;
+    public $funcionarios_pedidos;
 
     public function render()
     {
+
+        $user_id = Auth::user()->id;
+
+        $this->funcionarios_pedidos = Order::where('user_id', $user_id)->count();   
+
+        
         $this->clientes_adicionados_hoje = Client::whereDate('created_at', Carbon::today())->count(); 
         $this->usuario_name = Auth::user()->name;
 
@@ -36,11 +44,13 @@ class Home extends Component
         $this->suppliers_count = Supplier::count();
 
 
-        $this->query_produtos = Product::selectRaw('LEFT(name, 8) as name, current_stock')
-            ->orderBy('id', 'asc')
+        $this->query_produtos = Product::selectRaw('name, current_stock')
+            ->whereNotNull('current_stock')
+            ->orderBy('current_stock', 'asc')
+            ->take(15)
             ->get();
         
-        $this->min_produtos = Product::whereColumn('current_stock', '<', 'min_stock')->get();
+        $this->min_produtos = Product::whereColumn('current_stock', '<=', 'min_stock')->get();
         
         return view('livewire.home.home');
     }
