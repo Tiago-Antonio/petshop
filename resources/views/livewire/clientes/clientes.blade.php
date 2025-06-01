@@ -1,5 +1,5 @@
 <section class="max-h-screen w-screen bg-blue-100 pb-8 overflow-hidden">
-    <div wire:loading wire:target='gerarRelatorioPDF'
+    <div wire:loading wire:target='gerarRelatorio'
         class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
         <div class="h-full w-full grid place-items-center">
             <div>

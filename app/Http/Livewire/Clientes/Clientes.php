@@ -170,22 +170,27 @@ class Clientes extends Component
 
     public function gerarRelatorio()
     {
-        $clientes = Client::select('clients.*')
-            ->withCount('orders')
-            ->orderByDesc('orders_count')
-            ->get();
+        try {
+            $clientes = Client::select('clients.*')
+                ->withCount('orders')
+                ->orderByDesc('orders_count')
+                ->get();
 
-        $html = view('livewire.clientes.relatorio', compact('clientes'))->render();
-        $path = storage_path('app/public/relatorios/clientes.pdf');
+            $html = view('pdf.clientes', compact('clientes'))->render();
 
-        Browsershot::html($html)
-            ->format('A4')
-            ->margins(10, 10, 10, 10)
-            ->save($path);
+            $fileName = 'clientes.pdf';
 
-        session()->flash('success', 'Relatório gerado com sucesso!');
+            Browsershot::html($html)
+                ->setOption('args', ['--no-sandbox'])
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->save(storage_path("app/public/{$fileName}"));
 
-        return response()->download($path);
+            return response()->download(storage_path("app/public/{$fileName}"));
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        }
     }
 
     public function updatednomeCliente()
