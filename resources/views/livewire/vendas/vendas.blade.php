@@ -60,8 +60,8 @@
                         <option value="">Selecione...</option>
                         <option value="1">Cartão crédito</option>
                         <option value="2">Cartão débito</option>
-                        <option value="3">Dinheiro</option>
-                        <option value="4">Pix</option>
+                        <option value="3">Pix</option>
+                        <option value="4">Dinheiro</option>
                     </select>
                     @error('escolhaMetodoPagamento')
                         <span class="text-red-600 text-sm font-medium">{{ $message }}</span>
