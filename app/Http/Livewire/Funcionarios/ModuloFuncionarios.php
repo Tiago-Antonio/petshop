@@ -12,7 +12,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
-use Spatie\Browsershot\Browsershot;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Title('Funcionários')]
 class ModuloFuncionarios extends Component
@@ -51,24 +51,25 @@ class ModuloFuncionarios extends Component
 
 
     public function gerarRelatorioPDF()
-    {
-        try {
-            $funcionarios = User::all();
+{
+    try {
+        // Busca os dados dos funcionários
+        $funcionarios = User::all();
 
-            $html = view('pdf.funcionarios', compact('funcionarios'))->render();
+        // Gera o PDF a partir da view
+        $pdf = Pdf::loadView('pdf.funcionarios', compact('funcionarios'));
 
-            $fileName = 'funcionarios.pdf';
+        // Salva o arquivo no storage
+        $fileName = 'funcionarios.pdf';
+        $pdf->save(storage_path("app/public/{$fileName}"));
 
-            Browsershot::html($html)
-                ->setOption('args', ['--no-sandbox'])
-                ->save(storage_path("app/public/{$fileName}"));
+        // Retorna o download do arquivo
+        return response()->download(storage_path("app/public/{$fileName}"));
 
-            return response()->download(storage_path("app/public/{$fileName}"));
-
-        } catch (\Exception $e) {
-            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
     }
+}
 
 
     public function editarFuncionario($id)
