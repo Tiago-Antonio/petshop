@@ -48,6 +48,16 @@
                     </div>
                 @endif
             </form>
+            <div class="flex justify-center gap-2 mt-4">
+                <div>
+                    <a href="{{ route('loginSocialite') }}"
+                        class="bg-purple-400 px-4 py-1 rounded-2xl text-white font-medium hover:bg-blue-400 transition-all ease-in-out delay-75">Github</a>
+                </div>
+                <div>
+                    <a href="http://"
+                        class="bg-red-400 px-4 py-1 rounded-2xl text-white font-medium hover:bg-blue-400 transition-all ease-in-out delay-75">Google</a>
+                </div>
+            </div>
         </div>
     </div>
 </section>

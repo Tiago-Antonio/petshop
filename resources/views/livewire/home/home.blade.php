@@ -1,4 +1,38 @@
 <section class="h-screen min-h-full w-screen bg-blue-100 overflow-x-hidden">
+    @if (session()->has('success'))
+        <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-2" x-init="setTimeout(() => show = false, 5000)"
+            class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50">
+
+            <div
+                class="max-w-sm w-full bg-green-50 shadow-lg rounded-lg pointer-events-auto ring-1 ring-green-100 overflow-hidden">
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium text-green-800">Sucesso!</p>
+                            <p class="mt-1 text-sm text-green-600">
+                                {{ session('success') }}
+                            </p>
+                        </div>
+                        <div class="ml-4 flex-shrink-0 flex">
+                            <button @click="show = false" class="...">
+                                <!-- Ícone SVG -->
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     <livewire:components.header.header />
     <div class="flex flex-col max-w-screen-xl mx-auto gap-6 px-4 2xl:px-8">
 
@@ -14,7 +48,8 @@
                 {{-- Funcionarios --}}
                 <div
                     class="py-4 cursor-pointer shadow-lg hover:shadow-xl transition-all h-full bg-white rounded-2xl grid place-items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                    <a href="{{ route('funcionarios') }}" class="flex flex-col items-center justify-center h-full w-full">
+                    <a href="{{ route('funcionarios') }}"
+                        class="flex flex-col items-center justify-center h-full w-full">
                         <div class="flex flex-col items-center gap-2">
                             <div
                                 class=" bg-white/20 p-3 rounded-full group-hover:bg-white/30 transition-colors duration-300">

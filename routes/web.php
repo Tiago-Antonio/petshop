@@ -1,10 +1,12 @@
 <?php
 
+use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Errors\Error404;
 use Illuminate\Support\Facades\Auth;
 // -------------------- Rota do gráficos pizza de fornecedores --------------------
 use App\Http\Controllers\SupplierController;
+use App\Models\User;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', \App\Http\Livewire\Home\Home::class)->name('home');
@@ -28,5 +30,55 @@ Route::get('/login', \App\Http\Livewire\Login\Login::class)->middleware('guest')
 // Erro
 Route::fallback(Error404::class);
 
+//Autenticação
+Route::get('/auth/github/redirect', function () {
+    return Socialite::driver('github')->redirect();
+})->name('loginSocialite');
+ 
+// Em routes/web.php
+Route::get('/auth/github/callback', function () {
+    try {
+        $githubUser = Socialite::driver('github')->stateless()->user();
+
+        $user = User::where('email', $githubUser->email)->first();
+
+
+        if (!$user) {
+            return redirect('/login')->with('error', 'Nenhuma conta encontrada com este e-mail.');
+        }
+
+         $user->update([
+            'github_id' => $githubUser->id,
+            'github_token' => $githubUser->token,
+            'github_refresh_token' => $githubUser->refreshToken,
+        ]);
+
+        // if ($existingUser) {
+        //     // Atualiza os dados do GitHub no usuário existente
+        //     $existingUser->update([
+        //         'github_id' => $githubUser->id,
+        //         'github_token' => $githubUser->token,
+        //         'github_refresh_token' => $githubUser->refreshToken,
+        //     ]);
+        //     $user = $existingUser;
+        // } else {
+        //     // Cria um novo usuário
+        //     $user = User::create([
+        //         'github_id' => $githubUser->id,
+        //         'name' => $githubUser->name ?? $githubUser->nickname ?? 'Usuário GitHub',
+        //         'email' => $githubUser->email,
+        //         'password' => bcrypt(Str::random(32)), //Cria uma senha aleatória
+        //         'github_token' => $githubUser->token,
+        //         'github_refresh_token' => $githubUser->refreshToken,
+        //     ]);
+        // }
+
+        Auth::login($user);
+        return redirect('/')->with('success', 'Login realizado com sucesso!');
+
+    } catch (\Exception $e) {
+        return redirect('/login')->with('error', 'Erro ao autenticar: ' . $e->getMessage());
+    }
+});
 
 

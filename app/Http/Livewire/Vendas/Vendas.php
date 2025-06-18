@@ -14,7 +14,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
-use Spatie\Browsershot\Browsershot;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Title('Vendas')]
 class Vendas extends Component
@@ -105,26 +105,24 @@ class Vendas extends Component
     }
 
 
-   public function gerarPdfVenda()
+    public function gerarPdfVenda()
     {
         try {
             $orders = Order::with(['client', 'orderitem.product', 'user'])
                         ->latest()
                         ->take(10)
-                        ->get(); 
+                        ->get();
 
-            $html = view('pdf.venda', compact('orders'))->render();
+            $pdf = Pdf::loadView('pdf.venda', compact('orders'));
+            
+            $fileName = 'venda.pdf';
+            $pdf->save(storage_path("app/public/{$fileName}"));
 
-            $fileName = 'ultimos_pedidos.pdf';
-
-            Browsershot::html($html)
-                ->setOption('args', ['--no-sandbox'])
-                ->save(storage_path("app/public/{$fileName}"));
-
+            // Retorna o download do arquivo
             return response()->download(storage_path("app/public/{$fileName}"));
 
         } catch (\Exception $e) {
-            session()->flash('erro', 'Erro ao gerar o PDF: ' . $e->getMessage());
+            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
         }
     }
 

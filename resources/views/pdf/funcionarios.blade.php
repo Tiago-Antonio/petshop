@@ -3,25 +3,35 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Relatório de Funcionários</title>
-    <style>
-        /* Estilos Base */
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    <style type="text/css">
+        /* Reset e configurações básicas */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.4;
             color: #333;
-            background-color: #f8fafc;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding-bottom: 50px;
+            /* Espaço para o footer */
         }
 
         /* Cabeçalho */
         .header {
             background-color: #1e3a8a;
-            color: white;
-            padding: 30px 40px;
-            margin-bottom: 30px;
+            color: #ffffff;
+            padding: 25px 30px;
+            margin-bottom: 25px;
             position: relative;
-            overflow: hidden;
+            page-break-after: avoid;
         }
 
         .header::after {
@@ -29,39 +39,47 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            right: 0;
+            width: 100%;
             height: 4px;
             background: linear-gradient(90deg, #3b82f6, #10b981);
         }
 
         .title {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 600;
+            font-size: 22pt;
+            font-weight: bold;
             text-align: center;
+            margin-bottom: 5px;
         }
 
         .subtitle {
-            margin: 5px 0 0;
-            font-size: 16px;
-            font-weight: 400;
-            opacity: 0.9;
+            font-size: 14pt;
             text-align: center;
+            opacity: 0.9;
+            margin-bottom: 15px;
         }
 
         .report-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            font-size: 14px;
+            display: table;
+            width: 100%;
+            font-size: 10pt;
+            margin-top: 10px;
         }
 
-        /* Tabela de Funcionários */
+        .report-info span {
+            display: table-cell;
+            width: 50%;
+        }
+
+        .report-info span:last-child {
+            text-align: right;
+        }
+
+        /* Tabela */
         .employee-table {
-            width: 94%;
+            width: 96%;
+            margin: 0 2%;
             border-collapse: collapse;
-            margin: 0 3%;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            page-break-inside: auto;
         }
 
         .employee-table thead {
@@ -69,84 +87,64 @@
         }
 
         .employee-table th {
-            padding: 12px 15px;
+            padding: 10px 12px;
             text-align: left;
-            font-weight: 600;
+            font-weight: bold;
             color: #334155;
             border-bottom: 2px solid #e2e8f0;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
+            font-size: 10pt;
         }
 
         .employee-table td {
-            padding: 12px 15px;
+            padding: 8px 12px;
             border-bottom: 1px solid #e2e8f0;
-            vertical-align: middle;
+            font-size: 10pt;
+            page-break-inside: avoid;
+            page-break-after: auto;
         }
 
         .employee-table tr:nth-child(even) {
             background-color: #f8fafc;
         }
 
-        .employee-table tr:hover {
-            background-color: #f1f5f9;
-        }
-
-        /* Status Badges */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        /* Footer */
+        /* Rodapé */
         .footer {
-            margin-top: 40px;
-            padding: 20px 40px;
-            text-align: center;
-            font-size: 12px;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        /* Informações da Página */
-        .page-info {
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 10px;
+            padding: 10px 0;
+            font-size: 9pt;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            background-color: #ffffff;
+        }
+
+        /* Numeração de páginas */
+        .page-number {
+            position: fixed;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8pt;
             color: #94a3b8;
         }
 
-        /* Avatar */
-        .employee-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        /* Responsividade */
+        /* Quebras de página */
         @media print {
+            .page-break {
+                page-break-before: always;
+            }
+
             body {
-                background-color: white;
+                padding-top: 20px;
             }
 
             .header {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                position: relative;
+                top: -20px;
             }
         }
     </style>
@@ -168,7 +166,7 @@
         <thead>
             <tr>
                 <th style="width: 25%;">Nome</th>
-                <th style="width: 25%;">Email</th>
+                <th style="width: 25%;">E-mail</th>
                 <th style="width: 20%;">Cargo</th>
                 <th style="width: 15%;">Telefone</th>
                 <th style="width: 15%;">Contratado em</th>
@@ -177,14 +175,18 @@
         <tbody>
             @foreach ($funcionarios as $item)
                 <tr>
-                    <td>
-                        {{ $item->name }}
-                    </td>
+                    <td>{{ $item->name }}</td>
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->role }}</td>
-                    <td>{{ $item->phone }}</td>
+                    <td>{{ $item->phone ?? 'N/A' }}</td>
                     <td>{{ $item->created_at->format('d/m/Y') }}</td>
                 </tr>
+
+                @if ($loop->iteration % 25 == 0)
+                    <tr class="page-break">
+                        <td colspan="5"></td>
+                    </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
@@ -194,8 +196,19 @@
         Relatório gerado em {{ now()->format('d/m/Y') }} | Sistema de Gestão de Funcionários
     </div>
 
-    <!-- Número da Página (será preenchido pelo gerador de PDF) -->
-    <div class="page-info">Página <span class="page-number"></span></div>
+    <!-- Número da Página -->
+    <div class="page-number">Página <span class="page"></span></div>
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $size = 8;
+                $pageText = "Página " . $PAGE_NUM . " de " . $PAGE_COUNT;
+                $pdf->text(520, 810, $pageText, $font, $size);
+            ');
+        }
+    </script>
 </body>
 
 </html>

@@ -29,7 +29,7 @@ class Login extends Component
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             session()->regenerate();
-            return redirect()->intended('/');
+             return redirect('/')->with('success', 'Login realizado com sucesso!');
         }
 
         session()->flash('error', 'Credenciais inválidas. Verifique seu e-mail e senha.');

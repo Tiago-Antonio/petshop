@@ -51,25 +51,25 @@ class ModuloFuncionarios extends Component
 
 
     public function gerarRelatorioPDF()
-{
-    try {
-        // Busca os dados dos funcionários
-        $funcionarios = User::all();
+    {
+        try {
+            // Busca os dados dos funcionários
+            $funcionarios = User::all();
 
-        // Gera o PDF a partir da view
-        $pdf = Pdf::loadView('pdf.funcionarios', compact('funcionarios'));
+            // Gera o PDF a partir da view
+            $pdf = Pdf::loadView('pdf.funcionarios', compact('funcionarios'));
 
-        // Salva o arquivo no storage
-        $fileName = 'funcionarios.pdf';
-        $pdf->save(storage_path("app/public/{$fileName}"));
+            // Salva o arquivo no storage
+            $fileName = 'funcionarios.pdf';
+            $pdf->save(storage_path("app/public/{$fileName}"));
 
-        // Retorna o download do arquivo
-        return response()->download(storage_path("app/public/{$fileName}"));
+            // Retorna o download do arquivo
+            return response()->download(storage_path("app/public/{$fileName}"));
 
-    } catch (\Exception $e) {
-        session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
+        }
     }
-}
 
 
     public function editarFuncionario($id)

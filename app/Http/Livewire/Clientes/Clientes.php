@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Spatie\Browsershot\Browsershot;
 use Livewire\Attributes\Url;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Title('Clientes')]
 class Clientes extends Component
@@ -168,7 +169,8 @@ class Clientes extends Component
         $this->resetarCampos();
     }
 
-    public function gerarRelatorio()
+
+     public function gerarRelatorio()
     {
         try {
             $clientes = Client::select('clients.*')
@@ -176,23 +178,20 @@ class Clientes extends Component
                 ->orderByDesc('orders_count')
                 ->get();
 
-            $html = view('pdf.clientes', compact('clientes'))->render();
+            // Gera o PDF a partir da view
+            $pdf = Pdf::loadView('pdf.clientes', compact('clientes'));
 
+            // Salva o arquivo no storage
             $fileName = 'clientes.pdf';
+            $pdf->save(storage_path("app/public/{$fileName}"));
 
-            Browsershot::html($html)
-                ->setOption('args', ['--no-sandbox'])
-                ->format('A4')
-                ->margins(10, 10, 10, 10)
-                ->save(storage_path("app/public/{$fileName}"));
-
+            // Retorna o download do arquivo
             return response()->download(storage_path("app/public/{$fileName}"));
 
         } catch (\Exception $e) {
             session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
         }
     }
-
     public function updatednomeCliente()
     {
         $this->resetPage();

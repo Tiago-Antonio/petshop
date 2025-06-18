@@ -28,7 +28,10 @@ class User extends Authenticatable
         'birth_date',      
         'admin',
         'active',         
-        'photo_path',      
+        'photo_path', 
+        'github_token',
+        'github_refresh_token',
+        'github_id',     
     ];
 
     /**
