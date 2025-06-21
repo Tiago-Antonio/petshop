@@ -29,9 +29,9 @@ class User extends Authenticatable
         'admin',
         'active',         
         'photo_path', 
-        'github_token',
-        'github_refresh_token',
-        'github_id',     
+        'provider_avatar',
+        'provider_name',
+        'provider_id',     
     ];
 
     /**

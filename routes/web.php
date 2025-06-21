@@ -36,7 +36,7 @@ Route::get('/auth/github/redirect', function () {
 })->name('loginSocialite');
  
 // Em routes/web.php
-Route::get('/auth/github/callback', function () {
+Route::get('/funcionarios/auth/github/callback', function () {
     try {
         $githubUser = Socialite::driver('github')->stateless()->user();
 
@@ -48,9 +48,9 @@ Route::get('/auth/github/callback', function () {
         }
 
          $user->update([
-            'github_id' => $githubUser->id,
-            'github_token' => $githubUser->token,
-            'github_refresh_token' => $githubUser->refreshToken,
+            'provider_id' => $githubUser->id,
+            'provider_avatar' => $githubUser->token,
+            'provider_name' => $githubUser->refreshToken,
         ]);
 
         // if ($existingUser) {
@@ -74,6 +74,40 @@ Route::get('/auth/github/callback', function () {
         // }
 
         Auth::login($user);
+        return redirect('/')->with('success', 'Login realizado com sucesso!');
+
+    } catch (\Exception $e) {
+        return redirect('/login')->with('error', 'Erro ao autenticar: ' . $e->getMessage());
+    }
+});
+
+
+//Autenticação GOOGLE
+Route::get('/auth/google/redirect', function () {
+    return Socialite::driver('google')->redirect();
+})->name('loginSocialiteGoogle');
+
+
+// Em routes/web.php
+Route::get('/funcionarios/auth/google/callback', function () {
+    try {
+        $user = Socialite::driver('google')->stateless()->user();
+
+
+        $googleUser = User::where('email', $user->email)->first();
+
+
+        if (!$googleUser) {
+            return redirect('/login')->with('error', 'Nenhuma conta encontrada com este e-mail.');
+        }
+
+         $googleUser->update([
+            'provider_id'     => $user->getId(),
+            'provider_name'   => $user->name,
+            'provider_avatar' => $user->getAvatar(),
+        ]);
+
+        Auth::login($googleUser);
         return redirect('/')->with('success', 'Login realizado com sucesso!');
 
     } catch (\Exception $e) {

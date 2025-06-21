@@ -38,7 +38,7 @@
                 </div>
                 <!-- Botão -->
                 <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 rounded-full font-semibold hover:bg-blue-700 transition">
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-md transition transform">
                     Log In
                 </button>
                 <!-- Erros de sessão -->
@@ -48,15 +48,25 @@
                     </div>
                 @endif
             </form>
-            <div class="flex justify-center gap-2 mt-4">
-                <div>
-                    <a href="{{ route('loginSocialite') }}"
-                        class="bg-purple-400 px-4 py-1 rounded-2xl text-white font-medium hover:bg-blue-400 transition-all ease-in-out delay-75">Github</a>
-                </div>
-                <div>
-                    <a href="http://"
-                        class="bg-red-400 px-4 py-1 rounded-2xl text-white font-medium hover:bg-blue-400 transition-all ease-in-out delay-75">Google</a>
-                </div>
+            {{-- Login Social --}}
+            <div class="grid gap-3 mt-6">
+
+                <!-- GitHub -->
+                <a href="{{ route('loginSocialite') }}"
+                    class="flex items-center justify-center gap-2 w-full bg-neutral-800 hover:bg-neutral-900 text-white font-semibold py-3 rounded-xl shadow-md transition transform">
+                    <!-- Ícone opcional -->
+                    <i class="fa-brands fa-github"></i>
+                    Login com GitHub
+                </a>
+
+                <!-- Google -->
+                <a href="{{ route('loginSocialiteGoogle') }}"
+                    class="flex items-center justify-center gap-2 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl shadow-md transition transform">
+                    <!-- Ícone opcional -->
+                    <i class="fa-brands fa-google"></i>
+                    Login com Google
+                </a>
+
             </div>
         </div>
     </div>
