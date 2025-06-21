@@ -1,12 +1,12 @@
 <section
     class="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-200 via-blue-400 to-indigo-600">
-    <div class="w-full max-w-3xl max-w-5xl bg-white rounded-xl shadow-2xl flex overflow-hidden h-[600px]">
+    <div class="w-full max-w-3xl max-w-5xl bg-white rounded-xl shadow-2xl lg:flex overflow-hidden lg:h-[600px]">
         <!-- Lado Esquerdo (Imagem) -->
-        <div class="w-1/2 flex items-center justify-center">
+        <div class="lg:w-1/2 flex items-center justify-center">
             <img src="/img/login/dog-login.jpeg" alt="Imagem" class="w-full h-full object-cover object-top">
         </div>
         <!-- Lado Direito (Formulário de Login) -->
-        <div class="w-1/2 py-10 px-10 flex flex-col justify-center">
+        <div class="lg:w-1/2 py-10 px-10 flex flex-col justify-center">
             <i class="fa-solid fa-bone text-[2em] text-blue-500 transform mb-2"></i>
             <h2 class="text-4xl font-bold text-gray-600 mb-2 tracking-wide drop-shadow-md">Bem-vindo<span
                     class="text-blue-500">!</span></h2>
