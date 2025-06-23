@@ -62,7 +62,7 @@ class UsersSeeder extends Seeder
             'role'     => 'Auxiliar',
             'photo_path'=> '/img/funcionarios/perfil.webp',
             'birth_date'=> '1999-10-12',
-            'password' => Hash::make('123'),
+            'password' => Hash::make('josenopet'),
             'admin'=>true,
         ]);
 

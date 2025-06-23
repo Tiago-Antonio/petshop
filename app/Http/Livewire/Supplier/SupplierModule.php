@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Spatie\Browsershot\Browsershot;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Title('Fornecedores')]
 class SupplierModule extends Component
@@ -73,24 +74,26 @@ class SupplierModule extends Component
         ]);
     }
 
-    public function generateRelatoryPDF()
+     public function generateRelatoryPDF()
     {
         try {
             $suppliers = Supplier::all();
 
-            $html = view('pdf.supplierRelatory', compact('suppliers'))->render();
+            // Gera o PDF a partir da view
+            $pdf = Pdf::loadView('pdf.supplierRelatory', compact('suppliers'));
 
-            $fileName = 'fornecedores.pdf';
+            // Salva o arquivo no storage
+            $fileName = 'clientes.pdf';
+            $pdf->save(storage_path("app/public/{$fileName}"));
 
-            Browsershot::html($html)
-                ->setOption('args', ['--no-sandbox'])
-                ->save(storage_path("app/public/{$fileName}"));
-
+            // Retorna o download do arquivo
             return response()->download(storage_path("app/public/{$fileName}"));
+
         } catch (\Exception $e) {
             session()->flash('error', 'Erro ao gerar o PDF: ' . $e->getMessage());
         }
     }
+
 
     //DELETE FORNECEDOR
     public function deleteSelectedSuppliers()
