@@ -161,7 +161,7 @@
                                     </td>
                                     <td class="2xl:px-4 py-3 text-gray-700">{{ $produto['min_stock'] }}</td>
                                     <td class="2xl:px-4 py-3 text-gray-500">
-                                        {{ $produto['updated_at']->format('d/m/Y H:i') }}
+                                        {{ $produto['updated_at']->subHours(3)->format('d/m/Y H:i') }}
                                     </td>
                                 </tr>
                             @empty

@@ -154,7 +154,7 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-4 py-4 text-sm text-gray-800">{{ $item->created_at->format('d/m/y') }}
+                        <td class="px-4 py-4 text-sm text-gray-800">{{ $item->created_at->subHours(3)->format('d/m/y') }}
                         </td>
                         <td class="px-4 py-4 text-sm text-gray-800">
                             @if ($item['status'] == 'pendente')
